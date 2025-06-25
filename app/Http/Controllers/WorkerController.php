@@ -6,6 +6,16 @@ use Illuminate\Http\Request;
 
 class WorkerController extends Controller
 {
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index() {
         $workers = Worker::paginate(10);
         return view('worker.index', compact('workers'));

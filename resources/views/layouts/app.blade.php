@@ -35,21 +35,21 @@
                 <li class="nav-item"><a href="#" class="nav-link"><i class="bi bi-cloud me-2"></i>Project</a></li>
                 <li class="nav-item">
                     @php
-                        $satuanActive = request()->is('worker*');
+                        $masterActive = request()->is('master*');
                     @endphp
-                    <a href="#" class="nav-link d-flex justify-content-between align-items-center @if($satuanActive) active @endif" data-bs-toggle="collapse" data-bs-target="#submenuSatuan" aria-expanded="{{ $satuanActive ? 'true' : 'false' }}" aria-controls="submenuSatuan">
+                    <a href="#" class="nav-link d-flex justify-content-between align-items-center @if($masterActive) active @endif" data-bs-toggle="collapse" data-bs-target="#submenuMaster" aria-expanded="{{ $masterActive ? 'true' : 'false' }}" aria-controls="submenuMaster">
                         <span><i class="bi bi-cpu me-2"></i>Master</span>
                         <i class="bi bi-chevron-down small"></i>
                     </a>
-                    <div class="collapse ps-4 @if($satuanActive) show @endif" id="submenuSatuan">
+                    <div class="collapse ps-4 @if($masterActive) show @endif" id="submenuMaster">
                         <ul class="nav flex-column">
                             <li class="nav-item">
-                                <a href="{{ url('') }}" class="nav-link @if(request()->is('worker')) active @endif">
+                                <a href="{{ route('worker.index') }}" class="nav-link @if(request()->is('master/worker')) active @endif">
                                     <i class="bi bi-people me-2"></i>Pekerja
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{ url('worker/create') }}" class="nav-link @if(request()->is('worker/create')) active @endif">
+                                <a href="{{ route('material.index') }}" class="nav-link @if(request()->is('master/material')) active @endif">
                                     <i class="bi bi-box-seam me-2"></i>Material
                                 </a>
                             </li>
