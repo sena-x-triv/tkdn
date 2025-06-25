@@ -13,11 +13,11 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 </head>
-<body class="tkdn-bg">
+<body class="uix-bg">
     <div id="sidebarOverlay" class="sidebar-overlay"></div>
     <div id="app" class="d-flex">
         <!-- Sidebar -->
-        <nav id="sidebar" class="sidebar tkdn-sidebar flex-shrink-0 p-3" style="z-index: 1051;">
+        <nav id="sidebar" class="sidebar uix-sidebar flex-shrink-0 p-3" style="z-index: 1051;">
             <button class="btn btn-link sidebar-close-btn position-absolute top-0 end-0 mt-2 me-2 d-lg-none" id="sidebarClose" aria-label="Close sidebar" style="z-index: 1052;">
                 <i class="bi bi-x-lg" style="font-size: 1.5rem;"></i>
             </button>
@@ -35,7 +35,7 @@
                 <li class="nav-item"><a href="#" class="nav-link"><i class="bi bi-cloud me-2"></i>Project</a></li>
                 <li class="nav-item">
                     @php
-                        $satuanActive = request()->is('satuan*');
+                        $satuanActive = request()->is('worker*');
                     @endphp
                     <a href="#" class="nav-link d-flex justify-content-between align-items-center @if($satuanActive) active @endif" data-bs-toggle="collapse" data-bs-target="#submenuSatuan" aria-expanded="{{ $satuanActive ? 'true' : 'false' }}" aria-controls="submenuSatuan">
                         <span><i class="bi bi-cpu me-2"></i>Master</span>
@@ -43,13 +43,13 @@
                     </a>
                     <div class="collapse ps-4 @if($satuanActive) show @endif" id="submenuSatuan">
                         <ul class="nav flex-column">
-                                <li class="nav-item">
-                                <a href="{{ url('satuan') }}" class="nav-link @if(request()->is('satuan')) active @endif">
+                            <li class="nav-item">
+                                <a href="{{ url('') }}" class="nav-link @if(request()->is('worker')) active @endif">
                                     <i class="bi bi-people me-2"></i>Pekerja
                                 </a>
-                                </li>
-                                <li class="nav-item">
-                                <a href="{{ url('satuan/create') }}" class="nav-link @if(request()->is('satuan/create')) active @endif">
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ url('worker/create') }}" class="nav-link @if(request()->is('worker/create')) active @endif">
                                     <i class="bi bi-box-seam me-2"></i>Material
                                 </a>
                             </li>
@@ -57,24 +57,24 @@
                     </div>
                                 </li>
                 <li class="nav-item"><a href="#" class="nav-link"><i class="bi bi-credit-card me-2"></i>Harga</a></li>
-                <li class="nav-item"><a href="#" class="nav-link"><i class="bi bi-people me-2"></i>Pekerja</a></li>
+                <li class="nav-item"><a href="#" class="nav-link"><i class="bi bi-people me-2"></i>Formulir</a></li>
                 <li class="nav-item"><a href="{{ route('settings.edit') }}" class="nav-link"><i class="bi bi-gear me-2"></i>Settings</a></li>
                 <li class="nav-item"><a href="#" class="nav-link"><i class="bi bi-question-circle me-2"></i>Support</a></li>
             </ul>
         </nav>
         <!-- Main Content -->
-        <div class="flex-grow-1 main-content tkdn-content" id="mainContent">
+        <div class="flex-grow-1 main-content uix-content" id="mainContent">
             <!-- Header -->
-            <header class="tkdn-header d-flex align-items-center justify-content-between">
+            <header class="uix-header d-flex align-items-center justify-content-between">
                 <div class="d-flex align-items-center">
-                    <button class="btn btn-link tkdn-sidebar-toggle d-lg-none me-2" id="sidebarToggle" aria-label="Toggle sidebar">
+                    <button class="btn btn-link uix-sidebar-toggle d-lg-none me-2" id="sidebarToggle" aria-label="Toggle sidebar">
                         <i class="bi bi-list" style="font-size: 2rem;"></i>
                     </button>
                     <i class="bi bi-cube fs-3 text-primary me-2"></i>
                     <span class="fs-4 fw-bold">TKDN</span>
                 </div>
                 <div class="d-flex align-items-center gap-3">
-                    <span id="darkModeToggle" class="tkdn-darkmode-toggle me-2" style="cursor:pointer; font-size: 1.5rem;">
+                    <span id="darkModeToggle" class="uix-darkmode-toggle me-2" style="cursor:pointer; font-size: 1.5rem;">
                         <i class="bi bi-moon"></i>
                     </span>
                     <div class="dropdown">

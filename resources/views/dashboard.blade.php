@@ -1,13 +1,13 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container-fluid tkdn-dashboard">
+<div class="container-fluid uix-dashboard">
     <div class="row">
         <div class="col-12">
             <h2 class="fw-bold mb-1">AI Models</h2>
             <div class="text-muted mb-4">Access powerful AI models and manage your usage</div>
-            <div class="card tkdn-card mb-4 p-4 d-flex flex-row align-items-center gap-3">
-                <div class="tkdn-balance-icon bg-success bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center" style="width:56px;height:56px;">
+            <div class="card uix-card mb-4 p-4 d-flex flex-row align-items-center gap-3">
+                <div class="uix-balance-icon bg-success bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center" style="width:56px;height:56px;">
                     <i class="bi bi-cash-stack text-success fs-2"></i>
                 </div>
                 <div>
@@ -19,7 +19,7 @@
                     <button class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i> Add Credit</button>
                 </div>
             </div>
-            <div class="card tkdn-card mb-4">
+            <div class="card uix-card mb-4">
                 <ul class="nav nav-tabs px-3 pt-3 border-0">
                     <li class="nav-item"><a class="nav-link" href="#">Quick Start</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Usage</a></li>

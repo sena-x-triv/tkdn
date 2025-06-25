@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container-fluid tkdn-dashboard">
+<div class="container-fluid uix-dashboard">
     <div class="row">
         <div class="col-12 col-lg-10 offset-lg-1">
             <h2 class="fw-bold mb-1">Settings</h2>
@@ -9,7 +9,7 @@
             @if(session('status'))
                 <div class="alert alert-success">{{ session('status') }}</div>
             @endif
-            <div class="card tkdn-card mb-4">
+            <div class="card uix-card mb-4">
                 <div class="card-header fw-bold fs-5 bg-transparent border-bottom">Profile Information</div>
                 <div class="card-body">
                     <form method="POST" action="{{ route('settings.update') }}">

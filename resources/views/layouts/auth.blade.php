@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 </head>
-<body class="tkdn-bg">
+<body class="uix-bg">
     <div class="container min-vh-100 d-flex flex-column justify-content-center align-items-center py-4">
         <div class="mb-4 text-center">
             <i class="bi bi-cube fs-1 text-primary"></i>
@@ -17,11 +17,11 @@
         </div>
         <div class="w-100" style="max-width: 400px;">
             <div class="d-flex justify-content-end mb-3">
-                <span id="darkModeToggle" class="tkdn-darkmode-toggle" style="cursor:pointer; font-size: 1.5rem;">
+                <span id="darkModeToggle" class="uix-darkmode-toggle" style="cursor:pointer; font-size: 1.5rem;">
                   <i class="bi bi-moon"></i>
                 </span>
             </div>
-            <div class="card tkdn-card p-4 shadow-sm">
+            <div class="card uix-card p-4 shadow-sm">
                 @yield('content')
             </div>
         </div>
