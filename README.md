@@ -1,61 +1,264 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# TKDN Dashboard
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A modern Laravel-based dashboard application with dark mode support, responsive design, and comprehensive user management system.
 
-## About Laravel
+## 🚀 Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### Core Features
+- **Modern Dashboard Interface**: Clean, responsive design with sidebar navigation
+- **Dark Mode Support**: Toggle between light and dark themes
+- **User Authentication**: Complete authentication system with registration, login, password reset
+- **User Management**: Profile settings and user administration
+- **Responsive Design**: Mobile-first approach with collapsible sidebar
+- **ULID Support**: Uses ULID for primary keys instead of auto-increment IDs
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### UI/UX Features
+- **Bootstrap Icons**: Modern iconography throughout the application
+- **Custom Styling**: SCSS-based styling with CSS custom properties
+- **Smooth Transitions**: Animated sidebar and theme transitions
+- **Modern Forms**: Styled form inputs with validation feedback
+- **Data Tables**: Responsive tables with sorting and pagination
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 📋 Requirements
 
-## Learning Laravel
+- PHP >= 8.1
+- Composer
+- Node.js & NPM
+- MySQL/PostgreSQL/SQLite
+- Laravel 11.x
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 🛠️ Installation
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### 1. Clone the Repository
+```bash
+git clone <repository-url>
+cd tkdn
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 2. Install Dependencies
+```bash
+# Install PHP dependencies
+composer install
 
-## Laravel Sponsors
+# Install Node.js dependencies
+npm install
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 3. Environment Setup
+```bash
+# Copy environment file
+cp .env.example .env
 
-### Premium Partners
+# Generate application key
+php artisan key:generate
+```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### 4. Configure Database
+Edit `.env` file and set your database credentials:
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=tkdn_dashboard
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
+```
 
-## Contributing
+### 5. Run Migrations
+```bash
+php artisan migrate
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 6. Build Assets
+```bash
+# Development
+npm run dev
 
-## Code of Conduct
+# Production
+npm run build
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 7. Start Development Server
+```bash
+php artisan serve
+```
 
-## Security Vulnerabilities
+Visit `http://localhost:8000` to access the application.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## 🗄️ Database Structure
 
-## License
+### Users Table
+```sql
+- id (ULID, Primary Key)
+- name (String)
+- email (String, Unique)
+- email_verified_at (Timestamp, Nullable)
+- password (String)
+- remember_token (String)
+- created_at (Timestamp)
+- updated_at (Timestamp)
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### Sessions Table
+```sql
+- id (String, Primary Key)
+- user_id (ULID, Foreign Key, Nullable)
+- ip_address (String, 45 chars, Nullable)
+- user_agent (Text, Nullable)
+- payload (LongText)
+- last_activity (Integer, Indexed)
+```
+
+## 🎨 Theme System
+
+### Dark Mode Implementation
+The application uses CSS custom properties for theming:
+
+```scss
+:root {
+  --primary-color: #3b82f6;
+  --sidebar-bg: #ffffff;
+  --content-bg: #f8fafc;
+  --text-color: #1f2937;
+}
+
+body.dark {
+  --sidebar-bg: #1f2937;
+  --content-bg: #111827;
+  --text-color: #f9fafb;
+}
+```
+
+### Color Scheme
+- **Primary**: Blue (#3b82f6)
+- **Success**: Green (#10b981)
+- **Warning**: Yellow (#f59e0b)
+- **Danger**: Red (#ef4444)
+- **Info**: Cyan (#06b6d4)
+
+## 📱 Responsive Design
+
+### Breakpoints
+- **Mobile**: < 768px
+- **Tablet**: 768px - 1024px
+- **Desktop**: > 1024px
+
+### Mobile Features
+- Collapsible sidebar with hamburger menu
+- Touch-friendly navigation
+- Optimized form layouts
+- Responsive data tables
+
+## 🔐 Authentication System
+
+### Available Routes
+- `GET /login` - Login page
+- `POST /login` - Process login
+- `GET /register` - Registration page
+- `POST /register` - Process registration
+- `GET /forgot-password` - Password reset request
+- `POST /forgot-password` - Send reset email
+- `GET /reset-password/{token}` - Password reset form
+- `POST /reset-password` - Process password reset
+- `POST /logout` - User logout
+
+### Security Features
+- CSRF protection on all forms
+- Password hashing using Laravel's Hash facade
+- Remember me functionality
+- Email verification support
+- Session management
+
+## 🎯 Usage Guide
+
+### Dashboard Navigation
+1. **Sidebar**: Contains main navigation menu
+2. **Topbar**: User dropdown, dark mode toggle, mobile menu
+3. **Content Area**: Main application content
+
+### User Management
+1. **Profile Settings**: Access via user dropdown → Settings
+2. **Edit Profile**: Update name, email, and other details
+3. **Password Change**: Available in settings page
+
+### Dark Mode
+- Toggle dark mode using the moon/sun icon in the topbar
+- Theme preference is stored in localStorage
+- Automatic theme switching based on system preference
+
+## 🏗️ Project Structure
+
+```
+tkdn/
+├── app/
+│   ├── Http/Controllers/
+│   │   ├── Auth/           # Authentication controllers
+│   │   ├── HomeController.php
+│   │   ├── SettingsController.php
+│   │   └── WorkerController.php
+│   ├── Models/
+│   │   ├── User.php
+│   │   └── Worker.php
+│   └── Traits/
+│       └── UsesUlid.php    # ULID trait for models
+├── resources/
+│   ├── views/
+│   │   ├── auth/           # Authentication views
+│   │   ├── layouts/        # Blade layouts
+│   │   ├── settings/       # Settings views
+│   │   └── workers/        # Worker management views
+│   ├── css/
+│   │   └── app.scss        # Main stylesheet
+│   └── js/
+│       └── app.js          # Main JavaScript file
+└── routes/
+    └── web.php             # Web routes
+```
+
+## 🚀 Deployment
+
+### Production Setup
+1. Set `APP_ENV=production` in `.env`
+2. Run `php artisan config:cache`
+3. Run `php artisan route:cache`
+4. Run `php artisan view:cache`
+5. Build assets with `npm run build`
+
+### Server Requirements
+- PHP >= 8.1 with required extensions
+- Web server (Apache/Nginx)
+- Database server
+- SSL certificate (recommended)
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🆘 Support
+
+For support and questions:
+- Create an issue in the repository
+- Contact the development team
+- Check the Laravel documentation for framework-specific questions
+
+## 🔄 Changelog
+
+### Version 1.0.0
+- Initial release
+- Complete authentication system
+- Dark mode support
+- Responsive dashboard design
+- User management features
+- ULID implementation
+
+---
+
+**Built with ❤️ using Laravel 11**
