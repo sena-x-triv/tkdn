@@ -21,11 +21,11 @@ A modern Laravel-based dashboard application with dark mode support, responsive 
 
 ## 📋 Requirements
 
-- PHP >= 8.1
+- PHP >= 8.2
 - Composer
 - Node.js & NPM
 - MySQL/PostgreSQL/SQLite
-- Laravel 11.x
+- Laravel 12.x
 
 ## 🛠️ Installation
 
@@ -225,7 +225,7 @@ tkdn/
 5. Build assets with `npm run build`
 
 ### Server Requirements
-- PHP >= 8.1 with required extensions
+- PHP >= 8.2 with required extensions
 - Web server (Apache/Nginx)
 - Database server
 - SSL certificate (recommended)
@@ -261,4 +261,4 @@ For support and questions:
 
 ---
 
-**Built with ❤️ using Laravel 11**
+**Built with ❤️ using Laravel 12**
