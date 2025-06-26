@@ -64,6 +64,13 @@
                             </svg>
                         </button>
                         <div id="masterSubmenu" class="hidden pl-8 space-y-1">
+                            <a href="{{ route('project.index') }}" class="nav-link text-sm py-2 {{ request()->is('project*') ? 'active' : '' }}">
+                                <svg class="w-4 h-4 mr-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5a2 2 0 012-2h4a2 2 0 012 2v2H8V5z" />
+                                </svg>
+                                <span>Project</span>
+                            </a>
                             <a href="{{ route('worker.index') }}" class="nav-link text-sm py-2 {{ request()->is('master/worker') ? 'active' : '' }}">
                                 <svg class="w-4 h-4 mr-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
@@ -105,9 +112,9 @@
                     </a>
                     
                     <!-- Support -->
-                    <a href="#" class="nav-link group">
+                    <a href="{{ url('/support') }}" class="nav-link group">
                         <svg class="w-5 h-5 mr-3 text-gray-400 group-hover:text-primary-500 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 14v.01M12 10v.01M16 10v.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                         <span>Support</span>
                     </a>
