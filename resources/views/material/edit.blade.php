@@ -1,79 +1,208 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container-fluid uix-dashboard">
-    <div class="row">
-        <div class="col-12 col-lg-10 offset-lg-1">
-            <h2 class="fw-bold mb-1">Edit Material</h2>
-            <div class="text-muted mb-4">Update material information</div>
-            <div class="card uix-card mb-4">
-                <div class="card-header fw-bold fs-5 bg-transparent border-bottom">Material Information</div>
-                <div class="card-body">
-                    <form action="{{ route('material.update', $material) }}" method="POST">
-                        @csrf
-                        @method('PUT')
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label for="nama_barang_jasa" class="form-label">Nama Barang/Jasa</label>
-                                <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name', $material->name) }}" required>
-                                @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="mb-8">
+        <div class="flex items-center mb-4">
+            <a href="{{ route('material.index') }}" class="btn btn-outline p-2 mr-4">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+            </a>
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Edit Material</h1>
+                <p class="text-gray-600 dark:text-gray-400">Update material information</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Material Form -->
+    <div class="max-w-4xl">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Material Information</h3>
+            </div>
+            <div class="card-body">
+                <form action="{{ route('material.update', $material) }}" method="POST" class="space-y-6">
+                    @csrf
+                    @method('PUT')
+                    
+                    <!-- Basic Information -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="name" class="form-label">Nama Barang/Jasa</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                                    </svg>
+                                </div>
+                                <input type="text" name="name" id="name" class="form-input pl-10 @error('name') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror" value="{{ old('name', $material->name) }}" required placeholder="Enter material name">
                             </div>
-                            <div class="col-md-6">
-                                <label for="spesifikasi" class="form-label">Spesifikasi</label>
-                                <input type="text" name="specification" id="specification" class="form-control @error('specification') is-invalid @enderror" value="{{ old('specification', $material->specification) }}">
-                                @error('specification')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                            </div>
-                            <div class="col-md-6">
-                                <label for="tipe" class="form-label">Tipe</label>
-                                <input type="text" name="type" id="type" class="form-control @error('type') is-invalid @enderror" value="{{ old('type', $material->type) }}">
-                                @error('type')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                            </div>
-                            <div class="col-md-6">
-                                <label for="merk" class="form-label">Merk</label>
-                                <input type="text" name="brand" id="brand" class="form-control @error('brand') is-invalid @enderror" value="{{ old('brand', $material->brand) }}">
-                                @error('brand')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                            </div>
-                            <div class="col-md-6">
-                                <label for="tkdn" class="form-label">TKDN</label>
-                                <input type="text" name="tkdn" id="tkdn" class="form-control @error('tkdn') is-invalid @enderror" value="{{ old('tkdn', $material->tkdn) }}">
-                                @error('tkdn')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                            </div>
-                            <div class="col-md-6">
-                                <label for="harga_satuan" class="form-label">Harga Satuan</label>
-                                <input type="number" name="price" id="price" class="form-control @error('price') is-invalid @enderror" value="{{ old('price', $material->price) }}">
-                                @error('price')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                            </div>
-                            <div class="col-md-6">
-                                <label for="satuan" class="form-label">Satuan</label>
-                                <input type="text" name="unit" id="unit" class="form-control @error('unit') is-invalid @enderror" value="{{ old('unit', $material->unit) }}">
-                                @error('unit')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                            </div>
-                            <div class="col-md-6">
-                                <label for="link_acuan" class="form-label">Link Acuan</label>
-                                <input type="text" name="link" id="link" class="form-control @error('link') is-invalid @enderror" value="{{ old('link', $material->link) }}">
-                                @error('link')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                            </div>
-                            <div class="col-md-6">
-                                <label for="harga_satuan_inflasi" class="form-label">Harga Satuan Inflasi</label>
-                                <input type="number" name="price_inflasi" id="price_inflasi" class="form-control @error('price_inflasi') is-invalid @enderror" value="{{ old('price_inflasi', $material->price_inflasi) }}">
-                                @error('price_inflasi')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                            </div>
-                            <div class="col-md-6">
-                                <label for="keterangan" class="form-label">Keterangan</label>
-                                <input type="text" name="description" id="description" class="form-control @error('description') is-invalid @enderror" value="{{ old('description', $material->description) }}">
-                                @error('description')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                            </div>
+                            @error('name')
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
                         </div>
-                        <div class="d-flex justify-content-end mt-4">
-                            <a href="{{ route('material.index') }}" class="btn btn-outline-secondary me-2">
-                                <i class="bi bi-arrow-left me-1"></i> Cancel
-                            </a>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-save me-1"></i> Update Material
-                            </button>
+                        
+                        <div>
+                            <label for="specification" class="form-label">Spesifikasi</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                    </svg>
+                                </div>
+                                <input type="text" name="specification" id="specification" class="form-input pl-10 @error('specification') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror" value="{{ old('specification', $material->specification) }}" placeholder="Enter specifications">
+                            </div>
+                            @error('specification')
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
                         </div>
-                    </form>
-                </div>
+                        
+                        <div>
+                            <label for="type" class="form-label">Tipe</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                                    </svg>
+                                </div>
+                                <input type="text" name="type" id="type" class="form-input pl-10 @error('type') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror" value="{{ old('type', $material->type) }}" placeholder="Enter type">
+                            </div>
+                            @error('type')
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        
+                        <div>
+                            <label for="brand" class="form-label">Merk</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                                    </svg>
+                                </div>
+                                <input type="text" name="brand" id="brand" class="form-input pl-10 @error('brand') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror" value="{{ old('brand', $material->brand) }}" placeholder="Enter brand">
+                            </div>
+                            @error('brand')
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
+                    
+                    <!-- Pricing Information -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="tkdn" class="form-label">TKDN</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                    </svg>
+                                </div>
+                                <input type="text" name="tkdn" id="tkdn" class="form-input pl-10 @error('tkdn') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror" value="{{ old('tkdn', $material->tkdn) }}" placeholder="Enter TKDN value">
+                            </div>
+                            @error('tkdn')
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        
+                        <div>
+                            <label for="price" class="form-label">Harga Satuan</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                                    </svg>
+                                </div>
+                                <input type="number" name="price" id="price" class="form-input pl-10 @error('price') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror" value="{{ old('price', $material->price) }}" placeholder="Enter price">
+                            </div>
+                            @error('price')
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        
+                        <div>
+                            <label for="unit" class="form-label">Satuan</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                                    </svg>
+                                </div>
+                                <input type="text" name="unit" id="unit" class="form-input pl-10 @error('unit') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror" value="{{ old('unit', $material->unit) }}" placeholder="e.g., pcs, kg, m">
+                            </div>
+                            @error('unit')
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        
+                        <div>
+                            <label for="price_inflasi" class="form-label">Harga Satuan Inflasi</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                                    </svg>
+                                </div>
+                                <input type="number" name="price_inflasi" id="price_inflasi" class="form-input pl-10 @error('price_inflasi') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror" value="{{ old('price_inflasi', $material->price_inflasi) }}" placeholder="Enter inflation price">
+                            </div>
+                            @error('price_inflasi')
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
+                    
+                    <!-- Additional Information -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="link" class="form-label">Link Acuan</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+                                    </svg>
+                                </div>
+                                <input type="text" name="link" id="link" class="form-input pl-10 @error('link') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror" value="{{ old('link', $material->link) }}" placeholder="Enter reference link">
+                            </div>
+                            @error('link')
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        
+                        <div>
+                            <label for="description" class="form-label">Keterangan</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
+                                    </svg>
+                                </div>
+                                <input type="text" name="description" id="description" class="form-input pl-10 @error('description') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror" value="{{ old('description', $material->description) }}" placeholder="Enter additional notes">
+                            </div>
+                            @error('description')
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
+                    
+                    <!-- Form Actions -->
+                    <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200 dark:border-gray-700">
+                        <a href="{{ route('material.index') }}" class="btn btn-outline flex items-center">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                            Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary flex items-center">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                            </svg>
+                            Update Material
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
