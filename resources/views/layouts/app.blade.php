@@ -25,7 +25,7 @@
             
             <!-- Logo -->
             <div class="flex items-center px-6 py-8">
-                <div class="flex items-center space-x-3">
+                <a href="{{ route('home') }}" class="flex items-center space-x-3">
                     <div class="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-lg">
                         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
@@ -35,7 +35,7 @@
                         <h1 class="text-xl font-bold text-gray-900 dark:text-white">TKDN</h1>
                         <p class="text-xs text-gray-500 dark:text-gray-400">Dashboard</p>
                     </div>
-                </div>
+                </a>
             </div>
             
             <!-- Navigation Menu -->
@@ -63,8 +63,8 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </button>
-                        <div id="masterSubmenu" class="hidden pl-8 space-y-1">
-                            <a href="{{ route('project.index') }}" class="nav-link text-sm py-2 {{ request()->is('project*') ? 'active' : '' }}">
+                        <div id="masterSubmenu" class="pl-8 space-y-1 {{ request()->is('master*') ? 'block' : 'hidden' }}">
+                            <a href="{{ route('project.index') }}" class="nav-link text-sm py-2 {{ request()->is('master/project*') ? 'active' : '' }}">
                                 <svg class="w-4 h-4 mr-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2z" />
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5a2 2 0 012-2h4a2 2 0 012 2v2H8V5z" />
@@ -82,6 +82,13 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
                                 </svg>
                                 <span>Material</span>
+                            </a>
+                            <!-- Estimasi -->
+                            <a href="{{ route('estimation.index') }}" class="nav-link text-sm py-2 {{ request()->is('master/estimation') ? 'active' : '' }}">
+                                <svg class="w-5 h-5 mr-3 text-gray-400 group-hover:text-primary-500 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2a4 4 0 014-4h4M7 7h.01M7 3h10a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2z" />
+                                </svg>
+                                <span>Estimasi</span>
                             </a>
                         </div>
                     </div>
@@ -276,6 +283,21 @@
             html.classList.toggle('dark');
             localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
             updateDarkMode();
+        });
+
+        // Logout
+        const logoutTime = 15 * 60 * 1000; // 15 menit
+        let logoutTimer = setTimeout(autoLogout, logoutTime);
+        function autoLogout() {
+            document.getElementById('logout-form').submit();
+        }
+
+        // Reset timer jika ada aktivitas
+        ['click', 'mousemove', 'keydown', 'scroll'].forEach(event => {
+            window.addEventListener(event, () => {
+                clearTimeout(logoutTimer);
+                logoutTimer = setTimeout(autoLogout, logoutTime);
+            });
         });
     </script>
 </body>
