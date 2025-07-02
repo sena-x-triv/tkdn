@@ -21,7 +21,6 @@ class Material extends Model
         'price',
         'unit',
         'link',
-        'price_inflasi',
         'description',
     ];
 

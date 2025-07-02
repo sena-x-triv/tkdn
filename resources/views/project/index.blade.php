@@ -17,7 +17,7 @@
 <div class="card mb-8">
     <div class="card-header flex justify-between items-center">
         <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Project</h2>
-        <a href="{{ route('project.create') }}" class="btn btn-primary flex items-center">
+        <a href="{{ route('master.project.create') }}" class="btn btn-primary flex items-center">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
             </svg>
@@ -39,13 +39,13 @@
                     <td class="px-6 py-4 whitespace-nowrap">{{ $projects->firstItem() + $i }}</td>
                     <td class="px-6 py-4 whitespace-nowrap font-semibold">{{ $project->name }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-center">
-                        <a href="{{ route('project.edit', $project) }}" class="inline-flex items-center px-3 py-1 text-xs font-medium text-blue-600 bg-blue-100 hover:bg-blue-200 dark:bg-blue-900/20 dark:text-blue-300 dark:hover:bg-blue-900/30 rounded transition-colors mr-2">
+                        <a href="{{ route('master.project.edit', $project) }}" class="inline-flex items-center px-3 py-1 text-xs font-medium text-blue-600 bg-blue-100 hover:bg-blue-200 dark:bg-blue-900/20 dark:text-blue-300 dark:hover:bg-blue-900/30 rounded transition-colors mr-2">
                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536M9 11l6 6M3 17.25V21h3.75l11.06-11.06a2.121 2.121 0 00-3-3L3 17.25z" />
                             </svg>
                             Edit
                         </a>
-                        <form action="{{ route('project.destroy', $project) }}" method="POST" class="inline-block" onsubmit="return confirm('Yakin ingin menghapus project ini?')">
+                        <form action="{{ route('master.project.destroy', $project) }}" method="POST" class="inline-block" onsubmit="return confirm('Yakin ingin menghapus project ini?')">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="inline-flex items-center px-3 py-1 text-xs font-medium text-red-600 bg-red-100 hover:bg-red-200 dark:bg-red-900/20 dark:text-red-300 dark:hover:bg-red-900/30 rounded transition-colors">

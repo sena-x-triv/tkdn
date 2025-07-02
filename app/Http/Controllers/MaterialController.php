@@ -39,7 +39,7 @@ class MaterialController extends Controller
             'unit' => 'required'
         ]);
         Material::create($request->all());
-        return redirect()->route('material.index')->with('success', 'Material created!');
+        return redirect()->route('master.material.index')->with('success', 'Material created!');
     }
 
     public function edit(Material $material) {
@@ -55,11 +55,11 @@ class MaterialController extends Controller
             'unit' => 'required'
         ]);
         $material->update($request->all());
-        return redirect()->route('material.index')->with('success', 'Material updated!');
+        return redirect()->route('master.material.index')->with('success', 'Material updated!');
     }
 
     public function destroy(Material $material) {
         $material->delete();
-        return redirect()->route('material.index')->with('success', 'Material deleted!');
+        return redirect()->route('master.material.index')->with('success', 'Material deleted!');
     }
 } 

@@ -7,7 +7,7 @@
 </div>
 
 <div class="card max-w-xl mx-auto">
-    <form action="{{ route('project.update', $project) }}" method="POST" class="card-body space-y-6">
+    <form action="{{ route('master.project.update', $project) }}" method="POST" class="card-body space-y-6">
         @csrf
         @method('PUT')
         <div>
@@ -18,7 +18,7 @@
             @enderror
         </div>
         <div class="flex justify-end">
-            <a href="{{ route('project.index') }}" class="btn btn-secondary mr-2">Batal</a>
+            <a href="{{ route('master.project.index') }}" class="btn btn-secondary mr-2">Batal</a>
             <button type="submit" class="btn btn-primary flex items-center">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />

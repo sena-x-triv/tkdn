@@ -5,7 +5,7 @@
     <!-- Header -->
     <div class="mb-8">
         <div class="flex items-center mb-4">
-            <a href="{{ route('material.index') }}" class="btn btn-outline p-2 mr-4">
+            <a href="{{ route('master.material.index') }}" class="btn btn-outline p-2 mr-4">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                 </svg>
@@ -24,7 +24,7 @@
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Material Information</h3>
             </div>
             <div class="card-body">
-                <form action="{{ route('material.update', $material) }}" method="POST" class="space-y-6">
+                <form action="{{ route('master.material.update', $material) }}" method="POST" class="space-y-6">
                     @csrf
                     @method('PUT')
                     
@@ -138,7 +138,7 @@
                             @enderror
                         </div>
                         
-                        <div>
+                        <!-- <div>
                             <label for="price_inflasi" class="form-label">Harga Satuan Inflasi</label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -151,7 +151,7 @@
                             @error('price_inflasi')
                                 <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                             @enderror
-                        </div>
+                        </div> -->
                     </div>
                     
                     <!-- Additional Information -->
@@ -189,7 +189,7 @@
                     
                     <!-- Form Actions -->
                     <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200 dark:border-gray-700">
-                        <a href="{{ route('material.index') }}" class="btn btn-outline flex items-center">
+                        <a href="{{ route('master.material.index') }}" class="btn btn-outline flex items-center">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                             </svg>

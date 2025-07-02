@@ -20,7 +20,7 @@ class ProjectController extends Controller
             'name' => 'required|string|max:255',
         ]);
         Project::create($validated);
-        return redirect()->route('project.index')->with('success', 'Project created successfully.');
+        return redirect()->route('master.project.index')->with('success', 'Project created successfully.');
     }
 
     public function edit(Project $project) {
@@ -32,11 +32,11 @@ class ProjectController extends Controller
             'name' => 'required|string|max:255',
         ]);
         $project->update($validated);
-        return redirect()->route('project.index')->with('success', 'Project updated successfully.');
+        return redirect()->route('master.project.index')->with('success', 'Project updated successfully.');
     }
 
     public function destroy(Project $project) {
         $project->delete();
-        return redirect()->route('project.index')->with('success', 'Project deleted successfully.');
+        return redirect()->route('master.project.index')->with('success', 'Project deleted successfully.');
     }
 } 

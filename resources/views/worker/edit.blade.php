@@ -9,7 +9,7 @@
             <p class="text-gray-600 dark:text-gray-400">Update worker information</p>
         </div>
         <div class="mt-4 sm:mt-0">
-            <a href="{{ route('worker.index') }}" class="btn btn-outline flex items-center">
+            <a href="{{ route('master.worker.index') }}" class="btn btn-outline flex items-center">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                 </svg>
@@ -24,7 +24,7 @@
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Worker Information</h3>
         </div>
         <div class="card-body">
-            <form action="{{ route('worker.update', $worker) }}" method="POST">
+            <form action="{{ route('master.worker.update', $worker) }}" method="POST">
                 @csrf
                 @method('PUT')
                 
@@ -86,7 +86,7 @@
 
                 <!-- Form Actions -->
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-end space-y-3 sm:space-y-0 sm:space-x-3 pt-6 border-t border-gray-200 dark:border-gray-700">
-                    <a href="{{ route('worker.index') }}" class="btn btn-outline">
+                    <a href="{{ route('master.worker.index') }}" class="btn btn-outline">
                         Cancel
                     </a>
                     <button type="submit" class="btn btn-primary flex items-center">

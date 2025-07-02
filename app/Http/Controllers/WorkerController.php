@@ -33,7 +33,7 @@ class WorkerController extends Controller
             'tkdn' => 'required|integer',
         ]);
         Worker::create($request->all());
-        return redirect()->route('worker.index')->with('success', 'Worker created!');
+        return redirect()->route('master.worker.index')->with('success', 'Worker created!');
     }
 
     public function edit(Worker $worker) {
@@ -48,11 +48,11 @@ class WorkerController extends Controller
             'tkdn' => 'required|integer',
         ]);
         $worker->update($request->all());
-        return redirect()->route('worker.index')->with('success', 'Worker updated!');
+        return redirect()->route('master.worker.index')->with('success', 'Worker updated!');
     }
 
     public function destroy(Worker $worker) {
         $worker->delete();
-        return redirect()->route('worker.index')->with('success', 'Worker deleted!');
+        return redirect()->route('master.worker.index')->with('success', 'Worker deleted!');
     }
 } 
