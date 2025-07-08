@@ -9,7 +9,7 @@ class EstimationController extends Controller
 {
     public function index()
     {
-        $estimations = Estimation::withCount('items')->latest()->get();
+        $estimations = Estimation::withCount('items')->latest()->paginate(10);
         return view('estimation.index', compact('estimations'));
     }
 

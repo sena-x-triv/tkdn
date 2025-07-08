@@ -121,13 +121,9 @@
                 </table>
             </div>
         </div>
+        @if($materials->hasPages())
+            {{ $materials->links('components.pagination') }}
+        @endif
     </div>
-
-    <!-- Pagination -->
-    @if(method_exists($materials, 'links'))
-    <div class="flex justify-center">
-        {{ $materials->links() }}
-    </div>
-    @endif
 </div>
 @endsection 

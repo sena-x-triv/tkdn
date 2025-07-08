@@ -111,6 +111,9 @@
                 </table>
             </div>
         </div>
+        @if($estimations->hasPages())
+            {{ $estimations->links('components.pagination') }}
+        @endif
     </div>
 </div>
 @endsection 

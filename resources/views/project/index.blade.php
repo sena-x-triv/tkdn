@@ -64,7 +64,9 @@
                 @endforelse
             </tbody>
         </table>
-        <div class="mt-4">{{ $projects->links() }}</div>
     </div>
+    @if($projects->hasPages())
+        {{ $projects->links('components.pagination') }}
+    @endif
 </div>
 @endsection 
