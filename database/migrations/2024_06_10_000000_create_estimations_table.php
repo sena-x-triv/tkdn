@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->string('title'); // Judul Pekerjaan
             $table->unsignedBigInteger('total')->default(0);
             $table->unsignedBigInteger('margin')->default(0);
-            $table->unsignedBigInteger('unit_price')->default(0);
+            $table->unsignedBigInteger('total_unit_price')->default(0);
             $table->timestamps();
         });
     }

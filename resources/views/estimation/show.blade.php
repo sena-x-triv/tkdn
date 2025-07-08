@@ -29,11 +29,11 @@
             </div>
             <div>
                 <div class="text-gray-500 dark:text-gray-400 text-sm">Margin</div>
-                <div class="font-semibold text-gray-900 dark:text-white">Rp {{ number_format($estimation->margin,0,',','.') }}</div>
+                <div class="font-semibold text-gray-900 dark:text-white">{{ number_format($estimation->margin,0,',','.') }} %</div>
             </div>
             <div>
                 <div class="text-gray-500 dark:text-gray-400 text-sm">Harga Satuan</div>
-                <div class="font-semibold text-gray-900 dark:text-white">Rp {{ number_format($estimation->unit_price,0,',','.') }}</div>
+                <div class="font-semibold text-gray-900 dark:text-white">Rp {{ number_format($estimation->total_unit_price,0,',','.') }}</div>
             </div>
         </div>
         <div class="mt-8">

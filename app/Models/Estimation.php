@@ -15,7 +15,7 @@ class Estimation extends Model
         'title',
         'total',
         'margin',
-        'unit_price',
+        'total_unit_price',
     ];
 
     public function items()

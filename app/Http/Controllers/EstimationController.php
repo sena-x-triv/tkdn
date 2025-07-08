@@ -25,7 +25,7 @@ class EstimationController extends Controller
             'title' => 'required|string|max:255',
             'total' => 'nullable|integer|min:0',
             'margin' => 'nullable|integer|min:0',
-            'unit_price' => 'nullable|integer|min:0',
+            'total_unit_price' => 'nullable|integer|min:0',
             'items' => 'array',
             'items.*.category' => 'required|in:worker,material,equipment',
             'items.*.reference_id' => 'nullable|ulid',
@@ -59,9 +59,9 @@ class EstimationController extends Controller
             'title' => 'required|string|max:255',
             'total' => 'nullable|integer|min:0',
             'margin' => 'nullable|integer|min:0',
-            'unit_price' => 'nullable|integer|min:0',
+            'total_unit_price' => 'nullable|integer|min:0',
             'items' => 'array',
-            'items.*.id' => 'nullable|ulid',
+            'items.*.id' => 'nullable|integer',
             'items.*.category' => 'required|in:worker,material,equipment',
             'items.*.reference_id' => 'nullable|ulid',
             'items.*.equipment_name' => 'nullable|string|max:255',
@@ -70,7 +70,6 @@ class EstimationController extends Controller
             'items.*.unit_price' => 'nullable|integer',
             'items.*.total_price' => 'nullable|integer',
         ]);
-        dd($data);
         
         $estimation->update($data);
         $this->syncEstimationItems($estimation, $data['items'] ?? []);
