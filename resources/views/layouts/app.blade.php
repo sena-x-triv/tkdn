@@ -8,6 +8,26 @@
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @stack('styles') <!-- Stack untuk CSS tambahan -->
+    
+    <!-- jQuery and Select2 CDN - Stable versions without integrity issues -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js?v={{ time() }}"></script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css?v={{ time() }}" />
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js?v={{ time() }}"></script>
+    
+    <!-- Dependencies ready signal -->
+    <script>
+        $(document).ready(function() {
+            // Signal that dependencies are ready
+            window.dependenciesReady = true;
+            window.$ = $;
+            window.jQuery = $;
+            window.dispatchEvent(new CustomEvent('dependenciesLoaded'));
+            console.log('✅ jQuery and Select2 loaded from CDN and ready');
+        });
+    </script>
 </head>
 <body class="h-full bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
     <!-- Sidebar Overlay -->
@@ -300,5 +320,7 @@
             });
         });
     </script>
+
+    @stack('scripts') <!-- Stack untuk JS tambahan -->
 </body>
 </html>

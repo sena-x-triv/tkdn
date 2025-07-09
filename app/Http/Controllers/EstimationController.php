@@ -3,6 +3,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Estimation;
 use App\Models\EstimationItem;
+use App\Models\Worker;
+use App\Models\Material;
 use Illuminate\Http\Request;
 
 class EstimationController extends Controller
@@ -15,7 +17,10 @@ class EstimationController extends Controller
 
     public function create()
     {
-        return view('estimation.create');
+        $workers = Worker::select('id', 'name', 'unit', 'price')->get();
+        $materials = Material::select('id', 'name', 'specification', 'unit', 'price')->get();
+        
+        return view('estimation.create', compact('workers', 'materials'));
     }
 
     public function store(Request $request)
@@ -49,7 +54,10 @@ class EstimationController extends Controller
     public function edit(Estimation $estimation)
     {
         $estimation->load('items');
-        return view('estimation.edit', compact('estimation'));
+        $workers = Worker::select('id', 'name', 'unit', 'price')->get();
+        $materials = Material::select('id', 'name', 'specification', 'unit', 'price')->get();
+        
+        return view('estimation.edit', compact('estimation', 'workers', 'materials'));
     }
 
     public function update(Request $request, Estimation $estimation)

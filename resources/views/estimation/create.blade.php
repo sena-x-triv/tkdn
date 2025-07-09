@@ -1,5 +1,113 @@
 @extends('layouts.app')
 
+@push('styles')
+<style>
+/* Select2 Integration with Tailwind */
+.select2-container {
+    width: 100% !important;
+}
+
+.select2-container .select2-selection--single {
+    height: 42px !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 0.5rem !important;
+    padding: 0 12px !important;
+    display: flex !important;
+    align-items: center !important;
+    background-color: #ffffff !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #374151 !important;
+    line-height: 42px !important;
+    padding-left: 0 !important;
+    padding-right: 20px !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 40px !important;
+    right: 10px !important;
+    top: 1px !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow b {
+    border-color: #6b7280 transparent transparent transparent !important;
+    border-style: solid !important;
+    border-width: 5px 4px 0 4px !important;
+}
+
+.select2-dropdown {
+    border-radius: 0.5rem !important;
+    border: 1px solid #d1d5db !important;
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1) !important;
+}
+
+.select2-results__option {
+    padding: 8px 12px !important;
+    color: #374151 !important;
+}
+
+.select2-results__option--highlighted {
+    background-color: #3b82f6 !important;
+    color: #ffffff !important;
+}
+
+.select2-search__field {
+    border: 1px solid #d1d5db !important;
+    border-radius: 0.375rem !important;
+    padding: 4px 8px !important;
+}
+
+/* Dark mode support */
+.dark .select2-container .select2-selection--single {
+    background-color: #374151 !important;
+    border-color: #4b5563 !important;
+    color: #f9fafb !important;
+}
+
+.dark .select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #f9fafb !important;
+}
+
+.dark .select2-container--default .select2-selection--single .select2-selection__arrow b {
+    border-color: #9ca3af transparent transparent transparent !important;
+}
+
+.dark .select2-dropdown {
+    background-color: #374151 !important;
+    border-color: #4b5563 !important;
+}
+
+.dark .select2-results__option {
+    color: #f9fafb !important;
+    background-color: #374151 !important;
+}
+
+.dark .select2-results__option--highlighted {
+    background-color: #3b82f6 !important;
+    color: #ffffff !important;
+}
+
+.dark .select2-search__field {
+    background-color: #4b5563 !important;
+    border-color: #6b7280 !important;
+    color: #f9fafb !important;
+}
+
+/* Ensure compatibility with form-input class */
+.select2-container .select2-selection--single.form-input,
+.select2-container.form-input .select2-selection--single {
+    height: 42px !important;
+    border: 1px solid #d1d5db !important;
+}
+
+/* Loading state styling */
+.select2-container--default .select2-selection--single .select2-selection__placeholder {
+    color: #9ca3af !important;
+}
+</style>
+@endpush
+
 @section('content')
 <div class="mb-8">
     <div class="flex items-center mb-4">
@@ -16,7 +124,7 @@
 </div>
 
 
-<div class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-8 w-full max-w-5xl mx-auto mb-8 border border-gray-100 dark:border-gray-800">
+<div class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-8 w-full mx-auto mb-8 border border-gray-100 dark:border-gray-800">
     <div class="mb-6 pb-4 border-b border-gray-200 dark:border-gray-700">
         <h2 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
             <svg class="w-6 h-6 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2a4 4 0 014-4h4" /></svg>
@@ -103,9 +211,9 @@
                             <th class="px-3 py-2 text-xs font-medium text-gray-500 dark:text-gray-300 uppercase" style="width: 175px;">Kategori</th>
                             <th class="px-3 py-2 text-xs font-medium text-gray-500 dark:text-gray-300 uppercase" style="width: 125px;">Kode</th>
                             <th class="px-3 py-2 text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Nama/Peralatan</th>
-                            <th class="px-3 py-2 text-xs font-medium text-gray-500 dark:text-gray-300 uppercase" style="width: 100px;">Koefisien</th>
-                            <th class="px-3 py-2 text-xs font-medium text-gray-500 dark:text-gray-300 uppercase" style="width: 175px;">Harga</th>
-                            <th class="px-3 py-2 text-xs font-medium text-gray-500 dark:text-gray-300 uppercase" style="width: 175px;">Jumlah Harga</th>
+                            <th class="px-3 py-2 text-xs font-medium text-gray-500 dark:text-gray-300 uppercase" style="width: 130px;">Koefisien</th>
+                            <th class="px-3 py-2 text-xs font-medium text-gray-500 dark:text-gray-300 uppercase" style="width: 185px;">Harga</th>
+                            <th class="px-3 py-2 text-xs font-medium text-gray-500 dark:text-gray-300 uppercase" style="width: 185px;">Jumlah Harga</th>
                             <th class="px-3 py-2"></th>
                         </tr>
                     </thead>
@@ -135,226 +243,436 @@
         </div>
     </form>
 </div>
+@endsection
+
+@push('scripts')
+<div id="app-data" 
+     data-workers="{{ json_encode($workers) }}" 
+     data-materials="{{ json_encode($materials) }}" 
+     style="display:none;"></div>
 <script>
-let itemIndex = 0;
-function addItemRow(item = {}) {
-    const tbody = document.getElementById('items-body');
-    const row = document.createElement('tr');
-    row.innerHTML = `
-        <td class="px-3 py-2 item-no">${itemIndex + 1}</td>
-        <td class="px-2 py-2">
-            <select name="items[${itemIndex}][category]" class="form-input" required onchange="toggleEquipmentInput(this)">
-                <option value="worker" ${item.category === 'worker' ? 'selected' : ''}>Tenaga Kerja</option>
-                <option value="material" ${item.category === 'material' ? 'selected' : ''}>Material</option>
-                <option value="equipment" ${item.category === 'equipment' ? 'selected' : ''}>Peralatan</option>
-            </select>
-        </td>
-        <td class="px-2 py-2"><input type="text" name="items[${itemIndex}][code]" class="form-input" value="${item.code || ''}"></td>
-        <td class="px-2 py-2">
-            <input type="text" name="items[${itemIndex}][equipment_name]" class="form-input" value="${item.equipment_name || ''}" placeholder="Nama/Peralatan">
-        </td>
-        <td class="px-2 py-2"><input type="number" step="0.001" name="items[${itemIndex}][coefficient]" class="form-input" value="${item.coefficient || ''}" oninput="updateTotalPrice(this)"></td>
-        <td class="px-2 py-2"><input type="number" name="items[${itemIndex}][unit_price]" class="form-input" value="${item.unit_price || ''}" oninput="updateTotalPrice(this);"></td>
-        <td class="px-2 py-2"><input type="number" name="items[${itemIndex}][total_price]" class="form-input" value="${item.total_price || ''}" readonly></td>
-        <td class="px-2 py-2 text-center"><button type="button" class="btn btn-danger btn-sm" onclick="removeItemRow(this)"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg></button></td>
-    `;
-    tbody.appendChild(row);
-    itemIndex++;
-}
-function toggleEquipmentInput(select) {
-    // Optionally, you can show/hide fields based on category
-}
+// Initialize when dependencies are ready
+$(document).ready(function() {
+    console.log('🚀 Initializing estimation functionality...');
+    
+    // Initialize data from HTML data attributes
+    const appData = document.getElementById('app-data');
+    window.workersData = JSON.parse(appData.dataset.workers);
+    window.materialsData = JSON.parse(appData.dataset.materials);
+    
+    // All JavaScript code will go here
+    let itemIndex = 0;
+    
+    console.log('📦 Data loaded - Workers:', window.workersData?.length || 0, 'Materials:', window.materialsData?.length || 0);
 
-function removeItemRow(button) {
-    const row = button.closest('tr');
-    row.remove();
-    updateMainTotal();
-    updateItemNumbers();
-}
-
-function updateItemNumbers() {
-    const rows = document.querySelectorAll('#items-body tr');
-    rows.forEach((row, index) => {
-        const itemNoCell = row.querySelector('.item-no');
-        if (itemNoCell) {
-            itemNoCell.textContent = index + 1;
-        }
-    });
-}
-function updateTotalPrice(input) {
-    const row = input.closest('tr');
-    const coef = parseFloat(row.querySelector('input[name*="[coefficient]"]').value) || 0;
-    const unitPrice = parseFloat(row.querySelector('input[name*="[unit_price]"]').value) || 0;
-    const totalPrice = coef * unitPrice;
-    
-    row.querySelector('input[name*="[total_price]"]').value = totalPrice;
-    
-    // Update main totals
-    updateMainTotal();
-}
-
-function updateMainTotal() {
-    const itemRows = document.querySelectorAll('#items-body tr');
-    let totalPrice = 0;
-    
-    itemRows.forEach(row => {
-        const totalPriceInput = row.querySelector('input[name*="[total_price]"]');
-        if (totalPriceInput && totalPriceInput.value) {
-            totalPrice += parseFloat(totalPriceInput.value) || 0;
-        }
-    });
-    
-    // Update the main total input
-    const mainTotalInput = document.getElementById('total');
-    if (mainTotalInput) {
-        mainTotalInput.value = totalPrice;
+    // Simple select2 initialization  
+    function initSelect2(element, placeholder) {
+        $(element).select2({
+            placeholder: placeholder,
+            allowClear: true,
+            width: '100%'
+        });
+        console.log('✅ Select2 initialized for:', placeholder);
+        return true;
     }
 
-    // update unit price = total * (1 + margin/100), hasil penghitungan pembulatan keatas
-    const margin = parseFloat(document.getElementById('margin').value) || 0;
-    const unitPrice = Math.ceil(totalPrice * (1 + margin/100));
-    document.getElementById('total_unit_price').value = unitPrice;
-}
+        function addItemRow(item = {}) {
+            const tbody = document.getElementById('items-body');
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td class="px-3 py-2 item-no">${itemIndex + 1}</td>
+                <td class="px-2 py-2">
+                    <select name="items[${itemIndex}][category]" class="form-input" required onchange="toggleEquipmentInput(this)">
+                        <option value="">Pilih Kategori</option>
+                        <option value="worker" ${item.category === 'worker' ? 'selected' : ''}>Tenaga Kerja</option>
+                        <option value="material" ${item.category === 'material' ? 'selected' : ''}>Material</option>
+                        <option value="equipment" ${item.category === 'equipment' ? 'selected' : ''}>Peralatan</option>
+                    </select>
+                </td>
+                <td class="px-2 py-2"><input type="text" name="items[${itemIndex}][code]" class="form-input" value="${item.code || ''}"></td>
+                <td class="px-2 py-2" data-label="Nama/Peralatan">
+                    <input type="hidden" name="items[${itemIndex}][reference_id]" class="reference-id-input" value="${item.reference_id || ''}">
+                    <input type="text" name="items[${itemIndex}][equipment_name]" class="form-input equipment-name-input" value="${item.equipment_name || ''}" placeholder="Nama/Peralatan">
+                </td>
+                <td class="px-2 py-2"><input type="number" name="items[${itemIndex}][coefficient]" class="form-input" value="${item.coefficient || ''}" step="0.01" oninput="updateTotalPrice(this)" placeholder="Koefisien"></td>
+                <td class="px-2 py-2"><input type="number" name="items[${itemIndex}][unit_price]" class="form-input" value="${item.unit_price || ''}" step="0.01" oninput="updateTotalPrice(this)" placeholder="Harga Satuan"></td>
+                <td class="px-2 py-2"><input type="number" name="items[${itemIndex}][total_price]" class="form-input" value="${item.total_price || ''}" readonly placeholder="Jumlah Harga"></td>
+                <td class="px-2 py-2">
+                    <button type="button" class="btn btn-danger btn-sm" onclick="removeItemRow(this)" title="Hapus Item">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1-1H8a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                    </button>
+                </td>
+            `;
+            tbody.appendChild(row);
+            
+            // Initialize category select if it has a value
+            const categorySelect = row.querySelector('select[name*="[category]"]');
+            if (item.category) {
+                toggleEquipmentInput(categorySelect);
+            }
+            
+            itemIndex++;
+        }
 
-// Handle form submission
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('estimation-form');
-    const submitButton = form.querySelector('button[type="submit"]');
-    const submitButtonText = submitButton.innerHTML;
-    
-    // Calculate initial totals if there are existing items
-    updateMainTotal();
-    
-    // Add event listener for margin input to recalculate unit price
-    const marginInput = document.getElementById('margin');
-    if (marginInput) {
-        marginInput.addEventListener('input', function() {
+        function toggleEquipmentInput(select) {
+            const row = select.closest('tr');
+            const equipmentNameTd = row.querySelector('.equipment-name-input, .equipment-name-select')?.closest('td') || row.querySelector('td:nth-child(4)');
+            const referenceIdInput = row.querySelector('.reference-id-input');
+            const unitPriceInput = row.querySelector('input[name*="[unit_price]"]');
+            const category = select.value;
+            
+            // Store the reference_id field name before clearing
+            const referenceIdName = referenceIdInput ? referenceIdInput.name : `items[${row.rowIndex - 1}][reference_id]`;
+            
+            // Destroy existing select2 if exists
+            const existingSelect = equipmentNameTd.querySelector('.equipment-name-select');
+            if (existingSelect && typeof $ !== 'undefined' && $.fn.select2 && $(existingSelect).data('select2')) {
+                $(existingSelect).select2('destroy');
+            }
+            
+            // Clear previous input and recreate reference_id field
+            equipmentNameTd.innerHTML = `<input type="hidden" name="${referenceIdName}" class="reference-id-input" value="">`;
+            
+            // Clear unit price and total price when category changes
+            unitPriceInput.value = '';
+            const totalPriceInput = row.querySelector('input[name*="[total_price]"]');
+            if (totalPriceInput) {
+                totalPriceInput.value = '';
+            }
             updateMainTotal();
-        });
-    }
-    
-    form.addEventListener('submit', function(e) {
-        e.preventDefault(); // Prevent default form submission
-        
-        // Validate form
-        if (!validateForm()) {
-            return false;
+            
+            if (category === 'worker') {
+                // Create select2 dropdown for workers
+                const selectElement = document.createElement('select');
+                selectElement.name = referenceIdName.replace('[reference_id]', '[equipment_name]');
+                selectElement.className = 'form-input equipment-name-select';
+                selectElement.innerHTML = '<option value="">Pilih Pekerja</option>';
+                
+                // Add workers options
+                window.workersData.forEach(worker => {
+                    const option = document.createElement('option');
+                    option.value = worker.id;
+                    option.textContent = `${worker.name} (${worker.unit})`;
+                    option.setAttribute('data-price', worker.price);
+                    option.setAttribute('data-name', worker.name);
+                    selectElement.appendChild(option);
+                });
+                
+                equipmentNameTd.appendChild(selectElement);
+                
+                // Initialize select2 directly
+                initSelect2(selectElement, 'Pilih Pekerja');
+                $(selectElement).on('change', function() {
+                    const selectedOption = this.options[this.selectedIndex];
+                    const currentReferenceIdInput = equipmentNameTd.querySelector('.reference-id-input');
+                    
+                    if (selectedOption && selectedOption.value) {
+                        currentReferenceIdInput.value = selectedOption.value;
+                        unitPriceInput.value = selectedOption.getAttribute('data-price') || '';
+                        
+                        // Remove existing hidden equipment_name input if exists
+                        const existingHidden = equipmentNameTd.querySelector('input[type="hidden"]:not(.reference-id-input)');
+                        if (existingHidden) {
+                            existingHidden.remove();
+                        }
+                        
+                        // Create new hidden equipment_name input
+                        const hiddenInput = document.createElement('input');
+                        hiddenInput.type = 'hidden';
+                        hiddenInput.name = selectElement.name;
+                        hiddenInput.value = selectedOption.getAttribute('data-name') || '';
+                        equipmentNameTd.appendChild(hiddenInput);
+                    } else {
+                        currentReferenceIdInput.value = '';
+                        unitPriceInput.value = '';
+                        // Remove hidden equipment_name input when cleared
+                        const existingHidden = equipmentNameTd.querySelector('input[type="hidden"]:not(.reference-id-input)');
+                        if (existingHidden) {
+                            existingHidden.remove();
+                        }
+                    }
+                    updateTotalPrice(unitPriceInput);
+                });
+                
+            } else if (category === 'material') {
+                // Create select2 dropdown for materials
+                const selectElement = document.createElement('select');
+                selectElement.name = referenceIdName.replace('[reference_id]', '[equipment_name]');
+                selectElement.className = 'form-input equipment-name-select';
+                selectElement.innerHTML = '<option value="">Pilih Material</option>';
+                
+                // Add materials options
+                window.materialsData.forEach(material => {
+                    const option = document.createElement('option');
+                    option.value = material.id;
+                    option.textContent = `${material.name}${material.specification ? ' - ' + material.specification : ''} (${material.unit})`;
+                    option.setAttribute('data-price', material.price);
+                    option.setAttribute('data-name', `${material.name}${material.specification ? ' - ' + material.specification : ''}`);
+                    selectElement.appendChild(option);
+                });
+                
+                equipmentNameTd.appendChild(selectElement);
+                
+                // Initialize select2 with delay
+                setTimeout(() => {
+                    if (typeof $ !== 'undefined' && $.fn.select2) {
+                        $(selectElement).select2({
+                            placeholder: 'Pilih Material',
+                            allowClear: true,
+                            width: '100%'
+                        }).on('change', function() {
+                            const selectedOption = this.options[this.selectedIndex];
+                            const currentReferenceIdInput = equipmentNameTd.querySelector('.reference-id-input');
+                            
+                            if (selectedOption && selectedOption.value) {
+                                currentReferenceIdInput.value = selectedOption.value;
+                                unitPriceInput.value = selectedOption.getAttribute('data-price') || '';
+                                
+                                // Remove existing hidden equipment_name input if exists
+                                const existingHidden = equipmentNameTd.querySelector('input[type="hidden"]:not(.reference-id-input)');
+                                if (existingHidden) {
+                                    existingHidden.remove();
+                                }
+                                
+                                // Create new hidden equipment_name input
+                                const hiddenInput = document.createElement('input');
+                                hiddenInput.type = 'hidden';
+                                hiddenInput.name = selectElement.name;
+                                hiddenInput.value = selectedOption.getAttribute('data-name') || '';
+                                equipmentNameTd.appendChild(hiddenInput);
+                            } else {
+                                currentReferenceIdInput.value = '';
+                                unitPriceInput.value = '';
+                                // Remove hidden equipment_name input when cleared
+                                const existingHidden = equipmentNameTd.querySelector('input[type="hidden"]:not(.reference-id-input)');
+                                if (existingHidden) {
+                                    existingHidden.remove();
+                                }
+                            }
+                            updateTotalPrice(unitPriceInput);
+                        });
+                    }
+                }, 100);
+                
+            } else {
+                // Equipment - free text input
+                const inputElement = document.createElement('input');
+                inputElement.type = 'text';
+                inputElement.name = referenceIdName.replace('[reference_id]', '[equipment_name]');
+                inputElement.className = 'form-input equipment-name-input';
+                inputElement.placeholder = 'Nama Peralatan';
+                
+                equipmentNameTd.appendChild(inputElement);
+                
+                // Clear reference_id for equipment
+                const currentReferenceIdInput = equipmentNameTd.querySelector('.reference-id-input');
+                if (currentReferenceIdInput) {
+                    currentReferenceIdInput.value = '';
+                }
+            }
         }
-        
-        // Show loading state
-        submitButton.disabled = true;
-        submitButton.innerHTML = `
-            <svg class="animate-spin w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            Saving...
-        `;
-        
-        // Submit form after short delay
-        setTimeout(() => {
-            form.submit();
-        }, 500);
-    });
-    
-    function validateForm() {
-        let isValid = true;
-        
-        // Clear previous error states
-        const inputs = form.querySelectorAll('.border-red-500');
-        inputs.forEach(input => {
-            input.classList.remove('border-red-500');
-        });
-        
-        // Validate required fields
-        const title = document.getElementById('title');
-        if (!title.value.trim()) {
-            title.classList.add('border-red-500');
-            showError('Judul estimasi harus diisi');
-            isValid = false;
+
+        function removeItemRow(button) {
+            const row = button.closest('tr');
+            row.remove();
+            updateMainTotal();
+            updateItemNumbers();
         }
-        
-        // Validate estimation items
-        const itemRows = document.querySelectorAll('#items-body tr');
-        if (itemRows.length === 0) {
-            showError('Minimal harus ada satu item estimasi');
-            isValid = false;
-        } else {
-            // Validate each item row
-            itemRows.forEach((row, index) => {
-                const category = row.querySelector('select[name*="[category]"]');
-                const code = row.querySelector('input[name*="[code]"]');
-                const equipmentName = row.querySelector('input[name*="[equipment_name]"]');
-                const coefficient = row.querySelector('input[name*="[coefficient]"]');
-                const unitPrice = row.querySelector('input[name*="[unit_price]"]');
-                
-                if (!category.value) {
-                    category.classList.add('border-red-500');
-                    showError(`Kategori pada item ${index + 1} harus dipilih`);
-                    isValid = false;
-                }
-                
-                if (!equipmentName.value.trim()) {
-                    equipmentName.classList.add('border-red-500');
-                    showError(`Nama/Peralatan pada item ${index + 1} harus diisi`);
-                    isValid = false;
-                }
-                
-                if (!coefficient.value || parseFloat(coefficient.value) <= 0) {
-                    coefficient.classList.add('border-red-500');
-                    showError(`Koefisien pada item ${index + 1} harus lebih dari 0`);
-                    isValid = false;
-                }
-                
-                if (!unitPrice.value || parseFloat(unitPrice.value) <= 0) {
-                    unitPrice.classList.add('border-red-500');
-                    showError(`Harga satuan pada item ${index + 1} harus lebih dari 0`);
-                    isValid = false;
+
+        function updateItemNumbers() {
+            const rows = document.querySelectorAll('#items-body tr');
+            rows.forEach((row, index) => {
+                const itemNoCell = row.querySelector('.item-no');
+                if (itemNoCell) {
+                    itemNoCell.textContent = index + 1;
                 }
             });
         }
-        
-        if (!isValid) {
-            // Reset button state if validation fails
-            submitButton.disabled = false;
-            submitButton.innerHTML = submitButtonText;
+
+        function updateTotalPrice(input) {
+            const row = input.closest('tr');
+            const coef = parseFloat(row.querySelector('input[name*="[coefficient]"]').value) || 0;
+            const unitPrice = parseFloat(row.querySelector('input[name*="[unit_price]"]').value) || 0;
+            const totalPrice = coef * unitPrice;
+            
+            row.querySelector('input[name*="[total_price]"]').value = totalPrice;
+            
+            // Update main totals
+            updateMainTotal();
         }
-        
-        return isValid;
-    }
-    
-    function showError(message) {
-        // Remove existing error alerts
-        const existingAlert = document.querySelector('.error-alert');
-        if (existingAlert) {
-            existingAlert.remove();
-        }
-        
-        // Create new error alert
-        const alert = document.createElement('div');
-        alert.className = 'error-alert bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4';
-        alert.innerHTML = `
-            <div class="flex items-center">
-                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-                </svg>
-                <span>${message}</span>
-            </div>
-        `;
-        
-        // Insert alert at the top of the form
-        form.insertBefore(alert, form.firstChild);
-        
-        // Scroll to top to show error
-        form.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        
-        // Auto remove alert after 5 seconds
-        setTimeout(() => {
-            if (alert.parentNode) {
-                alert.remove();
+
+        function updateMainTotal() {
+            const itemRows = document.querySelectorAll('#items-body tr');
+            let totalPrice = 0;
+            
+            itemRows.forEach(row => {
+                const totalPriceInput = row.querySelector('input[name*="[total_price]"]');
+                if (totalPriceInput && totalPriceInput.value) {
+                    totalPrice += parseFloat(totalPriceInput.value) || 0;
+                }
+            });
+            
+            // Update the main total input
+            const mainTotalInput = document.getElementById('total');
+            if (mainTotalInput) {
+                mainTotalInput.value = totalPrice;
             }
-        }, 5000);
-    }
-});
+
+            // update unit price = total * (1 + margin/100), hasil penghitungan pembulatan keatas
+            const margin = parseFloat(document.getElementById('margin').value) || 0;
+            const unitPrice = Math.ceil(totalPrice * (1 + margin/100));
+            document.getElementById('total_unit_price').value = unitPrice;
+        }
+
+        // Make functions global so they can be called from HTML
+        window.addItemRow = addItemRow;
+        window.toggleEquipmentInput = toggleEquipmentInput;
+        window.removeItemRow = removeItemRow;
+        window.updateTotalPrice = updateTotalPrice;
+        window.updateMainTotal = updateMainTotal;
+
+        // Handle form submission
+        const form = document.getElementById('estimation-form');
+        const submitButton = form.querySelector('button[type="submit"]');
+        const submitButtonText = submitButton.innerHTML;
+        
+        // Calculate initial totals if there are existing items
+        updateMainTotal();
+        
+        // Add event listener for margin input to recalculate unit price
+        const marginInput = document.getElementById('margin');
+        if (marginInput) {
+            marginInput.addEventListener('input', function() {
+                updateMainTotal();
+            });
+        }
+        
+        form.addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent default form submission
+            
+            // Validate form
+            if (!validateForm()) {
+                return false;
+            }
+            
+            // Show loading state
+            submitButton.disabled = true;
+            submitButton.innerHTML = `
+                <svg class="animate-spin w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 714 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Saving...
+            `;
+            
+            // Submit form after short delay
+            setTimeout(() => {
+                form.submit();
+            }, 500);
+        });
+        
+        function validateForm() {
+            let isValid = true;
+            
+            // Clear previous error states
+            const inputs = form.querySelectorAll('.border-red-500');
+            inputs.forEach(input => {
+                input.classList.remove('border-red-500');
+            });
+            
+            // Validate required fields
+            const title = document.getElementById('title');
+            if (!title.value.trim()) {
+                title.classList.add('border-red-500');
+                showError('Judul estimasi harus diisi');
+                isValid = false;
+            }
+            
+            // Validate estimation items
+            const itemRows = document.querySelectorAll('#items-body tr');
+            if (itemRows.length === 0) {
+                showError('Minimal harus ada satu item estimasi');
+                isValid = false;
+            } else {
+                // Validate each item row
+                itemRows.forEach((row, index) => {
+                    const category = row.querySelector('select[name*="[category]"]');
+                    const code = row.querySelector('input[name*="[code]"]');
+                    const equipmentName = row.querySelector('input[name*="[equipment_name]"]');
+                    const coefficient = row.querySelector('input[name*="[coefficient]"]');
+                    const unitPrice = row.querySelector('input[name*="[unit_price]"]');
+                    
+                    if (!category.value) {
+                        category.classList.add('border-red-500');
+                        showError(`Kategori pada item ${index + 1} harus dipilih`);
+                        isValid = false;
+                    }
+                    
+                    if (!equipmentName.value.trim()) {
+                        equipmentName.classList.add('border-red-500');
+                        showError(`Nama/Peralatan pada item ${index + 1} harus diisi`);
+                        isValid = false;
+                    }
+                    
+                    if (!coefficient.value || parseFloat(coefficient.value) <= 0) {
+                        coefficient.classList.add('border-red-500');
+                        showError(`Koefisien pada item ${index + 1} harus lebih dari 0`);
+                        isValid = false;
+                    }
+                    
+                    if (!unitPrice.value || parseFloat(unitPrice.value) <= 0) {
+                        unitPrice.classList.add('border-red-500');
+                        showError(`Harga satuan pada item ${index + 1} harus lebih dari 0`);
+                        isValid = false;
+                    }
+                });
+            }
+            
+            if (!isValid) {
+                // Reset button state if validation fails
+                submitButton.disabled = false;
+                submitButton.innerHTML = submitButtonText;
+            }
+            
+            return isValid;
+        }
+        
+        function showError(message) {
+            // Remove existing error alerts
+            const existingAlert = document.querySelector('.error-alert');
+            if (existingAlert) {
+                existingAlert.remove();
+            }
+            
+            // Create new error alert
+            const alert = document.createElement('div');
+            alert.className = 'error-alert bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4';
+            alert.innerHTML = `
+                <div class="flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            // Insert alert at the top of the form
+            form.insertBefore(alert, form.firstChild);
+            
+            // Scroll to top to show error
+            form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            
+            // Auto remove alert after 5 seconds
+            setTimeout(() => {
+                if (alert.parentNode) {
+                    alert.remove();
+                }
+            }, 5000);
+        }
+
+    console.log('✅ All estimation functions loaded and ready');
+}); // End of $(document).ready
 </script>
-@endsection 
+@endpush 
