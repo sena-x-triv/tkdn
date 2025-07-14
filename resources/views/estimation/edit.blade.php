@@ -123,6 +123,34 @@
     </div>
 </div>
 
+@if($errors->any())
+    <div class="mb-6">
+        <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl relative flex items-center" role="alert">
+            <svg class="w-5 h-5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+            </svg>
+            <div>
+                <div class="font-medium">Terjadi kesalahan:</div>
+                <ul class="mt-1 list-disc list-inside">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        </div>
+    </div>
+@endif
+
+@if(session('status'))
+    <div class="mb-6">
+        <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl relative flex items-center" role="alert">
+            <svg class="w-5 h-5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+            </svg>
+            <span>{{ session('status') }}</span>
+        </div>
+    </div>
+@endif
 
 <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-8 w-full mx-auto mb-8 border border-gray-100 dark:border-gray-800">
     <div class="mb-6 pb-4 border-b border-gray-200 dark:border-gray-700">
@@ -223,7 +251,7 @@
                         <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition">
                             <td class="px-3 py-2 item-no">{{ $loop->iteration }}</td>
                             <td class="px-2 py-2">
-                                <select name="items[{{ $loop->index }}][category]" class="form-input" required onchange="toggleEquipmentInput(this)">
+                                <select name="items[{{ $loop->index }}][category]" class="form-input" required>
                                     <option value="">Pilih Kategori</option>
                                     <option value="worker" {{ $item->category == 'worker' ? 'selected' : '' }}>Tenaga Kerja</option>
                                     <option value="material" {{ $item->category == 'material' ? 'selected' : '' }}>Material</option>
@@ -234,7 +262,19 @@
                             <td class="px-2 py-2"><input type="text" name="items[{{ $loop->index }}][code]" class="form-input" value="{{ $item->code }}"></td>
                             <td class="px-2 py-2" data-label="Nama/Peralatan">
                                 <input type="hidden" name="items[{{ $loop->index }}][reference_id]" class="reference-id-input" value="{{ $item->reference_id }}">
-                                <input type="text" name="items[{{ $loop->index }}][equipment_name]" class="form-input equipment-name-input" value="{{ $item->equipment_name }}" placeholder="Nama/Peralatan">
+                                @php
+                                    $equipmentName = $item->equipment_name;
+                                    if (!$equipmentName) {
+                                        if ($item->category === 'worker' && $item->worker) {
+                                            $equipmentName = $item->worker->name;
+                                        } elseif ($item->category === 'material' && $item->material) {
+                                            $equipmentName = $item->material->name . ($item->material->specification ? ' - ' . $item->material->specification : '');
+                                        } elseif ($item->category === 'equipment' && $item->equipment) {
+                                            $equipmentName = $item->equipment->name . ($item->equipment->description ? ' - ' . $item->equipment->description : '');
+                                        }
+                                    }
+                                @endphp
+                                <input type="text" name="items[{{ $loop->index }}][equipment_name]" class="form-input equipment-name-input" value="{{ $equipmentName }}" placeholder="Nama/Peralatan">
                             </td>
                             <td class="px-2 py-2"><input type="number" name="items[{{ $loop->index }}][coefficient]" class="form-input" value="{{ $item->coefficient }}" step="0.01" oninput="updateTotalPrice(this)" placeholder="Koefisien"></td>
                             <td class="px-2 py-2"><input type="number" name="items[{{ $loop->index }}][unit_price]" class="form-input" value="{{ $item->unit_price }}" step="0.01" oninput="updateTotalPrice(this)" placeholder="Harga Satuan"></td>
@@ -279,6 +319,7 @@
 <div id="app-data" 
      data-workers="{{ json_encode($workers) }}" 
      data-materials="{{ json_encode($materials) }}" 
+     data-equipment="{{ json_encode($equipment) }}" 
      data-item-count="{{ $estimation->items->count() }}"
      style="display:none;"></div>
 <script>
@@ -290,11 +331,12 @@ $(document).ready(function() {
     const appData = document.getElementById('app-data');
     window.workersData = JSON.parse(appData.dataset.workers);
     window.materialsData = JSON.parse(appData.dataset.materials);
+    window.equipmentData = JSON.parse(appData.dataset.equipment);
     
     // All JavaScript code will go here
     let itemIndex = parseInt(appData.dataset.itemCount);
     
-    console.log('📦 Data loaded - Workers:', window.workersData?.length || 0, 'Materials:', window.materialsData?.length || 0);
+    console.log('📦 Data loaded - Workers:', window.workersData?.length || 0, 'Materials:', window.materialsData?.length || 0, 'Equipment:', window.equipmentData?.length || 0);
 
     // Simple select2 initialization  
     function initSelect2(element, placeholder) {
@@ -313,7 +355,7 @@ function addItemRow(item = {}) {
     row.innerHTML = `
         <td class="px-3 py-2 item-no">${itemIndex + 1}</td>
             <td class="px-2 py-2">
-            <select name="items[${itemIndex}][category]" class="form-input" required onchange="toggleEquipmentInput(this)">
+            <select name="items[${itemIndex}][category]" class="form-input" required>
                     <option value="">Pilih Kategori</option>
                 <option value="worker" ${item.category === 'worker' ? 'selected' : ''}>Tenaga Kerja</option>
                 <option value="material" ${item.category === 'material' ? 'selected' : ''}>Material</option>
@@ -340,6 +382,12 @@ function addItemRow(item = {}) {
         
         // Initialize category select if it has a value
         const categorySelect = row.querySelector('select[name*="[category]"]');
+        
+        // Add event listener for new rows
+        categorySelect.addEventListener('change', function() {
+            toggleEquipmentInput(this);
+        });
+        
         if (item.category) {
             toggleEquipmentInput(categorySelect);
         }
@@ -488,8 +536,68 @@ function toggleEquipmentInput(select) {
                 }
             }, 100);
             
+        } else if (category === 'equipment') {
+            // Create select2 dropdown for equipment
+            const selectElement = document.createElement('select');
+            selectElement.name = referenceIdName.replace('[reference_id]', '[equipment_name]');
+            selectElement.className = 'form-input equipment-name-select';
+            selectElement.innerHTML = '<option value="">Pilih Peralatan</option>';
+            
+            // Add equipment options
+            window.equipmentData.forEach(equipment => {
+                const option = document.createElement('option');
+                option.value = equipment.id;
+                option.textContent = `${equipment.name}${equipment.description ? ' - ' + equipment.description : ''} (${equipment.period} jam)`;
+                option.setAttribute('data-price', equipment.price);
+                option.setAttribute('data-name', `${equipment.name}${equipment.description ? ' - ' + equipment.description : ''}`);
+                selectElement.appendChild(option);
+            });
+            
+            equipmentNameTd.appendChild(selectElement);
+            
+            // Initialize select2 with delay
+            setTimeout(() => {
+                if (typeof $ !== 'undefined' && $.fn.select2) {
+                    $(selectElement).select2({
+                        placeholder: 'Pilih Peralatan',
+                        allowClear: true,
+                        width: '100%'
+                    }).on('change', function() {
+                        const selectedOption = this.options[this.selectedIndex];
+                        const currentReferenceIdInput = equipmentNameTd.querySelector('.reference-id-input');
+                        
+                        if (selectedOption && selectedOption.value) {
+                            currentReferenceIdInput.value = selectedOption.value;
+                            unitPriceInput.value = selectedOption.getAttribute('data-price') || '';
+                            
+                            // Remove existing hidden equipment_name input if exists
+                            const existingHidden = equipmentNameTd.querySelector('input[type="hidden"]:not(.reference-id-input)');
+                            if (existingHidden) {
+                                existingHidden.remove();
+                            }
+                            
+                            // Create new hidden equipment_name input
+                            const hiddenInput = document.createElement('input');
+                            hiddenInput.type = 'hidden';
+                            hiddenInput.name = selectElement.name;
+                            hiddenInput.value = selectedOption.getAttribute('data-name') || '';
+                            equipmentNameTd.appendChild(hiddenInput);
+                        } else {
+                            currentReferenceIdInput.value = '';
+                            unitPriceInput.value = '';
+                            // Remove hidden equipment_name input when cleared
+                            const existingHidden = equipmentNameTd.querySelector('input[type="hidden"]:not(.reference-id-input)');
+                            if (existingHidden) {
+                                existingHidden.remove();
+                            }
+                        }
+                        updateTotalPrice(unitPriceInput);
+                    });
+                }
+            }, 100);
+            
         } else {
-            // Equipment - free text input
+            // Default - free text input
             const inputElement = document.createElement('input');
             inputElement.type = 'text';
             inputElement.name = referenceIdName.replace('[reference_id]', '[equipment_name]');
@@ -573,12 +681,38 @@ function updateMainTotal() {
     // Calculate initial totals if there are existing items
     updateMainTotal();
     
-    // Initialize existing category selects
+    // Initialize existing category selects - preserve existing equipment names
     const existingCategorySelects = document.querySelectorAll('#items-body select[name*="[category]"]');
     existingCategorySelects.forEach(select => {
+        // Store the current values for comparison
+        const row = select.closest('tr');
+        const equipmentNameInput = row.querySelector('input[name*="[equipment_name]"]');
+        const currentEquipmentName = equipmentNameInput ? equipmentNameInput.value : '';
+        const currentReferenceId = row.querySelector('input[name*="[reference_id]"]').value;
+        const currentCategory = select.value;
+        
+        // Store original values as data attributes for comparison
+        select.setAttribute('data-original-category', currentCategory);
+        select.setAttribute('data-original-equipment-name', currentEquipmentName);
+        select.setAttribute('data-original-reference-id', currentReferenceId);
+        
+        // Add event listener for changes
         select.addEventListener('change', function() {
-            toggleEquipmentInput(this);
+            const originalCategory = this.getAttribute('data-original-category');
+            const newCategory = this.value;
+            
+            // Only call toggleEquipmentInput if the category actually changed
+            if (originalCategory !== newCategory) {
+                toggleEquipmentInput(this);
+                // Update the original category for future comparisons
+                this.setAttribute('data-original-category', newCategory);
+            }
         });
+        
+        // Log for debugging
+        if (currentEquipmentName && currentReferenceId) {
+            console.log('Preserving existing equipment name:', currentEquipmentName, 'for category:', currentCategory);
+        }
     });
     
     // Add event listener for margin input to recalculate unit price

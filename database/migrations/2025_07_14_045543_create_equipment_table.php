@@ -12,7 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('equipment', function (Blueprint $table) {
-            $table->id();
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_unicode_ci';
+            
+            $table->ulid('id')->primary();
             $table->string('name');
             $table->decimal('tkdn', 5, 2)->nullable(); // TKDN as percentage, e.g. 87.50
             $table->integer('period')->comment('Satuan Hari');

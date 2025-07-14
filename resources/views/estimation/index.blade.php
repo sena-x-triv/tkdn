@@ -71,7 +71,7 @@
                                 <div class="font-medium text-gray-900 dark:text-white">{{ number_format($est->margin,0,',','.') }} %</div>
                             </td>
                             <td>
-                                <div class="font-medium text-gray-900 dark:text-white">Rp {{ number_format($est->unit_price,0,',','.') }}</div>
+                                <div class="font-medium text-gray-900 dark:text-white">Rp {{ number_format($est->total_unit_price,0,',','.') }}</div>
                             </td>
                             <td class="text-center">
                                 <span class="badge badge-primary">{{ $est->items_count }}</span>

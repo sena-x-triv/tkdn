@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\UsesUlid;
 
 class Equipment extends Model
 {
-    use HasFactory;
+    use HasFactory, UsesUlid;
 
     protected $table = 'equipment';
 

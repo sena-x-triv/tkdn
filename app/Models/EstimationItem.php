@@ -13,7 +13,6 @@ class EstimationItem extends Model
         'estimation_id',
         'category',
         'reference_id',
-        'equipment_name',
         'code',
         'coefficient',
         'unit_price',
@@ -33,5 +32,10 @@ class EstimationItem extends Model
     public function material()
     {
         return $this->belongsTo(Material::class, 'reference_id');
+    }
+
+    public function equipment()
+    {
+        return $this->belongsTo(Equipment::class, 'reference_id');
     }
 } 

@@ -5,6 +5,7 @@ use App\Models\Estimation;
 use App\Models\EstimationItem;
 use App\Models\Worker;
 use App\Models\Material;
+use App\Models\Equipment;
 use Illuminate\Http\Request;
 
 class EstimationController extends Controller
@@ -19,30 +20,36 @@ class EstimationController extends Controller
     {
         $workers = Worker::select('id', 'name', 'unit', 'price')->get();
         $materials = Material::select('id', 'name', 'specification', 'unit', 'price')->get();
+        $equipment = Equipment::select('id', 'name', 'period', 'price', 'description')->get();
         
-        return view('estimation.create', compact('workers', 'materials'));
+        return view('estimation.create', compact('workers', 'materials', 'equipment'));
     }
 
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'code' => 'nullable|string|max:255',
-            'title' => 'required|string|max:255',
-            'total' => 'nullable|integer|min:0',
-            'margin' => 'nullable|integer|min:0',
-            'total_unit_price' => 'nullable|integer|min:0',
-            'items' => 'array',
-            'items.*.category' => 'required|in:worker,material,equipment',
-            'items.*.reference_id' => 'nullable|ulid',
-            'items.*.equipment_name' => 'nullable|string|max:255',
-            'items.*.code' => 'nullable|string|max:255',
-            'items.*.coefficient' => 'nullable|numeric',
-            'items.*.unit_price' => 'nullable|integer',
-            'items.*.total_price' => 'nullable|integer',
-        ]);
-        $estimation = Estimation::create($data);
-        $this->syncEstimationItems($estimation, $data['items'] ?? []);
-        return redirect()->route('master.estimation.show', $estimation->id)->with('status', 'AHS & item berhasil ditambahkan!');
+        try {
+            $data = $request->validate([
+                'code' => 'nullable|string|max:255',
+                'title' => 'required|string|max:255',
+                'total' => 'nullable|integer|min:0',
+                'margin' => 'nullable|integer|min:0',
+                'total_unit_price' => 'nullable|integer|min:0',
+                'items' => 'array',
+                'items.*.category' => 'required|in:worker,material,equipment',
+                'items.*.reference_id' => 'nullable|ulid',
+                'items.*.code' => 'nullable|string|max:255',
+                'items.*.coefficient' => 'nullable|numeric',
+                'items.*.unit_price' => 'nullable|integer',
+                'items.*.total_price' => 'nullable|integer',
+            ]);
+            $estimation = Estimation::create($data);
+            $this->syncEstimationItems($estimation, $data['items'] ?? []);
+            return redirect()->route('master.estimation.show', $estimation->id)->with('status', 'AHS & item berhasil ditambahkan!');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()->withErrors($e->validator)->withInput();
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Terjadi kesalahan: ' . $e->getMessage()])->withInput();
+        }
     }
 
     public function show(Estimation $estimation)
@@ -56,32 +63,38 @@ class EstimationController extends Controller
         $estimation->load('items');
         $workers = Worker::select('id', 'name', 'unit', 'price')->get();
         $materials = Material::select('id', 'name', 'specification', 'unit', 'price')->get();
+        $equipment = Equipment::select('id', 'name', 'period', 'price', 'description')->get();
         
-        return view('estimation.edit', compact('estimation', 'workers', 'materials'));
+        return view('estimation.edit', compact('estimation', 'workers', 'materials', 'equipment'));
     }
 
     public function update(Request $request, Estimation $estimation)
     {
-        $data = $request->validate([
-            'code' => 'nullable|string|max:255',
-            'title' => 'required|string|max:255',
-            'total' => 'nullable|integer|min:0',
-            'margin' => 'nullable|integer|min:0',
-            'total_unit_price' => 'nullable|integer|min:0',
-            'items' => 'array',
-            'items.*.id' => 'nullable|integer',
-            'items.*.category' => 'required|in:worker,material,equipment',
-            'items.*.reference_id' => 'nullable|ulid',
-            'items.*.equipment_name' => 'nullable|string|max:255',
-            'items.*.code' => 'nullable|string|max:255',
-            'items.*.coefficient' => 'nullable|numeric',
-            'items.*.unit_price' => 'nullable|integer',
-            'items.*.total_price' => 'nullable|integer',
-        ]);
-        
-        $estimation->update($data);
-        $this->syncEstimationItems($estimation, $data['items'] ?? []);
-        return redirect()->route('master.estimation.show', $estimation->id)->with('status', 'AHS & item berhasil diupdate!');
+        try {
+            $data = $request->validate([
+                'code' => 'nullable|string|max:255',
+                'title' => 'required|string|max:255',
+                'total' => 'nullable|integer|min:0',
+                'margin' => 'nullable|integer|min:0',
+                'total_unit_price' => 'nullable|integer|min:0',
+                'items' => 'array',
+                'items.*.id' => 'nullable|integer',
+                'items.*.category' => 'required|in:worker,material,equipment',
+                'items.*.reference_id' => 'nullable|ulid',
+                'items.*.code' => 'nullable|string|max:255',
+                'items.*.coefficient' => 'nullable|numeric',
+                'items.*.unit_price' => 'nullable|integer',
+                'items.*.total_price' => 'nullable|integer',
+            ]);
+            
+            $estimation->update($data);
+            $this->syncEstimationItems($estimation, $data['items'] ?? []);
+            return redirect()->route('master.estimation.show', $estimation->id)->with('status', 'AHS & item berhasil diupdate!');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()->withErrors($e->validator)->withInput();
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Terjadi kesalahan: ' . $e->getMessage()])->withInput();
+        }
     }
 
     /**

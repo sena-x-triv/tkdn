@@ -123,6 +123,34 @@
     </div>
 </div>
 
+@if($errors->any())
+    <div class="mb-6">
+        <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl relative flex items-center" role="alert">
+            <svg class="w-5 h-5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+            </svg>
+            <div>
+                <div class="font-medium">Terjadi kesalahan:</div>
+                <ul class="mt-1 list-disc list-inside">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        </div>
+    </div>
+@endif
+
+@if(session('status'))
+    <div class="mb-6">
+        <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl relative flex items-center" role="alert">
+            <svg class="w-5 h-5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+            </svg>
+            <span>{{ session('status') }}</span>
+        </div>
+    </div>
+@endif
 
 <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-8 w-full mx-auto mb-8 border border-gray-100 dark:border-gray-800">
     <div class="mb-6 pb-4 border-b border-gray-200 dark:border-gray-700">
@@ -249,6 +277,7 @@
 <div id="app-data" 
      data-workers="{{ json_encode($workers) }}" 
      data-materials="{{ json_encode($materials) }}" 
+     data-equipment="{{ json_encode($equipment) }}" 
      style="display:none;"></div>
 <script>
 // Initialize when dependencies are ready
@@ -259,11 +288,12 @@ $(document).ready(function() {
     const appData = document.getElementById('app-data');
     window.workersData = JSON.parse(appData.dataset.workers);
     window.materialsData = JSON.parse(appData.dataset.materials);
+    window.equipmentData = JSON.parse(appData.dataset.equipment);
     
     // All JavaScript code will go here
 let itemIndex = 0;
     
-    console.log('📦 Data loaded - Workers:', window.workersData?.length || 0, 'Materials:', window.materialsData?.length || 0);
+    console.log('📦 Data loaded - Workers:', window.workersData?.length || 0, 'Materials:', window.materialsData?.length || 0, 'Equipment:', window.equipmentData?.length || 0);
 
     // Simple select2 initialization  
     function initSelect2(element, placeholder) {
@@ -456,8 +486,68 @@ function toggleEquipmentInput(select) {
                     }
                 }, 100);
                 
+            } else if (category === 'equipment') {
+                // Create select2 dropdown for equipment
+                const selectElement = document.createElement('select');
+                selectElement.name = referenceIdName.replace('[reference_id]', '[equipment_name]');
+                selectElement.className = 'form-input equipment-name-select';
+                selectElement.innerHTML = '<option value="">Pilih Peralatan</option>';
+                
+                // Add equipment options
+                window.equipmentData.forEach(equipment => {
+                    const option = document.createElement('option');
+                    option.value = equipment.id;
+                    option.textContent = `${equipment.name}${equipment.description ? ' - ' + equipment.description : ''} (${equipment.period} jam)`;
+                    option.setAttribute('data-price', equipment.price);
+                    option.setAttribute('data-name', `${equipment.name}${equipment.description ? ' - ' + equipment.description : ''}`);
+                    selectElement.appendChild(option);
+                });
+                
+                equipmentNameTd.appendChild(selectElement);
+                
+                // Initialize select2 with delay
+                setTimeout(() => {
+                    if (typeof $ !== 'undefined' && $.fn.select2) {
+                        $(selectElement).select2({
+                            placeholder: 'Pilih Peralatan',
+                            allowClear: true,
+                            width: '100%'
+                        }).on('change', function() {
+                            const selectedOption = this.options[this.selectedIndex];
+                            const currentReferenceIdInput = equipmentNameTd.querySelector('.reference-id-input');
+                            
+                            if (selectedOption && selectedOption.value) {
+                                currentReferenceIdInput.value = selectedOption.value;
+                                unitPriceInput.value = selectedOption.getAttribute('data-price') || '';
+                                
+                                // Remove existing hidden equipment_name input if exists
+                                const existingHidden = equipmentNameTd.querySelector('input[type="hidden"]:not(.reference-id-input)');
+                                if (existingHidden) {
+                                    existingHidden.remove();
+                                }
+                                
+                                // Create new hidden equipment_name input
+                                const hiddenInput = document.createElement('input');
+                                hiddenInput.type = 'hidden';
+                                hiddenInput.name = selectElement.name;
+                                hiddenInput.value = selectedOption.getAttribute('data-name') || '';
+                                equipmentNameTd.appendChild(hiddenInput);
+                            } else {
+                                currentReferenceIdInput.value = '';
+                                unitPriceInput.value = '';
+                                // Remove hidden equipment_name input when cleared
+                                const existingHidden = equipmentNameTd.querySelector('input[type="hidden"]:not(.reference-id-input)');
+                                if (existingHidden) {
+                                    existingHidden.remove();
+                                }
+                            }
+                            updateTotalPrice(unitPriceInput);
+                        });
+                    }
+                }, 100);
+                
             } else {
-                // Equipment - free text input
+                // Default - free text input
                 const inputElement = document.createElement('input');
                 inputElement.type = 'text';
                 inputElement.name = referenceIdName.replace('[reference_id]', '[equipment_name]');
