@@ -19,6 +19,7 @@ Route::prefix('master')->as('master.')->group(function () {
     Route::resource('material', App\Http\Controllers\MaterialController::class);
     Route::resource('project', App\Http\Controllers\ProjectController::class);
     Route::resource('estimation', \App\Http\Controllers\EstimationController::class);
+    Route::resource('equipment', \App\Http\Controllers\EquipmentController::class);
 });
 
 Route::view('support', 'support')->name('support');

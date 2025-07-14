@@ -117,8 +117,8 @@
             </svg>
         </a>
         <div>
-            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Add Estimation</h1>
-            <p class="text-gray-600 dark:text-gray-400">Add a new estimation to the system</p>
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Tambah AHS</h1>
+            <p class="text-gray-600 dark:text-gray-400">Tambah Analisa Harga Satuan pekerjaan baru ke sistem</p>
         </div>
     </div>
 </div>
@@ -128,31 +128,31 @@
     <div class="mb-6 pb-4 border-b border-gray-200 dark:border-gray-700">
         <h2 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
             <svg class="w-6 h-6 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2a4 4 0 014-4h4" /></svg>
-            Estimation Information
+            Informasi AHS
         </h2>
     </div>
     <form action="{{ route('master.estimation.store') }}" method="POST" class="space-y-8" id="estimation-form">
         @csrf
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="relative">
-                <label for="code" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Kode Estimasi</label>
+                <label for="code" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Kode AHS</label>
                 <div class="relative">
                     <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7l10 10M7 7l-4 4a2 2 0 002 2l4-4m0 0l10 10a2 2 0 01-2 2l-10-10z" /></svg>
                     </span>
-                    <input type="text" name="code" id="code" value="{{ old('code') }}" class="form-input w-full pl-10 @error('code') border-red-500 @enderror" placeholder="Kode Estimasi">
+                    <input type="text" name="code" id="code" value="{{ old('code') }}" class="form-input w-full pl-10 @error('code') border-red-500 @enderror" placeholder="Kode AHS">
                 </div>
                 @error('code')
                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                 @enderror
             </div>
             <div class="relative">
-                <label for="title" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Judul Estimasi <span class="text-red-500">*</span></label>
+                <label for="title" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Judul AHS <span class="text-red-500">*</span></label>
                 <div class="relative">
                     <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h10M7 11h10M7 15h6" /></svg>
                     </span>
-                    <input type="text" name="title" id="title" value="{{ old('title') }}" class="form-input w-full pl-10 @error('title') border-red-500 @enderror" required placeholder="Judul Estimasi">
+                    <input type="text" name="title" id="title" value="{{ old('title') }}" class="form-input w-full pl-10 @error('title') border-red-500 @enderror" required placeholder="Judul AHS">
                 </div>
                 @error('title')
                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -201,7 +201,7 @@
         <div class="mt-10">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                 <svg class="w-6 h-6 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2a4 4 0 014-4h4" /></svg>
-                Item Estimasi
+                Item AHS
             </h3>
             <div class="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
                 <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm">
@@ -238,7 +238,7 @@
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                 </svg>
-                Save Estimation
+                Simpan AHS
             </button>
         </div>
     </form>
@@ -253,7 +253,7 @@
 <script>
 // Initialize when dependencies are ready
 $(document).ready(function() {
-    console.log('🚀 Initializing estimation functionality...');
+    console.log('🚀 Initializing AHS functionality...');
     
     // Initialize data from HTML data attributes
     const appData = document.getElementById('app-data');
@@ -261,7 +261,7 @@ $(document).ready(function() {
     window.materialsData = JSON.parse(appData.dataset.materials);
     
     // All JavaScript code will go here
-    let itemIndex = 0;
+let itemIndex = 0;
     
     console.log('📦 Data loaded - Workers:', window.workersData?.length || 0, 'Materials:', window.materialsData?.length || 0);
 
@@ -276,20 +276,20 @@ $(document).ready(function() {
         return true;
     }
 
-        function addItemRow(item = {}) {
-            const tbody = document.getElementById('items-body');
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td class="px-3 py-2 item-no">${itemIndex + 1}</td>
-                <td class="px-2 py-2">
-                    <select name="items[${itemIndex}][category]" class="form-input" required onchange="toggleEquipmentInput(this)">
+function addItemRow(item = {}) {
+    const tbody = document.getElementById('items-body');
+    const row = document.createElement('tr');
+    row.innerHTML = `
+        <td class="px-3 py-2 item-no">${itemIndex + 1}</td>
+        <td class="px-2 py-2">
+            <select name="items[${itemIndex}][category]" class="form-input" required onchange="toggleEquipmentInput(this)">
                         <option value="">Pilih Kategori</option>
-                        <option value="worker" ${item.category === 'worker' ? 'selected' : ''}>Tenaga Kerja</option>
-                        <option value="material" ${item.category === 'material' ? 'selected' : ''}>Material</option>
-                        <option value="equipment" ${item.category === 'equipment' ? 'selected' : ''}>Peralatan</option>
-                    </select>
-                </td>
-                <td class="px-2 py-2"><input type="text" name="items[${itemIndex}][code]" class="form-input" value="${item.code || ''}"></td>
+                <option value="worker" ${item.category === 'worker' ? 'selected' : ''}>Tenaga Kerja</option>
+                <option value="material" ${item.category === 'material' ? 'selected' : ''}>Material</option>
+                <option value="equipment" ${item.category === 'equipment' ? 'selected' : ''}>Peralatan</option>
+            </select>
+        </td>
+        <td class="px-2 py-2"><input type="text" name="items[${itemIndex}][code]" class="form-input" value="${item.code || ''}"></td>
                 <td class="px-2 py-2" data-label="Nama/Peralatan">
                     <input type="hidden" name="items[${itemIndex}][reference_id]" class="reference-id-input" value="${item.reference_id || ''}">
                     <input type="text" name="items[${itemIndex}][equipment_name]" class="form-input equipment-name-input" value="${item.equipment_name || ''}" placeholder="Nama/Peralatan">
@@ -297,15 +297,15 @@ $(document).ready(function() {
                 <td class="px-2 py-2"><input type="number" name="items[${itemIndex}][coefficient]" class="form-input" value="${item.coefficient || ''}" step="0.01" oninput="updateTotalPrice(this)" placeholder="Koefisien"></td>
                 <td class="px-2 py-2"><input type="number" name="items[${itemIndex}][unit_price]" class="form-input" value="${item.unit_price || ''}" step="0.01" oninput="updateTotalPrice(this)" placeholder="Harga Satuan"></td>
                 <td class="px-2 py-2"><input type="number" name="items[${itemIndex}][total_price]" class="form-input" value="${item.total_price || ''}" readonly placeholder="Jumlah Harga"></td>
-                <td class="px-2 py-2">
+        <td class="px-2 py-2">
                     <button type="button" class="btn btn-danger btn-sm" onclick="removeItemRow(this)" title="Hapus Item">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1-1H8a1 1 0 00-1 1v3M4 7h16"></path>
                         </svg>
                     </button>
-                </td>
-            `;
-            tbody.appendChild(row);
+        </td>
+    `;
+    tbody.appendChild(row);
             
             // Initialize category select if it has a value
             const categorySelect = row.querySelector('select[name*="[category]"]');
@@ -313,10 +313,10 @@ $(document).ready(function() {
                 toggleEquipmentInput(categorySelect);
             }
             
-            itemIndex++;
-        }
+    itemIndex++;
+}
 
-        function toggleEquipmentInput(select) {
+function toggleEquipmentInput(select) {
             const row = select.closest('tr');
             const equipmentNameTd = row.querySelector('.equipment-name-input, .equipment-name-select')?.closest('td') || row.querySelector('td:nth-child(4)');
             const referenceIdInput = row.querySelector('.reference-id-input');
@@ -472,59 +472,59 @@ $(document).ready(function() {
                     currentReferenceIdInput.value = '';
                 }
             }
-        }
+}
 
-        function removeItemRow(button) {
-            const row = button.closest('tr');
-            row.remove();
-            updateMainTotal();
-            updateItemNumbers();
-        }
+function removeItemRow(button) {
+    const row = button.closest('tr');
+    row.remove();
+    updateMainTotal();
+    updateItemNumbers();
+}
 
-        function updateItemNumbers() {
-            const rows = document.querySelectorAll('#items-body tr');
-            rows.forEach((row, index) => {
-                const itemNoCell = row.querySelector('.item-no');
-                if (itemNoCell) {
-                    itemNoCell.textContent = index + 1;
-                }
-            });
+function updateItemNumbers() {
+    const rows = document.querySelectorAll('#items-body tr');
+    rows.forEach((row, index) => {
+        const itemNoCell = row.querySelector('.item-no');
+        if (itemNoCell) {
+            itemNoCell.textContent = index + 1;
         }
+    });
+}
 
-        function updateTotalPrice(input) {
-            const row = input.closest('tr');
-            const coef = parseFloat(row.querySelector('input[name*="[coefficient]"]').value) || 0;
-            const unitPrice = parseFloat(row.querySelector('input[name*="[unit_price]"]').value) || 0;
-            const totalPrice = coef * unitPrice;
-            
-            row.querySelector('input[name*="[total_price]"]').value = totalPrice;
-            
-            // Update main totals
-            updateMainTotal();
+function updateTotalPrice(input) {
+    const row = input.closest('tr');
+    const coef = parseFloat(row.querySelector('input[name*="[coefficient]"]').value) || 0;
+    const unitPrice = parseFloat(row.querySelector('input[name*="[unit_price]"]').value) || 0;
+    const totalPrice = coef * unitPrice;
+    
+    row.querySelector('input[name*="[total_price]"]').value = totalPrice;
+    
+    // Update main totals
+    updateMainTotal();
+}
+
+function updateMainTotal() {
+    const itemRows = document.querySelectorAll('#items-body tr');
+    let totalPrice = 0;
+    
+    itemRows.forEach(row => {
+        const totalPriceInput = row.querySelector('input[name*="[total_price]"]');
+        if (totalPriceInput && totalPriceInput.value) {
+            totalPrice += parseFloat(totalPriceInput.value) || 0;
         }
+    });
+    
+    // Update the main total input
+    const mainTotalInput = document.getElementById('total');
+    if (mainTotalInput) {
+        mainTotalInput.value = totalPrice;
+    }
 
-        function updateMainTotal() {
-            const itemRows = document.querySelectorAll('#items-body tr');
-            let totalPrice = 0;
-            
-            itemRows.forEach(row => {
-                const totalPriceInput = row.querySelector('input[name*="[total_price]"]');
-                if (totalPriceInput && totalPriceInput.value) {
-                    totalPrice += parseFloat(totalPriceInput.value) || 0;
-                }
-            });
-            
-            // Update the main total input
-            const mainTotalInput = document.getElementById('total');
-            if (mainTotalInput) {
-                mainTotalInput.value = totalPrice;
-            }
-
-            // update unit price = total * (1 + margin/100), hasil penghitungan pembulatan keatas
-            const margin = parseFloat(document.getElementById('margin').value) || 0;
-            const unitPrice = Math.ceil(totalPrice * (1 + margin/100));
-            document.getElementById('total_unit_price').value = unitPrice;
-        }
+    // update unit price = total * (1 + margin/100), hasil penghitungan pembulatan keatas
+    const margin = parseFloat(document.getElementById('margin').value) || 0;
+    const unitPrice = Math.ceil(totalPrice * (1 + margin/100));
+    document.getElementById('total_unit_price').value = unitPrice;
+}
 
         // Make functions global so they can be called from HTML
         window.addItemRow = addItemRow;
@@ -533,146 +533,146 @@ $(document).ready(function() {
         window.updateTotalPrice = updateTotalPrice;
         window.updateMainTotal = updateMainTotal;
 
-        // Handle form submission
-        const form = document.getElementById('estimation-form');
-        const submitButton = form.querySelector('button[type="submit"]');
-        const submitButtonText = submitButton.innerHTML;
+// Handle form submission
+    const form = document.getElementById('estimation-form');
+    const submitButton = form.querySelector('button[type="submit"]');
+    const submitButtonText = submitButton.innerHTML;
+    
+    // Calculate initial totals if there are existing items
+    updateMainTotal();
+    
+    // Add event listener for margin input to recalculate unit price
+    const marginInput = document.getElementById('margin');
+    if (marginInput) {
+        marginInput.addEventListener('input', function() {
+            updateMainTotal();
+        });
+    }
+    
+    form.addEventListener('submit', function(e) {
+        e.preventDefault(); // Prevent default form submission
         
-        // Calculate initial totals if there are existing items
-        updateMainTotal();
-        
-        // Add event listener for margin input to recalculate unit price
-        const marginInput = document.getElementById('margin');
-        if (marginInput) {
-            marginInput.addEventListener('input', function() {
-                updateMainTotal();
-            });
+        // Validate form
+        if (!validateForm()) {
+            return false;
         }
         
-        form.addEventListener('submit', function(e) {
-            e.preventDefault(); // Prevent default form submission
-            
-            // Validate form
-            if (!validateForm()) {
-                return false;
-            }
-            
-            // Show loading state
-            submitButton.disabled = true;
-            submitButton.innerHTML = `
-                <svg class="animate-spin w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        // Show loading state
+        submitButton.disabled = true;
+        submitButton.innerHTML = `
+            <svg class="animate-spin w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 714 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                Saving...
-            `;
-            
-            // Submit form after short delay
-            setTimeout(() => {
-                form.submit();
-            }, 500);
+            </svg>
+            Saving...
+        `;
+        
+        // Submit form after short delay
+        setTimeout(() => {
+            form.submit();
+        }, 500);
+    });
+    
+    function validateForm() {
+        let isValid = true;
+        
+        // Clear previous error states
+        const inputs = form.querySelectorAll('.border-red-500');
+        inputs.forEach(input => {
+            input.classList.remove('border-red-500');
         });
         
-        function validateForm() {
-            let isValid = true;
-            
-            // Clear previous error states
-            const inputs = form.querySelectorAll('.border-red-500');
-            inputs.forEach(input => {
-                input.classList.remove('border-red-500');
-            });
-            
-            // Validate required fields
-            const title = document.getElementById('title');
-            if (!title.value.trim()) {
-                title.classList.add('border-red-500');
-                showError('Judul estimasi harus diisi');
-                isValid = false;
-            }
-            
-            // Validate estimation items
-            const itemRows = document.querySelectorAll('#items-body tr');
-            if (itemRows.length === 0) {
-                showError('Minimal harus ada satu item estimasi');
-                isValid = false;
-            } else {
-                // Validate each item row
-                itemRows.forEach((row, index) => {
-                    const category = row.querySelector('select[name*="[category]"]');
-                    const code = row.querySelector('input[name*="[code]"]');
-                    const equipmentName = row.querySelector('input[name*="[equipment_name]"]');
-                    const coefficient = row.querySelector('input[name*="[coefficient]"]');
-                    const unitPrice = row.querySelector('input[name*="[unit_price]"]');
-                    
-                    if (!category.value) {
-                        category.classList.add('border-red-500');
-                        showError(`Kategori pada item ${index + 1} harus dipilih`);
-                        isValid = false;
-                    }
-                    
-                    if (!equipmentName.value.trim()) {
-                        equipmentName.classList.add('border-red-500');
-                        showError(`Nama/Peralatan pada item ${index + 1} harus diisi`);
-                        isValid = false;
-                    }
-                    
-                    if (!coefficient.value || parseFloat(coefficient.value) <= 0) {
-                        coefficient.classList.add('border-red-500');
-                        showError(`Koefisien pada item ${index + 1} harus lebih dari 0`);
-                        isValid = false;
-                    }
-                    
-                    if (!unitPrice.value || parseFloat(unitPrice.value) <= 0) {
-                        unitPrice.classList.add('border-red-500');
-                        showError(`Harga satuan pada item ${index + 1} harus lebih dari 0`);
-                        isValid = false;
-                    }
-                });
-            }
-            
-            if (!isValid) {
-                // Reset button state if validation fails
-                submitButton.disabled = false;
-                submitButton.innerHTML = submitButtonText;
-            }
-            
-            return isValid;
+        // Validate required fields
+        const title = document.getElementById('title');
+        if (!title.value.trim()) {
+            title.classList.add('border-red-500');
+            showError('Judul AHS harus diisi');
+            isValid = false;
         }
         
-        function showError(message) {
-            // Remove existing error alerts
-            const existingAlert = document.querySelector('.error-alert');
-            if (existingAlert) {
-                existingAlert.remove();
-            }
-            
-            // Create new error alert
-            const alert = document.createElement('div');
-            alert.className = 'error-alert bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4';
-            alert.innerHTML = `
-                <div class="flex items-center">
-                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-                    </svg>
-                    <span>${message}</span>
-                </div>
-            `;
-            
-            // Insert alert at the top of the form
-            form.insertBefore(alert, form.firstChild);
-            
-            // Scroll to top to show error
-            form.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            
-            // Auto remove alert after 5 seconds
-            setTimeout(() => {
-                if (alert.parentNode) {
-                    alert.remove();
+        // Validate AHS items
+        const itemRows = document.querySelectorAll('#items-body tr');
+        if (itemRows.length === 0) {
+            showError('Minimal harus ada satu item AHS');
+            isValid = false;
+        } else {
+            // Validate each item row
+            itemRows.forEach((row, index) => {
+                const category = row.querySelector('select[name*="[category]"]');
+                const code = row.querySelector('input[name*="[code]"]');
+                const equipmentName = row.querySelector('input[name*="[equipment_name]"]');
+                const coefficient = row.querySelector('input[name*="[coefficient]"]');
+                const unitPrice = row.querySelector('input[name*="[unit_price]"]');
+                
+                if (!category.value) {
+                    category.classList.add('border-red-500');
+                    showError(`Kategori pada item ${index + 1} harus dipilih`);
+                    isValid = false;
                 }
-            }, 5000);
+                
+                if (!equipmentName.value.trim()) {
+                    equipmentName.classList.add('border-red-500');
+                    showError(`Nama/Peralatan pada item ${index + 1} harus diisi`);
+                    isValid = false;
+                }
+                
+                if (!coefficient.value || parseFloat(coefficient.value) <= 0) {
+                    coefficient.classList.add('border-red-500');
+                    showError(`Koefisien pada item ${index + 1} harus lebih dari 0`);
+                    isValid = false;
+                }
+                
+                if (!unitPrice.value || parseFloat(unitPrice.value) <= 0) {
+                    unitPrice.classList.add('border-red-500');
+                    showError(`Harga satuan pada item ${index + 1} harus lebih dari 0`);
+                    isValid = false;
+                }
+            });
         }
+        
+        if (!isValid) {
+            // Reset button state if validation fails
+            submitButton.disabled = false;
+            submitButton.innerHTML = submitButtonText;
+        }
+        
+        return isValid;
+    }
+    
+    function showError(message) {
+        // Remove existing error alerts
+        const existingAlert = document.querySelector('.error-alert');
+        if (existingAlert) {
+            existingAlert.remove();
+        }
+        
+        // Create new error alert
+        const alert = document.createElement('div');
+        alert.className = 'error-alert bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4';
+        alert.innerHTML = `
+            <div class="flex items-center">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                </svg>
+                <span>${message}</span>
+            </div>
+        `;
+        
+        // Insert alert at the top of the form
+        form.insertBefore(alert, form.firstChild);
+        
+        // Scroll to top to show error
+        form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        
+        // Auto remove alert after 5 seconds
+        setTimeout(() => {
+            if (alert.parentNode) {
+                alert.remove();
+            }
+        }, 5000);
+    }
 
-    console.log('✅ All estimation functions loaded and ready');
+    console.log('✅ All AHS functions loaded and ready');
 }); // End of $(document).ready
 </script>
 @endpush 

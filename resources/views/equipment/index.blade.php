@@ -5,32 +5,24 @@
     <!-- Header -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
-            <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Projects</h1>
-            <p class="text-gray-600 dark:text-gray-400">Manage project information and data</p>
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Equipment</h1>
+            <p class="text-gray-600 dark:text-gray-400">Manage equipment information and data</p>
         </div>
         <div class="mt-4 sm:mt-0">
-            <a href="{{ route('master.project.create') }}" class="btn btn-primary flex items-center">
+            <a href="{{ route('master.equipment.create') }}" class="btn btn-primary flex items-center">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                 </svg>
-                Add Project
+                Tambah Peralatan
             </a>
         </div>
     </div>
 
-    @if(session('success'))
-        <div class="mb-4">
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
-                <span class="block sm:inline">{{ session('success') }}</span>
-            </div>
-        </div>
-    @endif
-
-    <!-- Project Table -->
+    <!-- Equipment Table -->
     <div class="card">
         <div class="card-header">
             <div class="flex items-center justify-between">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Project List</h3>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Equipment List</h3>
                 <p class="text-sm text-gray-500 dark:text-gray-400">
                     <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
@@ -47,50 +39,59 @@
                         <tr>
                             <th>No</th>
                             <th>Name</th>
-                            <th>Description</th>
-                            <th>Status</th>
+                            <th>Period (Days)</th>
+                            <th>Price (Rp)</th>
+                            <th>TKDN (%)</th>
                             <th class="text-center">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($projects as $project)
-                        <tr class="cursor-pointer hover:bg-blue-100 dark:hover:bg-gray-600 transition-colors border-b border-gray-100 dark:border-gray-700" data-detail-url="{{ route('master.project.show', $project->id) }}" onclick="goToDetail(this, event)">
-                            <td>{{ $loop->iteration + ($projects->firstItem() - 1) }}</td>
+                        @forelse($equipment as $item)
+                        <tr class="cursor-pointer hover:bg-blue-100 dark:hover:bg-gray-600 transition-colors border-b border-gray-100 dark:border-gray-700" data-detail-url="{{ route('master.equipment.show', $item->id) }}" onclick="goToDetail(this, event)">
+                            <td>{{ $loop->iteration + ($equipment->firstItem() - 1) }}</td>
                             <td>
                                 <div class="flex items-center">
-                                    <div class="w-8 h-8 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center mr-3">
+                                    <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mr-3">
                                         <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
                                         </svg>
                                     </div>
                                     <div>
-                                        <div class="font-medium text-gray-900 dark:text-white">{{ $project->name }}</div>
-                                        @if($project->description)
-                                            <div class="text-sm text-gray-500 dark:text-gray-400">{{ Str::limit($project->description, 40) }}</div>
+                                        <div class="font-medium text-gray-900 dark:text-white">{{ $item->name }}</div>
+                                        @if($item->description)
+                                            <div class="text-sm text-gray-500 dark:text-gray-400">{{ Str::limit($item->description, 30) }}</div>
                                         @endif
                                     </div>
                                 </div>
                             </td>
                             <td>
-                                @if($project->description)
-                                    <div class="text-sm text-gray-600 dark:text-gray-300">
-                                        {{ Str::limit($project->description, 50) }}
+                                <span class="badge badge-primary">{{ $item->period }} Days</span>
+                            </td>
+                            <td>
+                                <div class="font-medium text-gray-900 dark:text-white">
+                                    Rp {{ number_format($item->price, 0, ',', '.') }}
+                                </div>
+                            </td>
+                            <td>
+                                @if($item->tkdn)
+                                    <div class="flex items-center">
+                                        <div class="w-16 bg-gray-200 dark:bg-gray-700 rounded-full h-2 mr-2">
+                                            <div class="bg-blue-600 h-2 rounded-full" style="width: {{ $item->tkdn }}%"></div>
+                                        </div>
+                                        <span class="text-sm font-medium text-gray-900 dark:text-white">{{ $item->tkdn }}%</span>
                                     </div>
                                 @else
                                     <span class="text-sm text-gray-500 dark:text-gray-400">-</span>
                                 @endif
                             </td>
                             <td>
-                                <span class="badge badge-success">Active</span>
-                            </td>
-                            <td>
                                 <div class="flex items-center justify-center space-x-2" onclick="event.stopPropagation()">
-                                    <a href="{{ route('master.project.edit', $project) }}" class="btn btn-outline p-2 text-yellow-600 hover:text-yellow-700 dark:text-yellow-400 dark:hover:text-yellow-300" title="Edit">
+                                    <a href="{{ route('master.equipment.edit', $item->id) }}" class="btn btn-outline p-2 text-yellow-600 hover:text-yellow-700 dark:text-yellow-400 dark:hover:text-yellow-300" title="Edit">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                                         </svg>
                                     </a>
-                                    <form action="{{ route('master.project.destroy', $project) }}" method="POST" class="inline" onsubmit="return confirm('Yakin ingin menghapus project ini?');">
+                                    <form action="{{ route('master.equipment.destroy', $item->id) }}" method="POST" class="inline" onsubmit="return confirm('Yakin ingin menghapus peralatan ini?');">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-outline p-2 text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300" title="Delete">
@@ -104,20 +105,20 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="5" class="text-center py-12">
+                            <td colspan="6" class="text-center py-12">
                                 <div class="flex flex-col items-center">
                                     <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mb-4">
                                         <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
                                         </svg>
                                     </div>
-                                    <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Tidak ada project ditemukan</h3>
-                                    <p class="text-gray-500 dark:text-gray-400 mb-4">Mulai dengan menambah project</p>
-                                    <a href="{{ route('master.project.create') }}" class="btn btn-primary">
+                                    <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Tidak ada peralatan ditemukan</h3>
+                                    <p class="text-gray-500 dark:text-gray-400 mb-4">Mulai dengan menambah peralatan</p>
+                                    <a href="{{ route('master.equipment.create') }}" class="btn btn-primary">
                                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                                         </svg>
-                                        Tambah Project
+                                        Tambah Peralatan
                                     </a>
                                 </div>
                             </td>
@@ -127,8 +128,8 @@
                 </table>
             </div>
         </div>
-        @if($projects->hasPages())
-            {{ $projects->links('components.pagination') }}
+        @if($equipment->hasPages())
+            {{ $equipment->links('components.pagination') }}
         @endif
     </div>
 </div>

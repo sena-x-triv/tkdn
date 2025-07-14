@@ -42,6 +42,10 @@ class MaterialController extends Controller
         return redirect()->route('master.material.index')->with('success', 'Material created!');
     }
 
+    public function show(Material $material) {
+        return view('material.show', compact('material'));
+    }
+
     public function edit(Material $material) {
         return view('material.edit', compact('material'));
     }

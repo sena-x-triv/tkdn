@@ -10,8 +10,8 @@
             </svg>
         </a>
         <div>
-            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Detail Estimasi</h1>
-            <p class="text-gray-600 dark:text-gray-400">Lihat detail lengkap estimasi dan analisis biaya</p>
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Detail AHS</h1>
+            <p class="text-gray-600 dark:text-gray-400">Lihat detail lengkap Analisa Harga Satuan pekerjaan</p>
         </div>
     </div>
 </div>
@@ -29,7 +29,7 @@
 
 <!-- Main Content -->
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-    <!-- Estimation Details Card -->
+    <!-- AHS Details Card -->
     <div class="lg:col-span-2 space-y-6">
         <!-- Basic Information -->
         <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-800 overflow-hidden">
@@ -38,13 +38,13 @@
                     <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2a4 4 0 014-4h4M7 7h.01M7 3h10a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2z" />
                     </svg>
-                    Informasi Estimasi
+                    Informasi AHS
                 </h2>
             </div>
             <div class="p-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="space-y-1">
-                        <label class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Kode Estimasi</label>
+                        <label class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Kode AHS</label>
                         <div class="flex items-center space-x-2">
                             <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h10a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2z" />
@@ -53,7 +53,7 @@
                         </div>
                     </div>
                     <div class="space-y-1">
-                        <label class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Judul Estimasi</label>
+                        <label class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Judul AHS</label>
                         <div class="flex items-center space-x-2">
                             <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
@@ -65,14 +65,14 @@
             </div>
         </div>
 
-        <!-- Estimation Items -->
+        <!-- AHS Items -->
         <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-800 overflow-hidden">
             <div class="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-gray-800 dark:to-gray-700 px-6 py-4 border-b border-gray-200 dark:border-gray-700">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
                     <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
                     </svg>
-                    Item Estimasi
+                    Item AHS
                     <span class="ml-2 px-2 py-1 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 text-xs rounded-full">
                         {{ $estimation->items->count() }} items
                     </span>
@@ -86,8 +86,8 @@
                                 <div class="flex items-center space-x-3">
                                     <div class="flex-shrink-0 w-10 h-10 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center">
                                         <span class="text-blue-600 dark:text-blue-400 font-semibold text-sm">{{ $index + 1 }}</span>
-                                    </div>
-                                    <div>
+            </div>
+            <div>
                                         <h4 class="font-semibold text-gray-900 dark:text-white">{{ $item->equipment_name }}</h4>
                                         <div class="flex items-center space-x-4 mt-1">
                                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
@@ -139,7 +139,7 @@
                         <svg class="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                         </svg>
-                        <p class="text-gray-500 dark:text-gray-400 text-lg">Belum ada item estimasi</p>
+                        <p class="text-gray-500 dark:text-gray-400 text-lg">Belum ada item AHS</p>
                         <p class="text-gray-400 dark:text-gray-500 text-sm mt-1">Tambahkan item untuk melihat detail biaya</p>
                     </div>
                 @endforelse
@@ -216,14 +216,14 @@
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                     </svg>
-                    <span>Edit Estimasi</span>
+                    <span>Edit AHS</span>
                 </a>
                 
                 <a href="{{ route('master.estimation.index') }}" class="btn btn-outline w-full flex items-center justify-center space-x-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
                     </svg>
-                    <span>Daftar Estimasi</span>
+                    <span>Daftar AHS</span>
                 </a>
             </div>
         </div>

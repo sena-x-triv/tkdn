@@ -36,6 +36,10 @@ class WorkerController extends Controller
         return redirect()->route('master.worker.index')->with('success', 'Worker created!');
     }
 
+    public function show(Worker $worker) {
+        return view('worker.show', compact('worker'));
+    }
+
     public function edit(Worker $worker) {
         return view('worker.edit', compact('worker'));
     }

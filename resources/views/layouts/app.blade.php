@@ -62,12 +62,12 @@
             <div class="flex-1 px-4 pb-4 overflow-y-auto custom-scrollbar">
                 <nav class="space-y-2">
                     <!-- Project -->
-                    <a href="#" class="nav-link group">
+                    <a href="{{ route('home') }}" class="nav-link group">
                         <svg class="w-5 h-5 mr-3 text-gray-400 group-hover:text-primary-500 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5a2 2 0 012-2h4a2 2 0 012 2v2H8V5z"></path>
                         </svg>
-                        <span>Project</span>
+                        <span>Dashboard</span>
                     </a>
                     
                     <!-- Master Dropdown -->
@@ -103,12 +103,18 @@
                                 </svg>
                                 <span>Material</span>
                             </a>
-                            <!-- Estimasi -->
+                            <a href="{{ route('master.equipment.index') }}" class="nav-link text-sm py-2 {{ request()->is('master/equipment') ? 'active' : '' }}">
+                                <svg class="w-4 h-4 mr-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                                </svg>
+                                <span>Peralatan</span>
+                            </a>
+                            <!-- AHS -->
                             <a href="{{ route('master.estimation.index') }}" class="nav-link text-sm py-2 {{ request()->is('master/estimation') ? 'active' : '' }}">
                                 <svg class="w-5 h-5 mr-3 text-gray-400 group-hover:text-primary-500 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2a4 4 0 014-4h4M7 7h.01M7 3h10a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2z" />
                                 </svg>
-                                <span>Estimasi</span>
+                                <span>AHS</span>
                             </a>
                         </div>
                     </div>
@@ -309,7 +315,7 @@
         const logoutTime = 15 * 60 * 1000; // 15 menit
         let logoutTimer = setTimeout(autoLogout, logoutTime);
         function autoLogout() {
-            document.getElementById('logout-form').submit();
+            window.location.href = '{{ route("welcome") }}';
         }
 
         // Reset timer jika ada aktivitas

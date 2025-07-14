@@ -42,7 +42,7 @@ class EstimationController extends Controller
         ]);
         $estimation = Estimation::create($data);
         $this->syncEstimationItems($estimation, $data['items'] ?? []);
-        return redirect()->route('master.estimation.show', $estimation->id)->with('status', 'Estimasi & item berhasil ditambahkan!');
+        return redirect()->route('master.estimation.show', $estimation->id)->with('status', 'AHS & item berhasil ditambahkan!');
     }
 
     public function show(Estimation $estimation)
@@ -81,7 +81,7 @@ class EstimationController extends Controller
         
         $estimation->update($data);
         $this->syncEstimationItems($estimation, $data['items'] ?? []);
-        return redirect()->route('master.estimation.show', $estimation->id)->with('status', 'Estimasi & item berhasil diupdate!');
+        return redirect()->route('master.estimation.show', $estimation->id)->with('status', 'AHS & item berhasil diupdate!');
     }
 
     /**
@@ -114,6 +114,6 @@ class EstimationController extends Controller
     public function destroy(Estimation $estimation)
     {
         $estimation->delete();
-        return redirect()->route('master.estimation.index')->with('status', 'Estimasi berhasil dihapus!');
+        return redirect()->route('master.estimation.index')->with('status', 'AHS berhasil dihapus!');
     }
 } 

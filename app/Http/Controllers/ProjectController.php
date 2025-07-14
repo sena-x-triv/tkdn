@@ -18,9 +18,14 @@ class ProjectController extends Controller
     public function store(Request $request) {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'description' => 'nullable|string|max:1000',
         ]);
         Project::create($validated);
         return redirect()->route('master.project.index')->with('success', 'Project created successfully.');
+    }
+
+    public function show(Project $project) {
+        return view('project.show', compact('project'));
     }
 
     public function edit(Project $project) {
@@ -30,6 +35,7 @@ class ProjectController extends Controller
     public function update(Request $request, Project $project) {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'description' => 'nullable|string|max:1000',
         ]);
         $project->update($validated);
         return redirect()->route('master.project.index')->with('success', 'Project updated successfully.');
