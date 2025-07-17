@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Blade;
+use App\Helpers\StringHelper;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +21,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Register StringHelper as a global Blade directive
+        Blade::directive('safeLimit', function ($expression) {
+            return "<?php echo App\Helpers\StringHelper::safeLimit($expression); ?>";
+        });
     }
 }

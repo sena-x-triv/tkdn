@@ -66,7 +66,7 @@
                                     <div>
                                         <div class="font-medium text-gray-900 dark:text-white">{{ $project->name }}</div>
                                         @if($project->description)
-                                            <div class="text-sm text-gray-500 dark:text-gray-400">{{ Str::limit($project->description, 40) }}</div>
+                                            <div class="text-sm text-gray-500 dark:text-gray-400">{{ \App\Helpers\StringHelper::safeLimit($project->description, 40) }}</div>
                                         @endif
                                     </div>
                                 </div>
@@ -74,7 +74,7 @@
                             <td>
                                 @if($project->description)
                                     <div class="text-sm text-gray-600 dark:text-gray-300">
-                                        {{ Str::limit($project->description, 50) }}
+                                        {{ \App\Helpers\StringHelper::safeLimit($project->description, 50) }}
                                     </div>
                                 @else
                                     <span class="text-sm text-gray-500 dark:text-gray-400">-</span>

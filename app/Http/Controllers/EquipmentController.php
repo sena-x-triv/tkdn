@@ -81,3 +81,4 @@ class EquipmentController extends Controller
         return redirect()->route('master.equipment.index')->with('status', 'Peralatan berhasil dihapus!');
     }
 }
+ 

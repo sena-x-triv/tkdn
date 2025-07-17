@@ -59,7 +59,7 @@
                                     <div>
                                         <div class="font-medium text-gray-900 dark:text-white">{{ $item->name }}</div>
                                         @if($item->description)
-                                            <div class="text-sm text-gray-500 dark:text-gray-400">{{ Str::limit($item->description, 30) }}</div>
+                                            <div class="text-sm text-gray-500 dark:text-gray-400">{{ \App\Helpers\StringHelper::safeLimit($item->description, 30) }}</div>
                                         @endif
                                     </div>
                                 </div>

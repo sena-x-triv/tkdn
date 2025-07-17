@@ -35,3 +35,4 @@ class MaterialSeeder extends Seeder
         }
     }
 }
+ 

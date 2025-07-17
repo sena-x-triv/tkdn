@@ -3,7 +3,7 @@
 @section('content')
 <div class="space-y-6">
     <!-- Header -->
-    <div class="mb-8">
+<div class="mb-8">
         <div class="flex items-center mb-4">
             <a href="{{ route('master.estimation.index') }}" class="btn btn-outline p-2 mr-4">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -13,7 +13,7 @@
             <div>
                 <h1 class="text-3xl font-bold text-gray-900 dark:text-white">AHS Details</h1>
                 <p class="text-gray-600 dark:text-gray-400">View unit price analysis information</p>
-            </div>
+</div>
         </div>
     </div>
 
@@ -37,7 +37,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                     <!-- Left: Info List -->
                     <div class="space-y-6">
-                        <div>
+            <div>
                             <div class="text-xs text-gray-500 uppercase mb-1">AHS Code</div>
                             <div class="font-bold text-lg text-gray-900 dark:text-white flex items-center gap-2">
                                 <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2a4 4 0 014-4h4M7 7h.01M7 3h10a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2z" /></svg>
@@ -50,15 +50,15 @@
                                 <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                                 {{ $estimation->title }}
                             </div>
-                        </div>
-                        <div>
+            </div>
+            <div>
                             <div class="text-xs text-gray-500 uppercase mb-1">Created</div>
                             <div class="flex items-center text-sm text-gray-500">
                                 <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                                 {{ $estimation->created_at->format('d M Y, H:i') }}
                             </div>
-                        </div>
-                        <div>
+            </div>
+            <div>
                             <div class="text-xs text-gray-500 uppercase mb-1">Updated</div>
                             <div class="flex items-center text-sm text-gray-500">
                                 <svg class="w-5 h-5 text-purple-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
@@ -71,12 +71,12 @@
                         <div>
                             <div class="text-xs text-gray-500 uppercase mb-1 text-center">Total</div>
                             <div class="font-extrabold text-2xl text-gray-900 dark:text-white text-center">Rp {{ number_format($estimation->total, 0, ',', '.') }}</div>
-                        </div>
-                        <div>
+            </div>
+            <div>
                             <div class="text-xs text-gray-500 uppercase mb-1 text-center">Margin</div>
                             <div class="font-extrabold text-2xl text-blue-600 text-center">{{ number_format($estimation->margin, 1, ',', '.') }}%</div>
-                        </div>
-                        <div>
+            </div>
+            <div>
                             <div class="text-xs text-gray-500 uppercase mb-1 text-center">Final Price</div>
                             <div class="font-extrabold text-2xl text-green-600 text-center">Rp {{ number_format($estimation->total_unit_price, 0, ',', '.') }}</div>
                         </div>
@@ -127,11 +127,11 @@
                         <th>Koefisien</th>
                         <th>Harga</th>
                         <th>Jumlah Harga</th>
-                    </tr>
-                </thead>
-                <tbody>
+                        </tr>
+                    </thead>
+                    <tbody>
                     @forelse($estimation->items as $i => $item)
-                    <tr>
+                        <tr>
                         <td>{{ $i+1 }}</td>
                         <td>
                             <span class="badge
@@ -160,16 +160,16 @@
                         <td>{{ number_format($item->coefficient, 2, ',', '.') }}</td>
                         <td>Rp {{ number_format($item->unit_price, 0, ',', '.') }}</td>
                         <td>Rp {{ number_format($item->total_price, 0, ',', '.') }}</td>
-                    </tr>
-                    @empty
-                    <tr>
+                        </tr>
+                        @empty
+                        <tr>
                         <td colspan="6" class="text-center py-8 text-gray-400">Belum ada item AHS</td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
 
     <!-- STATISTIK KATEGORI -->
     @if($estimation->items->count() > 0)

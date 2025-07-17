@@ -35,3 +35,4 @@ class WorkerSeeder extends Seeder
         }
     }
 }
+ 

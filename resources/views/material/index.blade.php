@@ -22,7 +22,7 @@
     <div class="card">
         <div class="card-header">
             <div class="flex items-center justify-between">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Material List</h3>
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Material List</h3>
                 <p class="text-sm text-gray-500 dark:text-gray-400">
                     <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
