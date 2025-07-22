@@ -29,7 +29,7 @@
                     
                     <!-- Basic Information -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
+                        <div>
                             <label for="name" class="form-label">Nama Project <span class="text-red-500">*</span></label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -39,7 +39,32 @@
                                 </div>
                                 <input type="text" name="name" id="name" class="form-input pl-10 @error('name') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror" value="{{ old('name') }}" required placeholder="Masukkan nama project">
                             </div>
-            @error('name')
+                            @error('name')
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div>
+                            <label for="status" class="form-label">Status <span class="text-red-500">*</span></label>
+                            <select name="status" id="status" class="form-input @error('status') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror" required>
+                                <option value="draft" {{ old('status') == 'draft' ? 'selected' : '' }}>Draft</option>
+                                <option value="on_progress" {{ old('status') == 'on_progress' ? 'selected' : '' }}>On Progress</option>
+                                <option value="completed" {{ old('status') == 'completed' ? 'selected' : '' }}>Completed</option>
+                            </select>
+                            @error('status')
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div>
+                            <label for="start_date" class="form-label">Start Date <span class="text-red-500">*</span></label>
+                            <input type="date" name="start_date" id="start_date" class="form-input @error('start_date') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror" value="{{ old('start_date') }}" required>
+                            @error('start_date')
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div>
+                            <label for="end_date" class="form-label">End Date <span class="text-red-500">*</span></label>
+                            <input type="date" name="end_date" id="end_date" class="form-input @error('end_date') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror" value="{{ old('end_date') }}" required>
+                            @error('end_date')
                                 <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                             @enderror
                         </div>

@@ -55,15 +55,36 @@
                             <span class="text-gray-900 dark:text-white font-medium">{{ $project->name }}</span>
                         </div>
                     </div>
-
-                    <!-- Created Date -->
+                    <!-- Status -->
                     <div class="space-y-2">
-                        <label class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Created Date</label>
+                        <label class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Status</label>
+                        <div class="flex items-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                            <svg class="w-5 h-5 text-indigo-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span class="badge {{ $project->status == 'completed' ? 'badge-success' : ($project->status == 'on_progress' ? 'badge-primary' : 'badge-secondary') }}">
+                                {{ ucfirst(str_replace('_', ' ', $project->status)) }}
+                            </span>
+                        </div>
+                    </div>
+                    <!-- Start Date -->
+                    <div class="space-y-2">
+                        <label class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Start Date</label>
                         <div class="flex items-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
                             <svg class="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                             </svg>
-                            <span class="text-gray-900 dark:text-white">{{ $project->created_at->format('d M Y, H:i') }}</span>
+                            <span class="text-gray-900 dark:text-white">{{ $project->start_date }}</span>
+                        </div>
+                    </div>
+                    <!-- End Date -->
+                    <div class="space-y-2">
+                        <label class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">End Date</label>
+                        <div class="flex items-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                            <svg class="w-5 h-5 text-red-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                            <span class="text-gray-900 dark:text-white">{{ $project->end_date }}</span>
                         </div>
                     </div>
                 </div>
