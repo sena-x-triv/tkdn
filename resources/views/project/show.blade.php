@@ -55,6 +55,16 @@
                             <span class="text-gray-900 dark:text-white font-medium">{{ $project->name }}</span>
                         </div>
                     </div>
+                    <!-- Location -->
+                    <div class="space-y-2">
+                        <label class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Location</label>
+                        <div class="flex items-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                            <svg class="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 12.414a4 4 0 10-5.657 5.657l4.243 4.243a8 8 0 0011.314-11.314l-4.243-4.243a4 4 0 00-5.657 5.657l4.243 4.243z"></path>
+                            </svg>
+                            <span class="text-gray-900 dark:text-white">{{ $project->location }}</span>
+                        </div>
+                    </div>
                     <!-- Status -->
                     <div class="space-y-2">
                         <label class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Status</label>

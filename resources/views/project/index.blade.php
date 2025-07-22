@@ -47,6 +47,7 @@
                 <tr>
                             <th>No</th>
                             <th>Name</th>
+                            <th>Location</th>
                             <th>Status</th>
                             <th>Start Date</th>
                             <th>End Date</th>
@@ -71,6 +72,9 @@
                                         @endif
                                     </div>
                                 </div>
+                            </td>
+                            <td>
+                                <span class="text-xs text-gray-700 dark:text-gray-200">{{ $project->location }}</span>
                             </td>
                             <td>
                                 <span class="badge {{ $project->status == 'completed' ? 'badge-success' : ($project->status == 'on_progress' ? 'badge-primary' : 'badge-secondary') }}">

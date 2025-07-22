@@ -22,6 +22,7 @@ class ProjectController extends Controller
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
             'description' => 'nullable|string|max:1000',
+            'location' => 'nullable|string|max:255',
         ]);
         Project::create($validated);
         return redirect()->route('master.project.index')->with('success', 'Project created successfully.');
@@ -42,6 +43,7 @@ class ProjectController extends Controller
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
             'description' => 'nullable|string|max:1000',
+            'location' => 'nullable|string|max:255',
         ]);
         $project->update($validated);
         return redirect()->route('master.project.index')->with('success', 'Project updated successfully.');

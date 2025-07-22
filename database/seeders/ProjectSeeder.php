@@ -41,6 +41,7 @@ class ProjectSeeder extends Seeder
                 'status' => $faker->randomElement($statusList),
                 'start_date' => $start->format('Y-m-d'),
                 'end_date' => $end->format('Y-m-d'),
+                'location' => $faker->city,
             ]);
         }
     }

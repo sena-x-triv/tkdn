@@ -15,5 +15,6 @@ class Project extends Model
         'start_date',
         'end_date',
         'description',
+        'location',
     ];
 } 
