@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             WorkerSeeder::class,
             MaterialSeeder::class,
+            CategorySeeder::class,
             ProjectSeeder::class,
             EquipmentSeeder::class,
             EstimationSeeder::class,

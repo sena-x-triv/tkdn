@@ -118,7 +118,9 @@
                             </svg>
                             Lokasi Project
                         </label>
-                        <input type="text" name="location" id="location" class="form-input @error('location') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror" value="{{ old('location') }}" placeholder="Masukkan lokasi project">
+                        <select name="location" id="location" class="form-input select2-modern @error('location') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror" required style="width:100%">
+                            <option value="">Pilih Kota Project...</option>
+                        </select>
                         @error('location')
                             <p class="mt-1 text-sm text-red-600 dark:text-red-400 flex items-center">
                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -176,4 +178,81 @@ document.addEventListener('DOMContentLoaded', function() {
     updateCharCount(); // Initial count
 });
 </script>
-@endsection 
+@endsection
+
+@push('styles')
+<style>
+.select2-container--default .select2-selection--single {
+    background: #f9fafb;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    min-height: 44px;
+    padding: 8px 12px;
+    font-size: 1rem;
+    color: #111827;
+    transition: border 0.2s;
+}
+.select2-container--default .select2-selection--single:focus,
+.select2-container--default .select2-selection--single.select2-selection--focus {
+    border-color: #2563eb;
+    outline: none;
+}
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #111827;
+    line-height: 28px;
+}
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 100%;
+    right: 10px;
+}
+.select2-dropdown {
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 24px 0 rgba(0,0,0,0.08);
+}
+.select2-results__option {
+    padding-left: 2.5rem;
+    position: relative;
+}
+.select2-results__option .city-icon {
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #2563eb;
+}
+</style>
+@endpush
+
+@push('scripts')
+<script>
+const cities = [
+    'Jakarta', 'Surabaya', 'Bandung', 'Medan', 'Bekasi', 'Depok', 'Tangerang', 'Semarang', 'Palembang', 'Makassar',
+    'Bogor', 'Batam', 'Padang', 'Pekanbaru', 'Denpasar', 'Malang', 'Samarinda', 'Tasikmalaya', 'Pontianak', 'Banjarmasin',
+    'Balikpapan', 'Jambi', 'Cimahi', 'Yogyakarta', 'Kediri', 'Cilegon', 'Cirebon', 'Mataram', 'Manado', 'Kupang',
+    'Ambon', 'Jayapura', 'Palu', 'Kendari', 'Ternate', 'Sorong', 'Banda Aceh', 'Pangkal Pinang', 'Bengkulu', 'Gorontalo',
+    'Tarakan', 'Bitung', 'Tanjung Pinang', 'Lubuklinggau', 'Pematangsiantar', 'Banjarbaru', 'Probolinggo', 'Magelang', 'Blitar', 'Mojokerto'
+];
+$(function() {
+    const select = $('#location');
+    select.empty();
+    select.append('<option value="">Pilih Kota Project...</option>');
+    cities.forEach(function(city) {
+        const isSelected = city === @json(old('location')) ? 'selected' : '';
+        select.append(`<option value="${city}" ${isSelected} data-icon="city">${city}</option>`);
+    });
+    select.select2({
+        placeholder: 'Pilih Kota Project...',
+        allowClear: true,
+        width: '100%',
+        templateResult: function (data) {
+            if (!data.id) return data.text;
+            return $('<span> '+data.text+'</span>');
+        },
+        templateSelection: function (data) {
+            if (!data.id) return data.text;
+            return $('<span> '+data.text+'</span>');
+        }
+    });
+});
+</script>
+@endpush 
