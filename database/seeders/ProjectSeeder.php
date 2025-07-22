@@ -12,6 +12,8 @@ class ProjectSeeder extends Seeder
      */
     public function run(): void
     {
+        $faker = \Faker\Factory::create('id_ID');
+        $statusList = ['draft', 'on_progress', 'completed'];
         $projects = [
             ['name' => 'Gedung Perkantoran 5 Lantai', 'description' => 'Konstruksi gedung perkantoran modern di Jakarta Pusat'],
             ['name' => 'Rumah Sakit Umum', 'description' => 'Pembangunan rumah sakit 200 tempat tidur di Bandung'],
@@ -31,7 +33,15 @@ class ProjectSeeder extends Seeder
         ];
 
         foreach ($projects as $project) {
-            Project::create($project);
+            $start = $faker->dateTimeBetween('-2 years', 'now');
+            $end = (clone $start)->modify('+'.rand(30, 365).' days');
+            Project::create([
+                'name' => $project['name'],
+                'description' => $project['description'],
+                'status' => $faker->randomElement($statusList),
+                'start_date' => $start->format('Y-m-d'),
+                'end_date' => $end->format('Y-m-d'),
+            ]);
         }
     }
 }

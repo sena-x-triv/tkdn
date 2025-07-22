@@ -11,6 +11,9 @@ return new class extends Migration {
 
             $table->ulid('id')->primary();
             $table->string('name');
+            $table->enum('status', ['draft', 'on_progress', 'completed'])->default('draft');
+            $table->date('start_date');
+            $table->date('end_date');
             $table->string('description')->nullable();
             $table->timestamps();
         });
