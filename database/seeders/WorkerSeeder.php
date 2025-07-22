@@ -9,25 +9,38 @@ class WorkerSeeder extends Seeder
 {
     /**
      * Run the database seeds.
+     * PEKERJA
      */
     public function run(): void
     {
         $workers = [
-            ['name' => 'Tukang Batu', 'unit' => 'OH', 'price' => 85000, 'tkdn' => 95.5],
-            ['name' => 'Tukang Kayu', 'unit' => 'OH', 'price' => 90000, 'tkdn' => 92.3],
-            ['name' => 'Tukang Besi', 'unit' => 'OH', 'price' => 95000, 'tkdn' => 88.7],
-            ['name' => 'Tukang Cat', 'unit' => 'OH', 'price' => 80000, 'tkdn' => 94.2],
-            ['name' => 'Tukang Listrik', 'unit' => 'OH', 'price' => 100000, 'tkdn' => 85.9],
-            ['name' => 'Tukang Plumbing', 'unit' => 'OH', 'price' => 95000, 'tkdn' => 87.4],
-            ['name' => 'Tukang Las', 'unit' => 'OH', 'price' => 110000, 'tkdn' => 82.1],
-            ['name' => 'Tukang Keramik', 'unit' => 'OH', 'price' => 90000, 'tkdn' => 91.6],
-            ['name' => 'Tukang Kaca', 'unit' => 'OH', 'price' => 85000, 'tkdn' => 89.3],
-            ['name' => 'Tukang Atap', 'unit' => 'OH', 'price' => 95000, 'tkdn' => 86.8],
-            ['name' => 'Tukang Paving', 'unit' => 'OH', 'price' => 80000, 'tkdn' => 93.7],
-            ['name' => 'Tukang Taman', 'unit' => 'OH', 'price' => 75000, 'tkdn' => 96.2],
-            ['name' => 'Tukang Finishing', 'unit' => 'OH', 'price' => 85000, 'tkdn' => 90.5],
-            ['name' => 'Tukang Struktur', 'unit' => 'OH', 'price' => 100000, 'tkdn' => 84.3],
-            ['name' => 'Tukang Mekanikal', 'unit' => 'OH', 'price' => 105000, 'tkdn' => 83.9],
+            ['name' => 'Pekerja/ Kenek', 'unit' => 'OH', 'price' => 193459, 'tkdn' => 100],
+            ['name' => 'Tukang Gali', 'unit' => 'OH', 'price' => 203519, 'tkdn' => 100],
+            ['name' => 'Kepala Tukang Batu', 'unit' => 'OH', 'price' => 221519, 'tkdn' => 100],
+            ['name' => 'Tukang Batu', 'unit' => 'OH', 'price' => 203519, 'tkdn' => 100],
+            ['name' => 'Kepala Tukang Kayu', 'unit' => 'OH', 'price' => 221175, 'tkdn' => 100],
+            ['name' => 'Tukang Kayu', 'unit' => 'OH', 'price' => 203519, 'tkdn' => 100],
+            ['name' => 'Kepala Tukang Besi', 'unit' => 'OH', 'price' => 221175, 'tkdn' => 100],
+            ['name' => 'Tukang Besi', 'unit' => 'OH', 'price' => 203519, 'tkdn' => 100],
+            ['name' => 'Kepala Tukang Cat', 'unit' => 'OH', 'price' => 221175, 'tkdn' => 100],
+            ['name' => 'Tukang Cat', 'unit' => 'OH', 'price' => 203519, 'tkdn' => 100],
+            ['name' => 'Tukang Aspal', 'unit' => 'OH', 'price' => 193459, 'tkdn' => 100],
+            ['name' => 'Mandor', 'unit' => 'OH', 'price' => 234012, 'tkdn' => 100],
+            ['name' => 'Instalator', 'unit' => 'OH', 'price' => 221175, 'tkdn' => 100],
+            ['name' => 'Pembantu Instalator', 'unit' => 'OH', 'price' => 203519, 'tkdn' => 100],
+            ['name' => 'Tukang Babat Rumput', 'unit' => 'OH', 'price' => 193459, 'tkdn' => 100],
+            ['name' => 'Kepala Tuaking Pasang Pipa/Ledeng', 'unit' => 'OH', 'price' => 203519, 'tkdn' => 100],
+            ['name' => 'Tukang Pasang Pipa', 'unit' => 'OH', 'price' => 193459, 'tkdn' => 100],
+            ['name' => 'Operator Alat Berat', 'unit' => 'OH', 'price' => 234012, 'tkdn' => 100],
+            ['name' => 'Pembantu Operator Alat berat', 'unit' => 'OH', 'price' => 203519, 'tkdn' => 100],
+            ['name' => 'Tukang Las', 'unit' => 'OH', 'price' => 203519, 'tkdn' => 100],
+            ['name' => 'Arsiparis', 'unit' => 'OH', 'price' => 450000, 'tkdn' => 100],
+            ['name' => 'Angkut Bongkar Muat', 'unit' => 'OH', 'price' => 235000, 'tkdn' => 100],
+            ['name' => 'Driver', 'unit' => 'OH', 'price' => 270000, 'tkdn' => 100],
+            ['name' => 'Security', 'unit' => 'OH', 'price' => 270000, 'tkdn' => 100],
+            ['name' => 'General Worker', 'unit' => 'OH', 'price' => 250000, 'tkdn' => 100],
+            ['name' => 'Administrasi Keproyekan', 'unit' => 'OH', 'price' => 320000, 'tkdn' => 100],
+            ['name' => 'Pelaksana', 'unit' => 'OH', 'price' => 320000, 'tkdn' => 100],
         ];
 
         foreach ($workers as $worker) {
