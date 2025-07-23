@@ -30,7 +30,7 @@
                     
                     <!-- Basic Information -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
+                        <div>
                             <label for="name" class="form-label">Nama Project <span class="text-red-500">*</span></label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -40,7 +40,32 @@
                                 </div>
                                 <input type="text" name="name" id="name" class="form-input pl-10 @error('name') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror" value="{{ old('name', $project->name) }}" required placeholder="Masukkan nama project">
                             </div>
-            @error('name')
+                            @error('name')
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div>
+                            <label for="status" class="form-label">Status <span class="text-red-500">*</span></label>
+                            <select name="status" id="status" class="form-input @error('status') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror" required>
+                                <option value="draft" {{ old('status', $project->status) == 'draft' ? 'selected' : '' }}>Draft</option>
+                                <option value="on_progress" {{ old('status', $project->status) == 'on_progress' ? 'selected' : '' }}>On Progress</option>
+                                <option value="completed" {{ old('status', $project->status) == 'completed' ? 'selected' : '' }}>Completed</option>
+                            </select>
+                            @error('status')
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div>
+                            <label for="start_date" class="form-label">Start Date <span class="text-red-500">*</span></label>
+                            <input type="date" name="start_date" id="start_date" class="form-input @error('start_date') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror" value="{{ old('start_date', $project->start_date) }}" required>
+                            @error('start_date')
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div>
+                            <label for="end_date" class="form-label">End Date <span class="text-red-500">*</span></label>
+                            <input type="date" name="end_date" id="end_date" class="form-input @error('end_date') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror" value="{{ old('end_date', $project->end_date) }}" required>
+                            @error('end_date')
                                 <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                             @enderror
                         </div>
@@ -84,8 +109,28 @@
                                 </svg>
                                 {{ $message }}
                             </p>
-            @enderror
-        </div>
+                        @enderror
+                    </div>
+                    <!-- Location Section -->
+                    <div class="space-y-3">
+                        <label for="location" class="form-label flex items-center">
+                            <svg class="w-5 h-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 12.414a4 4 0 10-5.657 5.657l4.243 4.243a8 8 0 0011.314-11.314l-4.243-4.243a4 4 0 00-5.657 5.657l4.243 4.243z"></path>
+                            </svg>
+                            Lokasi Project
+                        </label>
+                        <select name="location" id="location" class="form-input select2-modern @error('location') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror" required style="width:100%">
+                            <option value="">Pilih Kota Project...</option>
+                        </select>
+                        @error('location')
+                            <p class="mt-1 text-sm text-red-600 dark:text-red-400 flex items-center">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                {{ $message }}
+                            </p>
+                        @enderror
+                    </div>
                     
                     <!-- Form Actions -->
                     <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200 dark:border-gray-700">
@@ -134,4 +179,82 @@ document.addEventListener('DOMContentLoaded', function() {
     updateCharCount(); // Initial count
 });
 </script>
-@endsection 
+@endsection
+
+@push('styles')
+<style>
+.select2-container--default .select2-selection--single {
+    background: #f9fafb;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    min-height: 44px;
+    padding: 8px 12px;
+    font-size: 1rem;
+    color: #111827;
+    transition: border 0.2s;
+}
+.select2-container--default .select2-selection--single:focus,
+.select2-container--default .select2-selection--single.select2-selection--focus {
+    border-color: #2563eb;
+    outline: none;
+}
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #111827;
+    line-height: 28px;
+}
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 100%;
+    right: 10px;
+}
+.select2-dropdown {
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 24px 0 rgba(0,0,0,0.08);
+}
+.select2-results__option {
+    padding-left: 2.5rem;
+    position: relative;
+}
+.select2-results__option .city-icon {
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #2563eb;
+}
+</style>
+@endpush
+
+@push('scripts')
+<script>
+const cities = [
+    'Jakarta', 'Surabaya', 'Bandung', 'Medan', 'Bekasi', 'Depok', 'Tangerang', 'Semarang', 'Palembang', 'Makassar',
+    'Bogor', 'Batam', 'Padang', 'Pekanbaru', 'Denpasar', 'Malang', 'Samarinda', 'Tasikmalaya', 'Pontianak', 'Banjarmasin',
+    'Balikpapan', 'Jambi', 'Cimahi', 'Yogyakarta', 'Kediri', 'Cilegon', 'Cirebon', 'Mataram', 'Manado', 'Kupang',
+    'Ambon', 'Jayapura', 'Palu', 'Kendari', 'Ternate', 'Sorong', 'Banda Aceh', 'Pangkal Pinang', 'Bengkulu', 'Gorontalo',
+    'Tarakan', 'Bitung', 'Tanjung Pinang', 'Lubuklinggau', 'Pematangsiantar', 'Banjarbaru', 'Probolinggo', 'Magelang', 'Blitar', 'Mojokerto'
+];
+$(function() {
+    const select = $('#location');
+    const selected = @json(old('location', $project->location));
+    select.empty();
+    select.append('<option value="">Pilih Kota Project...</option>');
+    cities.forEach(function(city) {
+        const isSelected = city === selected ? 'selected' : '';
+        select.append(`<option value="${city}" ${isSelected} data-icon="city">${city}</option>`);
+    });
+    select.select2({
+        placeholder: 'Pilih Kota Project...',
+        allowClear: true,
+        width: '100%',
+        templateResult: function (data) {
+            if (!data.id) return data.text;
+            return $('<span>'+data.text+'</span>');
+        },
+        templateSelection: function (data) {
+            if (!data.id) return data.text;
+            return $('<span>'+data.text+'</span>');
+        }
+    });
+});
+</script>
+@endpush 

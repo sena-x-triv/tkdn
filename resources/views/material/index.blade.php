@@ -59,7 +59,7 @@
                                     <div>
                                         <div class="font-medium text-gray-900 dark:text-white">{{ $material->name }}</div>
                                         @if($material->specification)
-                                            <div class="text-sm text-gray-500 dark:text-gray-400">{{ $material->specification }}</div>
+                                            <div class="text-sm text-gray-500 dark:text-gray-400">{{ \App\Helpers\StringHelper::safeLimit($material->specification, 30) }}</div>
                                         @endif
                                     </div>
                                 </div>
