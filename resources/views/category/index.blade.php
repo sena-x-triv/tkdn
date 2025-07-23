@@ -28,7 +28,7 @@
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Daftar Kategori</h3>
         </div>
         <div class="card-body p-0">
-            <div class="overflow-x-auto">
+            <div class="table-responsive">
                 <table class="table">
                     <thead>
                         <tr>

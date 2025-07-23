@@ -81,6 +81,134 @@
     @apply block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2;
   }
   
+  /* Responsive form adjustments for mobile */
+  @media (max-width: 640px) {
+    .form-input {
+      @apply px-3 py-3 text-base; /* Larger touch targets for mobile */
+    }
+    
+    .form-label {
+      @apply text-sm mb-1;
+    }
+    
+    .btn {
+      @apply px-4 py-3 text-base; /* Larger buttons for mobile */
+    }
+  }
+  
+  /* Responsive Select2 for mobile */
+  @media (max-width: 640px) {
+    .select2-container {
+      @apply w-full;
+    }
+    
+    .select2-container--default .select2-selection--single {
+      @apply h-12 text-base;
+    }
+    
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+      @apply leading-10 text-base;
+    }
+    
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+      @apply h-10 w-8;
+    }
+    
+    .select2-dropdown {
+      @apply text-base;
+    }
+    
+    .select2-results__option {
+      @apply py-2 px-3;
+    }
+  }
+  
+  /* Mobile viewport and touch improvements */
+  @media (max-width: 640px) {
+    /* Prevent horizontal scroll on mobile */
+    body {
+      @apply overflow-x-hidden;
+    }
+    
+    /* Better touch targets for mobile */
+    button, a, input, select, textarea {
+      @apply touch-manipulation;
+    }
+    
+    /* Improve mobile scrolling */
+    .overflow-y-auto {
+      @apply -webkit-overflow-scrolling-touch;
+    }
+    
+    /* Mobile-friendly spacing */
+    .space-y-6 > * + * {
+      @apply mt-4;
+    }
+    
+    .space-y-4 > * + * {
+      @apply mt-3;
+    }
+    
+    /* Mobile-friendly text sizes */
+    h1 {
+      @apply text-2xl;
+    }
+    
+    h2 {
+      @apply text-xl;
+    }
+    
+    h3 {
+      @apply text-lg;
+    }
+  }
+  
+  /* Responsive grid improvements for mobile */
+  @media (max-width: 640px) {
+    /* Mobile grid layouts */
+    .grid {
+      @apply grid-cols-1 gap-4;
+    }
+    
+    .grid-cols-2 {
+      @apply grid-cols-1;
+    }
+    
+    .grid-cols-3 {
+      @apply grid-cols-1;
+    }
+    
+    .grid-cols-4 {
+      @apply grid-cols-1;
+    }
+    
+    .grid-cols-5 {
+      @apply grid-cols-1;
+    }
+    
+    /* Mobile flex improvements */
+    .flex-col {
+      @apply flex-col;
+    }
+    
+    .sm\:flex-row {
+      @apply flex-col;
+    }
+    
+    .md\:flex-row {
+      @apply flex-col;
+    }
+    
+    /* Mobile spacing adjustments */
+    .gap-6 {
+      @apply gap-4;
+    }
+    
+    .gap-8 {
+      @apply gap-4;
+    }
+  }
+  
   /* Table styles */
   .table {
     @apply min-w-full divide-y divide-gray-200 dark:divide-gray-700;
@@ -100,6 +228,27 @@
   
   .table tbody tr {
     @apply hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150;
+  }
+  
+  /* Responsive table container for mobile */
+  .table-responsive {
+    @apply overflow-x-auto -mx-4 sm:mx-0;
+  }
+  
+  .table-responsive .table {
+    @apply min-w-full;
+  }
+  
+  /* Mobile table adjustments */
+  @media (max-width: 640px) {
+    .table th,
+    .table td {
+      @apply px-3 py-2 text-xs;
+    }
+    
+    .table-responsive {
+      @apply shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg;
+    }
   }
   
   /* Badge styles */
@@ -123,6 +272,36 @@
     @apply bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200;
   }
   
+  /* Responsive badge improvements for mobile */
+  @media (max-width: 640px) {
+    .badge {
+      @apply px-2 py-1 text-xs;
+    }
+    
+    /* Mobile-friendly status indicators */
+    .status-indicator {
+      @apply w-2 h-2;
+    }
+    
+    /* Mobile-friendly progress bars */
+    .progress-bar {
+      @apply h-1.5;
+    }
+    
+    /* Mobile-friendly icons */
+    .icon-sm {
+      @apply w-4 h-4;
+    }
+    
+    .icon-md {
+      @apply w-5 h-5;
+    }
+    
+    .icon-lg {
+      @apply w-6 h-6;
+    }
+  }
+  
   /* Sidebar styles */
   .sidebar {
     @apply fixed top-0 left-0 w-64 h-full bg-white dark:bg-gray-800 shadow-strong z-50 transition-all duration-300 ease-in-out;
@@ -140,14 +319,135 @@
     @apply fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden transition-opacity duration-300;
   }
   
+  /* Responsive sidebar adjustments for mobile */
+  @media (max-width: 1023px) {
+    .sidebar {
+      @apply w-80; /* Wider sidebar on mobile for better usability */
+    }
+    
+    .nav-link {
+      @apply py-4 text-base; /* Larger touch targets */
+    }
+  }
+  
+  /* Responsive modal and overlay improvements for mobile */
+  @media (max-width: 640px) {
+    /* Mobile modal improvements */
+    .modal {
+      @apply mx-4 my-8 max-w-none;
+    }
+    
+    .modal-content {
+      @apply rounded-lg;
+    }
+    
+    /* Mobile overlay improvements */
+    .overlay {
+      @apply bg-black bg-opacity-75;
+    }
+    
+    /* Mobile popup improvements */
+    .popup {
+      @apply mx-4 max-w-sm;
+    }
+    
+    /* Mobile tooltip improvements */
+    .tooltip {
+      @apply hidden; /* Hide tooltips on mobile for better UX */
+    }
+    
+    /* Mobile dropdown improvements */
+    .dropdown {
+      @apply relative;
+    }
+    
+    .dropdown-menu {
+      @apply absolute right-0 mt-1 w-48;
+    }
+  }
+  
+  /* Mobile navigation improvements */
+  @media (max-width: 640px) {
+    /* Better mobile navigation */
+    .nav-link {
+      @apply py-3 px-3 text-sm;
+    }
+    
+    /* Mobile-friendly dropdown */
+    .dropdown-menu {
+      @apply w-56 right-0;
+    }
+    
+    /* Mobile-friendly buttons */
+    .btn {
+      @apply min-h-[44px]; /* Minimum touch target size */
+    }
+    
+    /* Mobile-friendly form spacing */
+    .space-y-6 > * + * {
+      @apply mt-4;
+    }
+    
+    /* Mobile-friendly card spacing */
+    .card {
+      @apply mx-2;
+    }
+  }
+  
   /* Header styles */
   .header {
     @apply sticky top-0 z-30 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-soft backdrop-blur-sm;
   }
   
+  /* Responsive header adjustments for mobile */
+  @media (max-width: 640px) {
+    .header {
+      @apply px-4 py-3;
+    }
+    
+    .header .flex {
+      @apply space-x-2;
+    }
+    
+    .header h1 {
+      @apply text-lg;
+    }
+    
+    .header p {
+      @apply text-xs;
+    }
+  }
+  
   /* Main content */
   .main-content {
-    @apply lg:ml-64 min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300;
+    @apply min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300;
+  }
+  
+  /* Responsive main content adjustments */
+  @media (min-width: 1024px) {
+    .main-content {
+      @apply ml-64;
+    }
+  }
+  
+  /* Mobile-first content padding */
+  .content-wrapper {
+    @apply p-4 sm:p-6 lg:p-8;
+  }
+  
+  /* Responsive card adjustments for mobile */
+  @media (max-width: 640px) {
+    .card {
+      @apply rounded-lg shadow-sm;
+    }
+    
+    .card-header {
+      @apply px-4 py-3;
+    }
+    
+    .card-body {
+      @apply p-4;
+    }
   }
   
   /* Navigation styles */
@@ -209,6 +509,25 @@
   .pagination-ellipsis {
     @apply px-3 py-2 text-sm text-gray-500 dark:text-gray-400;
   }
+  
+  /* Responsive pagination for mobile */
+  @media (max-width: 640px) {
+    .pagination-wrapper {
+      @apply flex-col space-y-3 px-4 py-3;
+    }
+    
+    .pagination-nav {
+      @apply justify-center;
+    }
+    
+    .pagination-btn {
+      @apply px-2 py-2 text-xs min-w-[36px] justify-center;
+    }
+    
+    .pagination-info {
+      @apply text-xs text-center;
+    }
+  }
 
   /* Animations */
   .animate-fade-in {
@@ -221,6 +540,2002 @@
   
   .animate-slide-up {
     animation: slideUp 0.3s ease-out;
+  }
+  
+  /* Responsive animations for mobile */
+  @media (max-width: 640px) {
+    /* Reduce animations on mobile for better performance */
+    .animate-fade-in {
+      animation: fadeIn 0.3s ease-in-out;
+    }
+    
+    .animate-slide-in {
+      animation: slideIn 0.2s ease-out;
+    }
+    
+    .animate-slide-up {
+      animation: slideUp 0.2s ease-out;
+    }
+    
+    /* Optimize transitions for mobile */
+    .transition-all {
+      @apply transition-colors;
+    }
+    
+    .transition-transform {
+      @apply transition-transform;
+    }
+    
+    /* Reduce motion for accessibility */
+    @media (prefers-reduced-motion: reduce) {
+      .animate-fade-in,
+      .animate-slide-in,
+      .animate-slide-up,
+      .transition-all,
+      .transition-transform {
+        animation: none;
+        transition: none;
+      }
+    }
+  }
+  
+  /* Mobile accessibility and usability improvements */
+  @media (max-width: 640px) {
+    /* Better focus indicators for mobile */
+    .focus\:ring-2:focus {
+      @apply ring-4 ring-primary-500 ring-opacity-50;
+    }
+    
+    /* Better touch feedback */
+    .active\:scale-95:active {
+      @apply scale-98;
+    }
+    
+    /* Better mobile scrolling */
+    .custom-scrollbar {
+      @apply scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent;
+    }
+    
+    /* Mobile-friendly focus management */
+    .focus\:outline-none:focus {
+      @apply outline-none;
+    }
+    
+    /* Better mobile text selection */
+    .select-text {
+      @apply select-text;
+    }
+    
+    /* Mobile-friendly cursor styles */
+    .cursor-pointer {
+      @apply cursor-pointer;
+    }
+    
+    /* Better mobile hover states */
+    .hover\:bg-gray-100:hover {
+      @apply active:bg-gray-200;
+    }
+    
+    .hover\:bg-blue-100:hover {
+      @apply active:bg-blue-200;
+    }
+  }
+  
+  /* Mobile performance and optimization improvements */
+  @media (max-width: 640px) {
+    /* Optimize rendering for mobile */
+    .card,
+    .btn,
+    .form-input,
+    .table {
+      @apply will-change-auto;
+    }
+    
+    /* Better mobile memory management */
+    .hidden {
+      @apply hidden;
+    }
+    
+    /* Optimize mobile images */
+    img {
+      @apply max-w-full h-auto;
+    }
+    
+    /* Better mobile font rendering */
+    body {
+      @apply antialiased;
+    }
+    
+    /* Optimize mobile shadows */
+    .shadow-soft {
+      @apply shadow-sm;
+    }
+    
+    .shadow-medium {
+      @apply shadow;
+    }
+    
+    .shadow-strong {
+      @apply shadow-md;
+    }
+    
+    /* Better mobile gradients */
+    .gradient-primary {
+      @apply bg-gradient-to-br from-primary-500 to-primary-600;
+    }
+    
+    .gradient-dark {
+      @apply bg-gradient-to-br from-gray-800 to-gray-900;
+    }
+  }
+  
+  /* Mobile dark mode and theme improvements */
+  @media (max-width: 640px) {
+    /* Better mobile dark mode contrast */
+    .dark .card {
+      @apply bg-gray-800 border-gray-700;
+    }
+    
+    .dark .form-input {
+      @apply bg-gray-700 border-gray-600 text-gray-100;
+    }
+    
+    .dark .btn {
+      @apply bg-gray-700 border-gray-600 text-gray-100;
+    }
+    
+    .dark .table {
+      @apply divide-gray-700;
+    }
+    
+    .dark .table thead {
+      @apply bg-gray-800;
+    }
+    
+    .dark .table th {
+      @apply text-gray-400;
+    }
+    
+    .dark .table td {
+      @apply text-gray-100;
+    }
+    
+    /* Better mobile dark mode navigation */
+    .dark .nav-link {
+      @apply text-gray-300 hover:text-white hover:bg-gray-700;
+    }
+    
+    .dark .nav-link.active {
+      @apply bg-primary-900 text-primary-200;
+    }
+    
+    /* Better mobile dark mode dropdowns */
+    .dark .dropdown-menu {
+      @apply bg-gray-800 border-gray-700;
+    }
+    
+    .dark .dropdown-item {
+      @apply text-gray-300 hover:bg-gray-700;
+    }
+  }
+  
+  /* Mobile print styles */
+  @media print {
+    /* Hide mobile-specific elements when printing */
+    .sidebar,
+    .header,
+    .mobile-only,
+    .no-print {
+      @apply hidden;
+    }
+    
+    /* Optimize print layout */
+    .main-content {
+      @apply ml-0;
+    }
+    
+    .card {
+      @apply shadow-none border border-gray-300;
+    }
+    
+    .table {
+      @apply border border-gray-300;
+    }
+    
+    .table th,
+    .table td {
+      @apply border border-gray-300;
+    }
+    
+    /* Better print typography */
+    body {
+      @apply text-black bg-white;
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+      @apply text-black;
+    }
+  }
+  
+  /* Mobile high contrast and accessibility improvements */
+  @media (prefers-contrast: high) {
+    /* High contrast mode improvements */
+    .card {
+      @apply border-2 border-gray-900;
+    }
+    
+    .btn {
+      @apply border-2 border-gray-900;
+    }
+    
+    .form-input {
+      @apply border-2 border-gray-900;
+    }
+    
+    .table th,
+    .table td {
+      @apply border border-gray-900;
+    }
+    
+    /* Better focus indicators for high contrast */
+    .focus\:ring-2:focus {
+      @apply ring-4 ring-black;
+    }
+  }
+  
+  /* Mobile reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    /* Disable animations for users who prefer reduced motion */
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+  
+  /* Mobile landscape orientation improvements */
+  @media (max-width: 640px) and (orientation: landscape) {
+    /* Optimize for landscape mobile */
+    .header {
+      @apply py-2;
+    }
+    
+    .main-content {
+      @apply p-2;
+    }
+    
+    .card {
+      @apply mx-1;
+    }
+    
+    .card-header {
+      @apply px-3 py-2;
+    }
+    
+    .card-body {
+      @apply p-3;
+    }
+    
+    /* Better landscape table layout */
+    .table-responsive {
+      @apply -mx-2;
+    }
+    
+    .table th,
+    .table td {
+      @apply px-2 py-1 text-xs;
+    }
+    
+    /* Better landscape form layout */
+    .form-input {
+      @apply px-2 py-2 text-sm;
+    }
+    
+    .btn {
+      @apply px-3 py-2 text-sm;
+    }
+    
+    /* Better landscape navigation */
+    .nav-link {
+      @apply py-2 px-2 text-sm;
+    }
+    
+    /* Better landscape sidebar */
+    .sidebar {
+      @apply w-64;
+    }
+  }
+  
+  /* Tablet support improvements */
+  @media (min-width: 641px) and (max-width: 1023px) {
+    /* Tablet-specific optimizations */
+    .main-content {
+      @apply p-6;
+    }
+    
+    .card {
+      @apply mx-2;
+    }
+    
+    .card-header {
+      @apply px-5 py-4;
+    }
+    
+    .card-body {
+      @apply p-5;
+    }
+    
+    /* Better tablet table layout */
+    .table th,
+    .table td {
+      @apply px-4 py-3 text-sm;
+    }
+    
+    /* Better tablet form layout */
+    .form-input {
+      @apply px-4 py-3 text-base;
+    }
+    
+    .btn {
+      @apply px-5 py-3 text-base;
+    }
+    
+    /* Better tablet navigation */
+    .nav-link {
+      @apply py-3 px-4 text-base;
+    }
+    
+    /* Better tablet sidebar */
+    .sidebar {
+      @apply w-72;
+    }
+    
+    /* Better tablet grid layouts */
+    .grid-cols-2 {
+      @apply grid-cols-2;
+    }
+    
+    .grid-cols-3 {
+      @apply grid-cols-2;
+    }
+    
+    .grid-cols-4 {
+      @apply grid-cols-2;
+    }
+    
+    .grid-cols-5 {
+      @apply grid-cols-3;
+    }
+  }
+  
+  /* Large screen mobile support improvements */
+  @media (min-width: 1024px) and (max-width: 1279px) {
+    /* Large screen mobile optimizations */
+    .main-content {
+      @apply p-8;
+    }
+    
+    .card {
+      @apply mx-3;
+    }
+    
+    .card-header {
+      @apply px-6 py-5;
+    }
+    
+    .card-body {
+      @apply p-6;
+    }
+    
+    /* Better large screen table layout */
+    .table th,
+    .table td {
+      @apply px-5 py-4 text-base;
+    }
+    
+    /* Better large screen form layout */
+    .form-input {
+      @apply px-4 py-3 text-base;
+    }
+    
+    .btn {
+      @apply px-6 py-3 text-base;
+    }
+    
+    /* Better large screen navigation */
+    .nav-link {
+      @apply py-3 px-4 text-base;
+    }
+    
+    /* Better large screen sidebar */
+    .sidebar {
+      @apply w-64;
+    }
+    
+    /* Better large screen grid layouts */
+    .grid-cols-2 {
+      @apply grid-cols-2;
+    }
+    
+    .grid-cols-3 {
+      @apply grid-cols-3;
+    }
+    
+    .grid-cols-4 {
+      @apply grid-cols-3;
+    }
+    
+    .grid-cols-5 {
+      @apply grid-cols-4;
+    }
+  }
+  
+  /* Extra large screen mobile support improvements */
+  @media (min-width: 1280px) {
+    /* Extra large screen mobile optimizations */
+    .main-content {
+      @apply p-10;
+    }
+    
+    .card {
+      @apply mx-4;
+    }
+    
+    .card-header {
+      @apply px-8 py-6;
+    }
+    
+    .card-body {
+      @apply p-8;
+    }
+    
+    /* Better extra large screen table layout */
+    .table th,
+    .table td {
+      @apply px-6 py-5 text-base;
+    }
+    
+    /* Better extra large screen form layout */
+    .form-input {
+      @apply px-5 py-4 text-base;
+    }
+    
+    .btn {
+      @apply px-8 py-4 text-base;
+    }
+    
+    /* Better extra large screen navigation */
+    .nav-link {
+      @apply py-4 px-5 text-base;
+    }
+    
+    /* Better extra large screen sidebar */
+    .sidebar {
+      @apply w-80;
+    }
+    
+    /* Better extra large screen grid layouts */
+    .grid-cols-2 {
+      @apply grid-cols-2;
+    }
+    
+    .grid-cols-3 {
+      @apply grid-cols-3;
+    }
+    
+    .grid-cols-4 {
+      @apply grid-cols-4;
+    }
+    
+    .grid-cols-5 {
+      @apply grid-cols-5;
+    }
+  }
+  
+  /* Mobile hover states and interactions improvements */
+  @media (max-width: 640px) {
+    /* Better mobile hover states */
+    .hover\:bg-gray-100:hover {
+      @apply active:bg-gray-200;
+    }
+    
+    .hover\:bg-blue-100:hover {
+      @apply active:bg-blue-200;
+    }
+    
+    .hover\:bg-green-100:hover {
+      @apply active:bg-green-200;
+    }
+    
+    .hover\:bg-red-100:hover {
+      @apply active:bg-red-200;
+    }
+    
+    .hover\:bg-yellow-100:hover {
+      @apply active:bg-yellow-200;
+    }
+    
+    /* Better mobile button interactions */
+    .btn:hover {
+      @apply active:scale-95;
+    }
+    
+    .btn:active {
+      @apply scale-95;
+    }
+    
+    /* Better mobile link interactions */
+    a:hover {
+      @apply active:opacity-80;
+    }
+    
+    a:active {
+      @apply opacity-80;
+    }
+    
+    /* Better mobile card interactions */
+    .card:hover {
+      @apply active:shadow-lg;
+    }
+    
+    .card:active {
+      @apply shadow-lg;
+    }
+    
+    /* Better mobile table row interactions */
+    .table tbody tr:hover {
+      @apply active:bg-gray-200;
+    }
+    
+    .table tbody tr:active {
+      @apply bg-gray-200;
+    }
+  }
+  
+  /* Mobile focus states and keyboard navigation improvements */
+  @media (max-width: 640px) {
+    /* Better mobile focus indicators */
+    .focus\:ring-2:focus {
+      @apply ring-4 ring-primary-500 ring-opacity-75;
+    }
+    
+    .focus\:ring-primary-500:focus {
+      @apply ring-4 ring-primary-500 ring-opacity-75;
+    }
+    
+    .focus\:ring-gray-500:focus {
+      @apply ring-4 ring-gray-500 ring-opacity-75;
+    }
+    
+    /* Better mobile focus outline */
+    .focus\:outline-none:focus {
+      @apply outline-none;
+    }
+    
+    /* Better mobile focus border */
+    .focus\:border-primary-500:focus {
+      @apply border-2 border-primary-500;
+    }
+    
+    .focus\:border-gray-500:focus {
+      @apply border-2 border-gray-500;
+    }
+    
+    /* Better mobile keyboard navigation */
+    .focus\:bg-gray-100:focus {
+      @apply bg-gray-200;
+    }
+    
+    .focus\:bg-blue-100:focus {
+      @apply bg-blue-200;
+    }
+    
+    .focus\:bg-green-100:focus {
+      @apply bg-green-200;
+    }
+    
+    .focus\:bg-red-100:focus {
+      @apply bg-red-200;
+    }
+    
+    .focus\:bg-yellow-100:focus {
+      @apply bg-yellow-200;
+    }
+    
+    /* Better mobile focus text color */
+    .focus\:text-gray-900:focus {
+      @apply text-gray-900;
+    }
+    
+    .focus\:text-white:focus {
+      @apply text-white;
+    }
+    
+    /* Better mobile focus scale */
+    .focus\:scale-105:focus {
+      @apply scale-105;
+    }
+    
+    .focus\:scale-110:focus {
+      @apply scale-110;
+    }
+  }
+  
+  /* Mobile loading states and feedback improvements */
+  @media (max-width: 640px) {
+    /* Better mobile loading states */
+    .loading {
+      @apply opacity-50 pointer-events-none;
+    }
+    
+    .loading::after {
+      @apply content-[''] absolute inset-0 bg-white bg-opacity-50 flex items-center justify-center;
+    }
+    
+    /* Better mobile loading spinners */
+    .spinner {
+      @apply w-6 h-6 border-2 border-gray-300 border-t-primary-500 rounded-full animate-spin;
+    }
+    
+    .spinner-sm {
+      @apply w-4 h-4 border border-gray-300 border-t-primary-500;
+    }
+    
+    .spinner-lg {
+      @apply w-8 h-8 border-3 border-gray-300 border-t-primary-500;
+    }
+    
+    /* Better mobile skeleton loading */
+    .skeleton {
+      @apply animate-pulse bg-gray-200 dark:bg-gray-700 rounded;
+    }
+    
+    .skeleton-text {
+      @apply h-4 bg-gray-200 dark:bg-gray-700 rounded;
+    }
+    
+    .skeleton-avatar {
+      @apply w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-full;
+    }
+    
+    .skeleton-button {
+      @apply h-10 bg-gray-200 dark:bg-gray-700 rounded-lg;
+    }
+    
+    /* Better mobile progress indicators */
+    .progress {
+      @apply w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2;
+    }
+    
+    .progress-bar {
+      @apply bg-primary-500 h-2 rounded-full transition-all duration-300;
+    }
+    
+    /* Better mobile toast notifications */
+    .toast {
+      @apply fixed bottom-4 left-4 right-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-4 z-50;
+    }
+    
+    .toast-success {
+      @apply border-green-200 bg-green-50 dark:bg-green-900 dark:border-green-700;
+    }
+    
+    .toast-error {
+      @apply border-red-200 bg-red-50 dark:bg-red-900 dark:border-red-700;
+    }
+    
+    .toast-warning {
+      @apply border-yellow-200 bg-yellow-50 dark:bg-yellow-900 dark:border-yellow-700;
+    }
+    
+    .toast-info {
+      @apply border-blue-200 bg-blue-50 dark:bg-blue-900 dark:border-blue-700;
+    }
+  }
+  
+  /* Mobile error states and validation improvements */
+  @media (max-width: 640px) {
+    /* Better mobile error states */
+    .error {
+      @apply border-red-500 bg-red-50 dark:bg-red-900 dark:border-red-700;
+    }
+    
+    .error-message {
+      @apply text-red-600 dark:text-red-400 text-sm mt-1;
+    }
+    
+    .error-icon {
+      @apply text-red-500 dark:text-red-400 w-4 h-4;
+    }
+    
+    /* Better mobile validation states */
+    .valid {
+      @apply border-green-500 bg-green-50 dark:bg-green-900 dark:border-green-700;
+    }
+    
+    .valid-message {
+      @apply text-green-600 dark:text-green-400 text-sm mt-1;
+    }
+    
+    .valid-icon {
+      @apply text-green-500 dark:text-green-400 w-4 h-4;
+    }
+    
+    /* Better mobile warning states */
+    .warning {
+      @apply border-yellow-500 bg-yellow-50 dark:bg-yellow-900 dark:border-yellow-700;
+    }
+    
+    .warning-message {
+      @apply text-yellow-600 dark:text-yellow-400 text-sm mt-1;
+    }
+    
+    .warning-icon {
+      @apply text-yellow-500 dark:text-yellow-400 w-4 h-4;
+    }
+    
+    /* Better mobile form validation */
+    .form-input.error {
+      @apply border-red-500 focus:border-red-500 focus:ring-red-500;
+    }
+    
+    .form-input.valid {
+      @apply border-green-500 focus:border-green-500 focus:ring-green-500;
+    }
+    
+    .form-input.warning {
+      @apply border-yellow-500 focus:border-yellow-500 focus:ring-yellow-500;
+    }
+    
+    /* Better mobile validation feedback */
+    .validation-feedback {
+      @apply flex items-center space-x-2 mt-1;
+    }
+    
+    .validation-feedback.error {
+      @apply text-red-600 dark:text-red-400;
+    }
+    
+    .validation-feedback.valid {
+      @apply text-green-600 dark:text-green-400;
+    }
+    
+    .validation-feedback.warning {
+      @apply text-yellow-600 dark:text-yellow-400;
+    }
+  }
+  
+  /* Mobile empty states and no data improvements */
+  @media (max-width: 640px) {
+    /* Better mobile empty states */
+    .empty-state {
+      @apply flex flex-col items-center justify-center py-12 px-4 text-center;
+    }
+    
+    .empty-state-icon {
+      @apply w-16 h-16 text-gray-400 dark:text-gray-600 mb-4;
+    }
+    
+    .empty-state-title {
+      @apply text-lg font-medium text-gray-900 dark:text-white mb-2;
+    }
+    
+    .empty-state-description {
+      @apply text-sm text-gray-500 dark:text-gray-400 mb-6 max-w-sm;
+    }
+    
+    .empty-state-action {
+      @apply btn btn-primary;
+    }
+    
+    /* Better mobile no data states */
+    .no-data {
+      @apply flex flex-col items-center justify-center py-8 px-4 text-center;
+    }
+    
+    .no-data-icon {
+      @apply w-12 h-12 text-gray-400 dark:text-gray-600 mb-3;
+    }
+    
+    .no-data-title {
+      @apply text-base font-medium text-gray-900 dark:text-white mb-1;
+    }
+    
+    .no-data-description {
+      @apply text-xs text-gray-500 dark:text-gray-400 mb-4;
+    }
+    
+    .no-data-action {
+      @apply btn btn-primary text-sm;
+    }
+    
+    /* Better mobile loading states */
+    .loading-state {
+      @apply flex flex-col items-center justify-center py-8 px-4 text-center;
+    }
+    
+    .loading-state-spinner {
+      @apply w-8 h-8 border-2 border-gray-300 border-t-primary-500 rounded-full animate-spin mb-3;
+    }
+    
+    .loading-state-text {
+      @apply text-sm text-gray-500 dark:text-gray-400;
+    }
+    
+    /* Better mobile error states */
+    .error-state {
+      @apply flex flex-col items-center justify-center py-8 px-4 text-center;
+    }
+    
+    .error-state-icon {
+      @apply w-12 h-12 text-red-400 dark:text-red-600 mb-3;
+    }
+    
+    .error-state-title {
+      @apply text-base font-medium text-gray-900 dark:text-white mb-1;
+    }
+    
+    .error-state-description {
+      @apply text-xs text-gray-500 dark:text-gray-400 mb-4;
+    }
+    
+    .error-state-action {
+      @apply btn btn-primary text-sm;
+    }
+  }
+  
+  /* Mobile search and filter improvements */
+  @media (max-width: 640px) {
+    /* Better mobile search bar */
+    .search-bar {
+      @apply relative w-full;
+    }
+    
+    .search-input {
+      @apply w-full pl-10 pr-4 py-3 text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500;
+    }
+    
+    .search-icon {
+      @apply absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500;
+    }
+    
+    .search-clear {
+      @apply absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 cursor-pointer;
+    }
+    
+    /* Better mobile filter bar */
+    .filter-bar {
+      @apply flex flex-col space-y-3 p-4 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700;
+    }
+    
+    .filter-row {
+      @apply flex flex-wrap gap-2;
+    }
+    
+    .filter-item {
+      @apply flex items-center space-x-2 px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-sm;
+    }
+    
+    .filter-label {
+      @apply text-gray-700 dark:text-gray-300 font-medium;
+    }
+    
+    .filter-value {
+      @apply text-gray-900 dark:text-white;
+    }
+    
+    .filter-remove {
+      @apply w-4 h-4 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 cursor-pointer;
+    }
+    
+    /* Better mobile filter dropdown */
+    .filter-dropdown {
+      @apply relative;
+    }
+    
+    .filter-dropdown-button {
+      @apply flex items-center space-x-2 px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600;
+    }
+    
+    .filter-dropdown-menu {
+      @apply absolute top-full left-0 mt-1 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50;
+    }
+    
+    .filter-dropdown-item {
+      @apply block w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer;
+    }
+    
+    /* Better mobile sort controls */
+    .sort-controls {
+      @apply flex items-center space-x-2 p-3 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700;
+    }
+    
+    .sort-button {
+      @apply flex items-center space-x-1 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg;
+    }
+    
+    .sort-icon {
+      @apply w-4 h-4;
+    }
+  }
+  
+  /* Mobile action buttons and floating action buttons improvements */
+  @media (max-width: 640px) {
+    /* Better mobile action buttons */
+    .action-buttons {
+      @apply flex flex-col space-y-2 p-4;
+    }
+    
+    .action-button {
+      @apply w-full flex items-center justify-center px-4 py-3 text-base font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2;
+    }
+    
+    .action-button-primary {
+      @apply bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500;
+    }
+    
+    .action-button-secondary {
+      @apply bg-gray-200 text-gray-900 hover:bg-gray-300 focus:ring-gray-500 dark:bg-gray-700 dark:text-gray-100 dark:hover:bg-gray-600;
+    }
+    
+    .action-button-danger {
+      @apply bg-red-600 text-white hover:bg-red-700 focus:ring-red-500;
+    }
+    
+    /* Better mobile floating action button */
+    .fab {
+      @apply fixed bottom-6 right-6 w-14 h-14 bg-primary-600 text-white rounded-full shadow-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 z-50 flex items-center justify-center;
+    }
+    
+    .fab-icon {
+      @apply w-6 h-6;
+    }
+    
+    .fab-small {
+      @apply w-12 h-12;
+    }
+    
+    .fab-small .fab-icon {
+      @apply w-5 h-5;
+    }
+    
+    .fab-large {
+      @apply w-16 h-16;
+    }
+    
+    .fab-large .fab-icon {
+      @apply w-7 h-7;
+    }
+    
+    /* Better mobile speed dial */
+    .speed-dial {
+      @apply fixed bottom-6 right-6 z-50;
+    }
+    
+    .speed-dial-trigger {
+      @apply w-14 h-14 bg-primary-600 text-white rounded-full shadow-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 flex items-center justify-center;
+    }
+    
+    .speed-dial-menu {
+      @apply absolute bottom-16 right-0 flex flex-col space-y-2;
+    }
+    
+    .speed-dial-item {
+      @apply w-12 h-12 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full shadow-lg hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 flex items-center justify-center;
+    }
+    
+    /* Better mobile bottom action bar */
+    .bottom-action-bar {
+      @apply fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 p-4 z-40;
+    }
+    
+    .bottom-action-bar-content {
+      @apply flex items-center justify-between max-w-md mx-auto;
+    }
+    
+    .bottom-action-button {
+      @apply flex-1 mx-2 px-4 py-3 text-base font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2;
+    }
+  }
+  
+  /* Mobile gesture support and touch interactions improvements */
+  @media (max-width: 640px) {
+    /* Better mobile touch targets */
+    .touch-target {
+      @apply min-h-[44px] min-w-[44px];
+    }
+    
+    .touch-target-small {
+      @apply min-h-[32px] min-w-[32px];
+    }
+    
+    .touch-target-large {
+      @apply min-h-[56px] min-w-[56px];
+    }
+    
+    /* Better mobile swipe gestures */
+    .swipeable {
+      @apply touch-pan-y;
+    }
+    
+    .swipeable-horizontal {
+      @apply touch-pan-x;
+    }
+    
+    .swipeable-both {
+      @apply touch-pan-x touch-pan-y;
+    }
+    
+    /* Better mobile pinch gestures */
+    .pinchable {
+      @apply touch-pinch-zoom;
+    }
+    
+    /* Better mobile scroll snap */
+    .scroll-snap {
+      @apply scroll-smooth;
+    }
+    
+    .scroll-snap-x {
+      @apply scroll-smooth snap-x snap-mandatory;
+    }
+    
+    .scroll-snap-y {
+      @apply scroll-smooth snap-y snap-mandatory;
+    }
+    
+    .scroll-snap-item {
+      @apply snap-start;
+    }
+    
+    .scroll-snap-center {
+      @apply snap-center;
+    }
+    
+    .scroll-snap-end {
+      @apply snap-end;
+    }
+    
+    /* Better mobile pull to refresh */
+    .pull-to-refresh {
+      @apply overscroll-behavior-contain;
+    }
+    
+    .pull-to-refresh-indicator {
+      @apply fixed top-0 left-0 right-0 h-1 bg-primary-500 transform -translate-y-full transition-transform duration-300;
+    }
+    
+    .pull-to-refresh-indicator.active {
+      @apply translate-y-0;
+    }
+    
+    /* Better mobile long press */
+    .long-press {
+      @apply touch-manipulation;
+    }
+    
+    .long-press-feedback {
+      @apply scale-95 opacity-75;
+    }
+    
+    /* Better mobile double tap */
+    .double-tap {
+      @apply touch-manipulation;
+    }
+    
+    /* Better mobile haptic feedback */
+    .haptic-feedback {
+      @apply active:scale-95;
+    }
+    
+    .haptic-feedback-strong {
+      @apply active:scale-90;
+    }
+    
+    /* Better mobile touch feedback */
+    .touch-feedback {
+      @apply active:bg-gray-100 dark:active:bg-gray-700;
+    }
+    
+    .touch-feedback-primary {
+      @apply active:bg-primary-100 dark:active:bg-primary-900;
+    }
+    
+    .touch-feedback-success {
+      @apply active:bg-green-100 dark:active:bg-green-900;
+    }
+    
+    .touch-feedback-warning {
+      @apply active:bg-yellow-100 dark:active:bg-yellow-900;
+    }
+    
+    .touch-feedback-danger {
+      @apply active:bg-red-100 dark:active:bg-red-900;
+    }
+  }
+  
+  /* Mobile performance optimizations */
+  @media (max-width: 640px) {
+    /* Optimize mobile rendering */
+    .mobile-optimized {
+      @apply will-change-auto;
+    }
+    
+    .mobile-optimized-transform {
+      @apply will-change-transform;
+    }
+    
+    .mobile-optimized-opacity {
+      @apply will-change-opacity;
+    }
+    
+    /* Optimize mobile animations */
+    .mobile-animation-fast {
+      @apply transition-all duration-150;
+    }
+    
+    .mobile-animation-normal {
+      @apply transition-all duration-200;
+    }
+    
+    .mobile-animation-slow {
+      @apply transition-all duration-300;
+    }
+    
+    /* Optimize mobile transforms */
+    .mobile-transform-gpu {
+      @apply transform-gpu;
+    }
+    
+    .mobile-transform-3d {
+      @apply transform-gpu translate-3d;
+    }
+    
+    /* Optimize mobile scrolling */
+    .mobile-scroll-smooth {
+      @apply scroll-smooth;
+    }
+    
+    .mobile-scroll-auto {
+      @apply scroll-auto;
+    }
+    
+    /* Optimize mobile images */
+    .mobile-image-optimized {
+      @apply object-cover object-center;
+    }
+    
+    .mobile-image-contain {
+      @apply object-contain object-center;
+    }
+    
+    /* Optimize mobile fonts */
+    .mobile-font-optimized {
+      @apply antialiased subpixel-antialiased;
+    }
+    
+    /* Optimize mobile shadows */
+    .mobile-shadow-optimized {
+      @apply shadow-sm;
+    }
+    
+    .mobile-shadow-none {
+      @apply shadow-none;
+    }
+    
+    /* Optimize mobile borders */
+    .mobile-border-optimized {
+      @apply border-0;
+    }
+    
+    /* Optimize mobile backgrounds */
+    .mobile-bg-optimized {
+      @apply bg-opacity-100;
+    }
+    
+    /* Optimize mobile gradients */
+    .mobile-gradient-optimized {
+      @apply bg-gradient-to-br;
+    }
+    
+    /* Optimize mobile filters */
+    .mobile-filter-optimized {
+      @apply filter-none;
+    }
+    
+    /* Optimize mobile backdrop filters */
+    .mobile-backdrop-optimized {
+      @apply backdrop-filter-none;
+    }
+  }
+  
+  /* Mobile battery and data optimization */
+  @media (max-width: 640px) {
+    /* Battery optimization */
+    .battery-saver {
+      @apply motion-reduce;
+    }
+    
+    .battery-saver * {
+      @apply motion-reduce;
+    }
+    
+    /* Data optimization */
+    .data-saver {
+      @apply bg-white dark:bg-gray-900;
+    }
+    
+    .data-saver .card {
+      @apply bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700;
+    }
+    
+    .data-saver .btn {
+      @apply bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600;
+    }
+    
+    .data-saver .form-input {
+      @apply bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600;
+    }
+    
+    /* Low power mode */
+    .low-power-mode {
+      @apply motion-reduce;
+    }
+    
+    .low-power-mode * {
+      @apply motion-reduce;
+    }
+    
+    .low-power-mode .animate-pulse {
+      @apply animate-none;
+    }
+    
+    .low-power-mode .animate-spin {
+      @apply animate-none;
+    }
+    
+    .low-power-mode .animate-bounce {
+      @apply animate-none;
+    }
+    
+    /* Reduced motion */
+    .reduced-motion {
+      @apply motion-reduce;
+    }
+    
+    .reduced-motion * {
+      @apply motion-reduce;
+    }
+    
+    /* High contrast mode */
+    .high-contrast {
+      @apply contrast-200;
+    }
+    
+    .high-contrast .card {
+      @apply border-2 border-gray-900;
+    }
+    
+    .high-contrast .btn {
+      @apply border-2 border-gray-900;
+    }
+    
+    .high-contrast .form-input {
+      @apply border-2 border-gray-900;
+    }
+    
+    /* Dark mode optimization */
+    .dark-mode-optimized {
+      @apply dark:bg-gray-900 dark:text-white;
+    }
+    
+    .dark-mode-optimized .card {
+      @apply dark:bg-gray-800 dark:border-gray-700;
+    }
+    
+    .dark-mode-optimized .btn {
+      @apply dark:bg-gray-700 dark:border-gray-600 dark:text-white;
+    }
+    
+    .dark-mode-optimized .form-input {
+      @apply dark:bg-gray-700 dark:border-gray-600 dark:text-white;
+    }
+  }
+  
+  /* Mobile accessibility and screen reader support */
+  @media (max-width: 640px) {
+    /* Screen reader only content */
+    .sr-only {
+      @apply absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0;
+    }
+    
+    .sr-only-focusable:focus {
+      @apply static w-auto h-auto p-0 m-0 overflow-visible whitespace-normal border-0;
+    }
+    
+    /* Better mobile focus indicators */
+    .focus-visible {
+      @apply outline-none ring-2 ring-primary-500 ring-offset-2;
+    }
+    
+    .focus-visible:focus {
+      @apply outline-none ring-2 ring-primary-500 ring-offset-2;
+    }
+    
+    /* Better mobile skip links */
+    .skip-link {
+      @apply absolute top-0 left-0 z-50 px-4 py-2 bg-primary-600 text-white transform -translate-y-full focus:translate-y-0;
+    }
+    
+    /* Better mobile ARIA labels */
+    .aria-label {
+      @apply sr-only;
+    }
+    
+    .aria-describedby {
+      @apply sr-only;
+    }
+    
+    /* Better mobile live regions */
+    .live-region {
+      @apply sr-only;
+    }
+    
+    .live-region-assertive {
+      @apply sr-only;
+    }
+    
+    .live-region-polite {
+      @apply sr-only;
+    }
+    
+    /* Better mobile landmarks */
+    .landmark-main {
+      @apply main;
+    }
+    
+    .landmark-navigation {
+      @apply nav;
+    }
+    
+    .landmark-header {
+      @apply header;
+    }
+    
+    .landmark-footer {
+      @apply footer;
+    }
+    
+    .landmark-aside {
+      @apply aside;
+    }
+    
+    .landmark-article {
+      @apply article;
+    }
+    
+    .landmark-section {
+      @apply section;
+    }
+    
+    /* Better mobile form accessibility */
+    .form-fieldset {
+      @apply fieldset;
+    }
+    
+    .form-legend {
+      @apply legend;
+    }
+    
+    .form-group {
+      @apply div;
+    }
+    
+    .form-label-required::after {
+      @apply content-['*'] text-red-500 ml-1;
+    }
+    
+    .form-error {
+      @apply text-red-600 dark:text-red-400 text-sm mt-1;
+    }
+    
+    .form-help {
+      @apply text-gray-500 dark:text-gray-400 text-sm mt-1;
+    }
+    
+    /* Better mobile button accessibility */
+    .btn-icon {
+      @apply flex items-center justify-center;
+    }
+    
+    .btn-icon .sr-only {
+      @apply sr-only;
+    }
+    
+    /* Better mobile link accessibility */
+    .link-external::after {
+      @apply content-['↗'] ml-1;
+    }
+    
+    .link-download::after {
+      @apply content-['↓'] ml-1;
+    }
+    
+    /* Better mobile table accessibility */
+    .table-caption {
+      @apply caption;
+    }
+    
+    .table-scope-col {
+      @apply scope-col;
+    }
+    
+    .table-scope-row {
+      @apply scope-row;
+    }
+    
+    /* Better mobile list accessibility */
+    .list-ordered {
+      @apply list-decimal;
+    }
+    
+    .list-unordered {
+      @apply list-disc;
+    }
+    
+    .list-none {
+      @apply list-none;
+    }
+  }
+  
+  /* Mobile internationalization and RTL support */
+  @media (max-width: 640px) {
+    /* RTL support */
+    [dir="rtl"] .ml-2 {
+      @apply ml-0 mr-2;
+    }
+    
+    [dir="rtl"] .mr-2 {
+      @apply mr-0 ml-2;
+    }
+    
+    [dir="rtl"] .ml-3 {
+      @apply ml-0 mr-3;
+    }
+    
+    [dir="rtl"] .mr-3 {
+      @apply mr-0 ml-3;
+    }
+    
+    [dir="rtl"] .ml-4 {
+      @apply ml-0 mr-4;
+    }
+    
+    [dir="rtl"] .mr-4 {
+      @apply mr-0 ml-4;
+    }
+    
+    [dir="rtl"] .left-0 {
+      @apply left-auto right-0;
+    }
+    
+    [dir="rtl"] .right-0 {
+      @apply right-auto left-0;
+    }
+    
+    [dir="rtl"] .text-left {
+      @apply text-right;
+    }
+    
+    [dir="rtl"] .text-right {
+      @apply text-left;
+    }
+    
+    /* RTL sidebar */
+    [dir="rtl"] .sidebar {
+      @apply left-auto right-0;
+    }
+    
+    [dir="rtl"] .sidebar-mobile {
+      @apply -translate-x-full rtl:translate-x-full lg:translate-x-0;
+    }
+    
+    [dir="rtl"] .sidebar-open {
+      @apply translate-x-0;
+    }
+    
+    /* RTL main content */
+    [dir="rtl"] .main-content {
+      @apply lg:ml-0 lg:mr-64;
+    }
+    
+    /* RTL navigation */
+    [dir="rtl"] .nav-link svg {
+      @apply ml-0 mr-3;
+    }
+    
+    /* RTL dropdowns */
+    [dir="rtl"] .dropdown-menu {
+      @apply right-auto left-0;
+    }
+    
+    /* RTL forms */
+    [dir="rtl"] .form-input {
+      @apply text-right;
+    }
+    
+    [dir="rtl"] .form-label {
+      @apply text-right;
+    }
+    
+    /* RTL tables */
+    [dir="rtl"] .table th,
+    [dir="rtl"] .table td {
+      @apply text-right;
+    }
+    
+    /* RTL buttons */
+    [dir="rtl"] .btn svg {
+      @apply ml-0 mr-2;
+    }
+    
+    /* RTL icons */
+    [dir="rtl"] .icon-left {
+      @apply ml-0 mr-2;
+    }
+    
+    [dir="rtl"] .icon-right {
+      @apply mr-0 ml-2;
+    }
+    
+    /* RTL spacing */
+    [dir="rtl"] .space-x-2 > * + * {
+      @apply ml-0 mr-2;
+    }
+    
+    [dir="rtl"] .space-x-3 > * + * {
+      @apply ml-0 mr-3;
+    }
+    
+    [dir="rtl"] .space-x-4 > * + * {
+      @apply ml-0 mr-4;
+    }
+    
+    /* RTL flex */
+    [dir="rtl"] .flex-row {
+      @apply flex-row-reverse;
+    }
+    
+    [dir="rtl"] .justify-start {
+      @apply justify-end;
+    }
+    
+    [dir="rtl"] .justify-end {
+      @apply justify-start;
+    }
+    
+    /* RTL grid */
+    [dir="rtl"] .grid-cols-2 > *:nth-child(odd) {
+      @apply order-2;
+    }
+    
+    [dir="rtl"] .grid-cols-2 > *:nth-child(even) {
+      @apply order-1;
+    }
+    
+    /* RTL floating elements */
+    [dir="rtl"] .fab {
+      @apply right-auto left-6;
+    }
+    
+    [dir="rtl"] .speed-dial {
+      @apply right-auto left-6;
+    }
+    
+    [dir="rtl"] .speed-dial-menu {
+      @apply right-auto left-0;
+    }
+  }
+  
+  /* Mobile testing and debugging */
+  @media (max-width: 640px) {
+    /* Debug outlines */
+    .debug-outline {
+      @apply border border-red-500;
+    }
+    
+    .debug-outline * {
+      @apply border border-blue-500;
+    }
+    
+    /* Debug grid */
+    .debug-grid {
+      @apply bg-gradient-to-r from-red-500 to-blue-500 bg-opacity-10;
+    }
+    
+    /* Debug spacing */
+    .debug-spacing {
+      @apply bg-yellow-500 bg-opacity-20;
+    }
+    
+    /* Debug touch targets */
+    .debug-touch-target {
+      @apply bg-green-500 bg-opacity-20;
+    }
+    
+    /* Debug responsive breakpoints */
+    .debug-breakpoint::before {
+      @apply content-['Mobile'] fixed top-0 left-0 z-50 px-2 py-1 text-xs text-white bg-red-500;
+    }
+    
+    /* Debug viewport */
+    .debug-viewport::after {
+      @apply content-['640px'] fixed bottom-0 right-0 z-50 px-2 py-1 text-xs text-white bg-blue-500;
+    }
+    
+    /* Debug performance */
+    .debug-performance {
+      @apply will-change-auto;
+    }
+    
+    /* Debug accessibility */
+    .debug-accessibility {
+      @apply outline-2 outline-red-500 outline-dashed;
+    }
+    
+    /* Debug focus */
+    .debug-focus:focus {
+      @apply outline-2 outline-blue-500 outline-dashed;
+    }
+    
+    /* Debug hover */
+    .debug-hover:hover {
+      @apply bg-yellow-500 bg-opacity-20;
+    }
+    
+    /* Debug active */
+    .debug-active:active {
+      @apply bg-green-500 bg-opacity-20;
+    }
+    
+    /* Debug disabled */
+    .debug-disabled:disabled {
+      @apply bg-gray-500 bg-opacity-20;
+    }
+    
+    /* Debug loading */
+    .debug-loading {
+      @apply animate-pulse bg-gray-300;
+    }
+    
+    /* Debug error */
+    .debug-error {
+      @apply bg-red-500 bg-opacity-20;
+    }
+    
+    /* Debug success */
+    .debug-success {
+      @apply bg-green-500 bg-opacity-20;
+    }
+    
+    /* Debug warning */
+    .debug-warning {
+      @apply bg-yellow-500 bg-opacity-20;
+    }
+    
+    /* Debug info */
+    .debug-info {
+      @apply bg-blue-500 bg-opacity-20;
+    }
+  }
+  
+  /* Mobile documentation and examples */
+  @media (max-width: 640px) {
+    /* Mobile component examples */
+    .mobile-example {
+      @apply p-4 border border-gray-200 dark:border-gray-700 rounded-lg mb-4;
+    }
+    
+    .mobile-example-title {
+      @apply text-lg font-semibold text-gray-900 dark:text-white mb-2;
+    }
+    
+    .mobile-example-description {
+      @apply text-sm text-gray-600 dark:text-gray-400 mb-4;
+    }
+    
+    .mobile-example-code {
+      @apply bg-gray-100 dark:bg-gray-800 p-3 rounded text-sm font-mono text-gray-800 dark:text-gray-200 overflow-x-auto;
+    }
+    
+    /* Mobile usage examples */
+    .mobile-usage {
+      @apply bg-blue-50 dark:bg-blue-900 p-4 rounded-lg mb-4;
+    }
+    
+    .mobile-usage-title {
+      @apply text-base font-medium text-blue-900 dark:text-blue-100 mb-2;
+    }
+    
+    .mobile-usage-content {
+      @apply text-sm text-blue-800 dark:text-blue-200;
+    }
+    
+    /* Mobile best practices */
+    .mobile-best-practice {
+      @apply bg-green-50 dark:bg-green-900 p-4 rounded-lg mb-4;
+    }
+    
+    .mobile-best-practice-title {
+      @apply text-base font-medium text-green-900 dark:text-green-100 mb-2;
+    }
+    
+    .mobile-best-practice-content {
+      @apply text-sm text-green-800 dark:text-green-200;
+    }
+    
+    /* Mobile warnings */
+    .mobile-warning {
+      @apply bg-yellow-50 dark:bg-yellow-900 p-4 rounded-lg mb-4;
+    }
+    
+    .mobile-warning-title {
+      @apply text-base font-medium text-yellow-900 dark:text-yellow-100 mb-2;
+    }
+    
+    .mobile-warning-content {
+      @apply text-sm text-yellow-800 dark:text-yellow-200;
+    }
+    
+    /* Mobile notes */
+    .mobile-note {
+      @apply bg-gray-50 dark:bg-gray-800 p-4 rounded-lg mb-4;
+    }
+    
+    .mobile-note-title {
+      @apply text-base font-medium text-gray-900 dark:text-gray-100 mb-2;
+    }
+    
+    .mobile-note-content {
+      @apply text-sm text-gray-700 dark:text-gray-300;
+    }
+    
+    /* Mobile tips */
+    .mobile-tip {
+      @apply bg-purple-50 dark:bg-purple-900 p-4 rounded-lg mb-4;
+    }
+    
+    .mobile-tip-title {
+      @apply text-base font-medium text-purple-900 dark:text-purple-100 mb-2;
+    }
+    
+    .mobile-tip-content {
+      @apply text-sm text-purple-800 dark:text-purple-200;
+    }
+    
+    /* Mobile code blocks */
+    .mobile-code-block {
+      @apply bg-gray-900 text-gray-100 p-4 rounded-lg mb-4 overflow-x-auto;
+    }
+    
+    .mobile-code-block-title {
+      @apply text-sm font-medium text-gray-300 mb-2;
+    }
+    
+    .mobile-code-block-content {
+      @apply text-sm font-mono;
+    }
+    
+    /* Mobile inline code */
+    .mobile-inline-code {
+      @apply bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded text-sm font-mono text-gray-800 dark:text-gray-200;
+    }
+    
+    /* Mobile links */
+    .mobile-link {
+      @apply text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 underline;
+    }
+    
+    .mobile-link-external {
+      @apply text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 underline;
+    }
+    
+    .mobile-link-external::after {
+      @apply content-['↗'] ml-1;
+    }
+    
+    /* Mobile lists */
+    .mobile-list {
+      @apply space-y-2;
+    }
+    
+    .mobile-list-item {
+      @apply flex items-start space-x-2;
+    }
+    
+    .mobile-list-bullet {
+      @apply w-2 h-2 bg-primary-500 rounded-full mt-2 flex-shrink-0;
+    }
+    
+    .mobile-list-content {
+      @apply text-sm text-gray-700 dark:text-gray-300;
+    }
+  }
+  
+  /* Mobile utilities and helper classes */
+  @media (max-width: 640px) {
+    /* Mobile spacing utilities */
+    .mobile-p-0 { @apply p-0; }
+    .mobile-p-1 { @apply p-1; }
+    .mobile-p-2 { @apply p-2; }
+    .mobile-p-3 { @apply p-3; }
+    .mobile-p-4 { @apply p-4; }
+    .mobile-p-5 { @apply p-5; }
+    .mobile-p-6 { @apply p-6; }
+    
+    .mobile-px-0 { @apply px-0; }
+    .mobile-px-1 { @apply px-1; }
+    .mobile-px-2 { @apply px-2; }
+    .mobile-px-3 { @apply px-3; }
+    .mobile-px-4 { @apply px-4; }
+    .mobile-px-5 { @apply px-5; }
+    .mobile-px-6 { @apply px-6; }
+    
+    .mobile-py-0 { @apply py-0; }
+    .mobile-py-1 { @apply py-1; }
+    .mobile-py-2 { @apply py-2; }
+    .mobile-py-3 { @apply py-3; }
+    .mobile-py-4 { @apply py-4; }
+    .mobile-py-5 { @apply py-5; }
+    .mobile-py-6 { @apply py-6; }
+    
+    /* Mobile margin utilities */
+    .mobile-m-0 { @apply m-0; }
+    .mobile-m-1 { @apply m-1; }
+    .mobile-m-2 { @apply m-2; }
+    .mobile-m-3 { @apply m-3; }
+    .mobile-m-4 { @apply m-4; }
+    .mobile-m-5 { @apply m-5; }
+    .mobile-m-6 { @apply m-6; }
+    
+    .mobile-mx-0 { @apply mx-0; }
+    .mobile-mx-1 { @apply mx-1; }
+    .mobile-mx-2 { @apply mx-2; }
+    .mobile-mx-3 { @apply mx-3; }
+    .mobile-mx-4 { @apply mx-4; }
+    .mobile-mx-5 { @apply mx-5; }
+    .mobile-mx-6 { @apply mx-6; }
+    
+    .mobile-my-0 { @apply my-0; }
+    .mobile-my-1 { @apply my-1; }
+    .mobile-my-2 { @apply my-2; }
+    .mobile-my-3 { @apply my-3; }
+    .mobile-my-4 { @apply my-4; }
+    .mobile-my-5 { @apply my-5; }
+    .mobile-my-6 { @apply my-6; }
+    
+    /* Mobile text utilities */
+    .mobile-text-xs { @apply text-xs; }
+    .mobile-text-sm { @apply text-sm; }
+    .mobile-text-base { @apply text-base; }
+    .mobile-text-lg { @apply text-lg; }
+    .mobile-text-xl { @apply text-xl; }
+    .mobile-text-2xl { @apply text-2xl; }
+    .mobile-text-3xl { @apply text-3xl; }
+    
+    /* Mobile flex utilities */
+    .mobile-flex { @apply flex; }
+    .mobile-inline-flex { @apply inline-flex; }
+    .mobile-flex-row { @apply flex-row; }
+    .mobile-flex-col { @apply flex-col; }
+    .mobile-flex-wrap { @apply flex-wrap; }
+    .mobile-flex-nowrap { @apply flex-nowrap; }
+    .mobile-items-start { @apply items-start; }
+    .mobile-items-center { @apply items-center; }
+    .mobile-items-end { @apply items-end; }
+    .mobile-justify-start { @apply justify-start; }
+    .mobile-justify-center { @apply justify-center; }
+    .mobile-justify-end { @apply justify-end; }
+    .mobile-justify-between { @apply justify-between; }
+    .mobile-justify-around { @apply justify-around; }
+    
+    /* Mobile grid utilities */
+    .mobile-grid { @apply grid; }
+    .mobile-grid-cols-1 { @apply grid-cols-1; }
+    .mobile-grid-cols-2 { @apply grid-cols-2; }
+    .mobile-grid-cols-3 { @apply grid-cols-3; }
+    .mobile-grid-cols-4 { @apply grid-cols-4; }
+    .mobile-grid-cols-5 { @apply grid-cols-5; }
+    .mobile-grid-cols-6 { @apply grid-cols-6; }
+    
+    /* Mobile gap utilities */
+    .mobile-gap-0 { @apply gap-0; }
+    .mobile-gap-1 { @apply gap-1; }
+    .mobile-gap-2 { @apply gap-2; }
+    .mobile-gap-3 { @apply gap-3; }
+    .mobile-gap-4 { @apply gap-4; }
+    .mobile-gap-5 { @apply gap-5; }
+    .mobile-gap-6 { @apply gap-6; }
+    
+    /* Mobile width utilities */
+    .mobile-w-full { @apply w-full; }
+    .mobile-w-auto { @apply w-auto; }
+    .mobile-w-1/2 { @apply w-1/2; }
+    .mobile-w-1/3 { @apply w-1/3; }
+    .mobile-w-2/3 { @apply w-2/3; }
+    .mobile-w-1/4 { @apply w-1/4; }
+    .mobile-w-3/4 { @apply w-3/4; }
+    
+    /* Mobile height utilities */
+    .mobile-h-full { @apply h-full; }
+    .mobile-h-auto { @apply h-auto; }
+    .mobile-h-screen { @apply h-screen; }
+    .mobile-min-h-screen { @apply min-h-screen; }
+    
+    /* Mobile position utilities */
+    .mobile-relative { @apply relative; }
+    .mobile-absolute { @apply absolute; }
+    .mobile-fixed { @apply fixed; }
+    .mobile-sticky { @apply sticky; }
+    
+    /* Mobile display utilities */
+    .mobile-block { @apply block; }
+    .mobile-inline-block { @apply inline-block; }
+    .mobile-inline { @apply inline; }
+    .mobile-hidden { @apply hidden; }
+    .mobile-visible { @apply visible; }
+    
+    /* Mobile overflow utilities */
+    .mobile-overflow-auto { @apply overflow-auto; }
+    .mobile-overflow-hidden { @apply overflow-hidden; }
+    .mobile-overflow-scroll { @apply overflow-scroll; }
+    .mobile-overflow-x-auto { @apply overflow-x-auto; }
+    .mobile-overflow-y-auto { @apply overflow-y-auto; }
+    
+    /* Mobile border utilities */
+    .mobile-border { @apply border; }
+    .mobile-border-0 { @apply border-0; }
+    .mobile-border-t { @apply border-t; }
+    .mobile-border-r { @apply border-r; }
+    .mobile-border-b { @apply border-b; }
+    .mobile-border-l { @apply border-l; }
+    
+    /* Mobile rounded utilities */
+    .mobile-rounded { @apply rounded; }
+    .mobile-rounded-none { @apply rounded-none; }
+    .mobile-rounded-sm { @apply rounded-sm; }
+    .mobile-rounded-md { @apply rounded-md; }
+    .mobile-rounded-lg { @apply rounded-lg; }
+    .mobile-rounded-xl { @apply rounded-xl; }
+    .mobile-rounded-2xl { @apply rounded-2xl; }
+    .mobile-rounded-full { @apply rounded-full; }
+    
+    /* Mobile shadow utilities */
+    .mobile-shadow { @apply shadow; }
+    .mobile-shadow-sm { @apply shadow-sm; }
+    .mobile-shadow-md { @apply shadow-md; }
+    .mobile-shadow-lg { @apply shadow-lg; }
+    .mobile-shadow-xl { @apply shadow-xl; }
+    .mobile-shadow-2xl { @apply shadow-2xl; }
+    .mobile-shadow-none { @apply shadow-none; }
+    
+    /* Mobile opacity utilities */
+    .mobile-opacity-0 { @apply opacity-0; }
+    .mobile-opacity-25 { @apply opacity-25; }
+    .mobile-opacity-50 { @apply opacity-50; }
+    .mobile-opacity-75 { @apply opacity-75; }
+    .mobile-opacity-100 { @apply opacity-100; }
+    
+    /* Mobile z-index utilities */
+    .mobile-z-0 { @apply z-0; }
+    .mobile-z-10 { @apply z-10; }
+    .mobile-z-20 { @apply z-20; }
+    .mobile-z-30 { @apply z-30; }
+    .mobile-z-40 { @apply z-40; }
+    .mobile-z-50 { @apply z-50; }
+    .mobile-z-auto { @apply z-auto; }
   }
   
   /* Glass morphism effect */

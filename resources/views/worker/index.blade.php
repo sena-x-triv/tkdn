@@ -33,7 +33,7 @@
             </div>
         </div>
         <div class="card-body p-0">
-            <div class="overflow-x-auto">
+            <div class="table-responsive">
                 <table class="table">
                     <thead>
                         <tr>
