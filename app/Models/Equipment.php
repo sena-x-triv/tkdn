@@ -13,6 +13,7 @@ class Equipment extends Model
     protected $table = 'equipment';
 
     protected $fillable = [
+        'code',
         'name',
         'tkdn',
         'period',

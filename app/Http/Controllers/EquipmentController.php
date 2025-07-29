@@ -30,6 +30,7 @@ class EquipmentController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
+            'code' => 'required|string|max:255|unique:equipment,code',
             'name' => 'required|string|max:255',
             'tkdn' => 'nullable|numeric|min:0|max:100',
             'period' => 'required|integer|min:1',
@@ -62,6 +63,7 @@ class EquipmentController extends Controller
     public function update(Request $request, Equipment $equipment)
     {
         $data = $request->validate([
+            'code' => 'required|string|max:255|unique:equipment,code,' . $equipment->id . ',id',
             'name' => 'required|string|max:255',
             'tkdn' => 'nullable|numeric|min:0|max:100',
             'period' => 'required|integer|min:1',

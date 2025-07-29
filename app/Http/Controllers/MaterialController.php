@@ -34,8 +34,9 @@ class MaterialController extends Controller
 
     public function store(Request $request) {
         $request->validate([
+            'code' => 'required|unique:material,code',
             'name' => 'required',
-            'type' => 'required',
+            'category_id' => 'required|exists:categories,id',
             'brand' => 'required',
             'price' => 'required|integer',
             'unit' => 'required'
@@ -55,8 +56,9 @@ class MaterialController extends Controller
 
     public function update(Request $request, Material $material) {
         $request->validate([
+            'code' => 'required|unique:material,code,' . $material->id . ',id',
             'name' => 'required',
-            'type' => 'required',
+            'category_id' => 'required|exists:categories,id',
             'brand' => 'required',
             'price' => 'required|integer',
             'unit' => 'required'
