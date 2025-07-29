@@ -39,7 +39,7 @@
                         <tr>
                             <th>No</th>
                             <th>Nama Barang/Jasa</th>
-                            <th>Tipe</th>
+                            <th>Kategori</th>
                             <th>Merk</th>
                             <th>Harga Satuan</th>
                             <th class="text-center">Actions</th>

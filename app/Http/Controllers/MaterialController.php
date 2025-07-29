@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Material;
+use App\Models\Category;
 use Illuminate\Http\Request;
 
 class MaterialController extends Controller
@@ -27,7 +28,8 @@ class MaterialController extends Controller
     }
 
     public function create() {
-        return view('material.create');
+        $categories = Category::orderBy('name')->get();
+        return view('material.create', compact('categories'));
     }
 
     public function store(Request $request) {
@@ -47,7 +49,8 @@ class MaterialController extends Controller
     }
 
     public function edit(Material $material) {
-        return view('material.edit', compact('material'));
+        $categories = Category::orderBy('name')->get();
+        return view('material.edit', compact('material', 'categories'));
     }
 
     public function update(Request $request, Material $material) {

@@ -9,10 +9,10 @@ class CategorySeeder extends Seeder
     public function run(): void
     {
         $data = [
-            ['name' => 'Material', 'code' => 'MAT'],
-            ['name' => 'Pekerja', 'code' => 'PEK'],
-            ['name' => 'Peralatan', 'code' => 'PER'],
-            ['name' => 'Jasa', 'code' => 'JAS'],
+            ['name' => 'Material', 'code' => 'MT'],
+            ['name' => 'Pekerja', 'code' => 'PJ'],
+            ['name' => 'Elektrika', 'code' => 'EL'],
+            ['name' => 'HSE', 'code' => 'HS'],
         ];
         foreach ($data as $item) {
             Category::firstOrCreate(['code' => $item['code']], $item);
