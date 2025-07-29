@@ -10,8 +10,10 @@ return new class extends Migration {
             $table->collation = 'utf8mb4_unicode_ci';
 
             $table->ulid('id')->primary();
+            $table->string('code')->unique();
             $table->string('name');
             $table->string('unit');
+            $table->ulid('category_id')->nullable();
             $table->unsignedBigInteger('price');
             $table->unsignedTinyInteger('tkdn')->default(100);
             $table->timestamps();

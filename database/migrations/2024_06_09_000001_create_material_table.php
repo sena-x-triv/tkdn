@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->string('name');
             $table->string('specification')->nullable();
             $table->ulid('category_id')->nullable();
+
             $table->string('brand')->nullable();
             $table->unsignedTinyInteger('tkdn')->default(100);
             $table->unsignedBigInteger('price')->nullable();

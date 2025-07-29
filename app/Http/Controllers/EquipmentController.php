@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Equipment;
+use App\Models\Category;
 use Illuminate\Http\Request;
 
 class EquipmentController extends Controller
@@ -21,7 +22,8 @@ class EquipmentController extends Controller
      */
     public function create()
     {
-        return view('equipment.create');
+        $categories = Category::orderBy('name')->get();
+        return view('equipment.create', compact('categories'));
     }
 
     /**
@@ -32,6 +34,7 @@ class EquipmentController extends Controller
         $data = $request->validate([
             'code' => 'required|string|max:255|unique:equipment,code',
             'name' => 'required|string|max:255',
+            'category_id' => 'nullable|exists:categories,id',
             'tkdn' => 'nullable|numeric|min:0|max:100',
             'period' => 'required|integer|min:1',
             'price' => 'required|integer|min:0',
@@ -54,7 +57,8 @@ class EquipmentController extends Controller
      */
     public function edit(Equipment $equipment)
     {
-        return view('equipment.edit', compact('equipment'));
+        $categories = Category::orderBy('name')->get();
+        return view('equipment.edit', compact('equipment', 'categories'));
     }
 
     /**
@@ -65,6 +69,7 @@ class EquipmentController extends Controller
         $data = $request->validate([
             'code' => 'required|string|max:255|unique:equipment,code,' . $equipment->id . ',id',
             'name' => 'required|string|max:255',
+            'category_id' => 'nullable|exists:categories,id',
             'tkdn' => 'nullable|numeric|min:0|max:100',
             'period' => 'required|integer|min:1',
             'price' => 'required|integer|min:0',
