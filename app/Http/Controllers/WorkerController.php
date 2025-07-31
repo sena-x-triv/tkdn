@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Worker;
+use App\Models\Category;
 use Illuminate\Http\Request;
 
 class WorkerController extends Controller
@@ -22,13 +23,16 @@ class WorkerController extends Controller
     }
 
     public function create() {
-        return view('worker.create');
+        $categories = Category::orderBy('name')->get();
+        return view('worker.create', compact('categories'));
     }
 
     public function store(Request $request) {
         $request->validate([
+            'code' => 'required|unique:workers,code',
             'name' => 'required',
             'unit' => 'required',
+            'category_id' => 'nullable|exists:categories,id',
             'price' => 'required|integer',
             'tkdn' => 'required|integer',
         ]);
@@ -41,13 +45,16 @@ class WorkerController extends Controller
     }
 
     public function edit(Worker $worker) {
-        return view('worker.edit', compact('worker'));
+        $categories = Category::orderBy('name')->get();
+        return view('worker.edit', compact('worker', 'categories'));
     }
 
     public function update(Request $request, Worker $worker) {
         $request->validate([
+            'code' => 'required|unique:workers,code,' . $worker->id . ',id',
             'name' => 'required',
             'unit' => 'required',
+            'category_id' => 'nullable|exists:categories,id',
             'price' => 'required|integer',
             'tkdn' => 'required|integer',
         ]);

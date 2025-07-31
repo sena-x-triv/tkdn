@@ -30,6 +30,21 @@
                     <!-- Basic Information -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
+                            <label for="code" class="form-label">Kode</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                                    </svg>
+                                </div>
+                                <input type="text" name="code" id="code" class="form-input pl-10 @error('code') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror" value="{{ old('code') }}" required placeholder="Enter material code">
+                            </div>
+                            @error('code')
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        
+                        <div>
                             <label for="name" class="form-label">Nama Barang/Jasa</label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -60,16 +75,23 @@
                         </div>
                         
                         <div>
-                            <label for="type" class="form-label">Tipe</label>
+                            <label for="category_id" class="form-label">Kategori</label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
                                     </svg>
                                 </div>
-                                <input type="text" name="type" id="type" class="form-input pl-10 @error('type') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror" value="{{ old('type') }}" placeholder="Enter type">
+                                <select name="category_id" id="category_id" class="form-input pl-10 @error('category_id') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror">
+                                    <option value="">Pilih kategori</option>
+                                    @foreach($categories as $category)
+                                        <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                            {{ $category->name }} ({{ $category->code }})
+                                        </option>
+                                    @endforeach
+                                </select>
                             </div>
-                            @error('type')
+                            @error('category_id')
                                 <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                             @enderror
                         </div>
@@ -85,6 +107,21 @@
                                 <input type="text" name="brand" id="brand" class="form-input pl-10 @error('brand') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror" value="{{ old('brand') }}" placeholder="Enter brand">
                             </div>
                             @error('brand')
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label for="unit" class="form-label">Satuan</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                                    </svg>
+                                </div>
+                                <input type="text" name="unit" id="unit" class="form-input pl-10 @error('unit') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror" value="{{ old('unit') }}" placeholder="e.g., pcs, kg, m">
+                            </div>
+                            @error('unit')
                                 <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                             @enderror
                         </div>
@@ -118,21 +155,6 @@
                                 <input type="number" name="price" id="price" class="form-input pl-10 @error('price') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror" value="{{ old('price') }}" placeholder="Enter price">
                             </div>
                             @error('price')
-                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                            @enderror
-                        </div>
-                        
-                        <div>
-                            <label for="unit" class="form-label">Satuan</label>
-                            <div class="relative">
-                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
-                                    </svg>
-                                </div>
-                                <input type="text" name="unit" id="unit" class="form-input pl-10 @error('unit') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror" value="{{ old('unit') }}" placeholder="e.g., pcs, kg, m">
-                            </div>
-                            @error('unit')
                                 <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                             @enderror
                         </div>

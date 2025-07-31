@@ -20,6 +20,20 @@
         @csrf
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
+                <label for="code" class="form-label">Kode Peralatan <span class="text-red-500">*</span></label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                        </svg>
+                    </div>
+                    <input type="text" name="code" id="code" value="{{ old('code') }}" class="form-input pl-10 w-full @error('code') border-red-500 @enderror" required placeholder="Masukkan kode peralatan">
+                </div>
+                @error('code')
+                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+            <div>
                 <label for="name" class="form-label">Nama Peralatan <span class="text-red-500">*</span></label>
                 <div class="relative">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -30,6 +44,27 @@
                     <input type="text" name="name" id="name" value="{{ old('name') }}" class="form-input pl-10 w-full @error('name') border-red-500 @enderror" required placeholder="Masukkan nama peralatan">
                 </div>
                 @error('name')
+                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+            <div>
+                <label for="category_id" class="form-label">Kategori</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                        </svg>
+                    </div>
+                    <select name="category_id" id="category_id" class="form-input pl-10 w-full @error('category_id') border-red-500 @enderror">
+                        <option value="">Pilih kategori</option>
+                        @foreach($categories as $category)
+                            <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                {{ $category->name }} ({{ $category->code }})
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                @error('category_id')
                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                 @enderror
             </div>

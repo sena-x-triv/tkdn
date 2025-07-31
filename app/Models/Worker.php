@@ -14,11 +14,16 @@ class Worker extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'name', 'unit', 'price', 'tkdn',
+        'code', 'name', 'unit', 'category_id', 'price', 'tkdn',
     ];
 
     public function getRouteKeyName()
     {
         return 'id';
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class, 'category_id');
     }
 } 

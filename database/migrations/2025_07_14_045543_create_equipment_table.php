@@ -16,7 +16,10 @@ return new class extends Migration
             $table->collation = 'utf8mb4_unicode_ci';
             
             $table->ulid('id')->primary();
+            $table->string('code')->unique();
             $table->string('name');
+            $table->ulid('category_id')->nullable();
+
             $table->decimal('tkdn', 5, 2)->nullable(); // TKDN as percentage, e.g. 87.50
             $table->integer('period')->comment('Satuan Hari');
             $table->unsignedBigInteger('price');

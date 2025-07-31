@@ -13,19 +13,26 @@ class Material extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
+        'code',
         'name',
         'specification',
-        'type',
+        'category_id',
         'brand',
         'tkdn',
         'price',
         'unit',
         'link',
+        'price_inflasi',
         'description',
     ];
 
     public function getRouteKeyName()
     {
         return 'id';
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class, 'category_id');
     }
 } 

@@ -13,6 +13,7 @@ class EstimationItem extends Model
         'estimation_id',
         'category',
         'reference_id',
+        'equipment_name',
         'code',
         'coefficient',
         'unit_price',

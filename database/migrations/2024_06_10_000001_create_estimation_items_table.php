@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->foreign('estimation_id')->references('id')->on('estimations')->onDelete('cascade');
             $table->enum('category', ['worker', 'material', 'equipment']); // jenis input
             $table->ulid('reference_id')->nullable(); // id dari tabel worker/material
+            $table->string('equipment_name')->nullable(); // nama barang/peralatan
             $table->string('code')->nullable();
             $table->decimal('coefficient', 10, 3)->default(0);
             $table->unsignedBigInteger('unit_price')->default(0);

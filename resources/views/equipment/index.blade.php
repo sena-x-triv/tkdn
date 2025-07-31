@@ -39,6 +39,7 @@
                         <tr>
                             <th>No</th>
                             <th>Name</th>
+                            <th>Code</th>
                             <th>Period (Days)</th>
                             <th>Price (Rp)</th>
                             <th>TKDN (%)</th>
@@ -63,6 +64,13 @@
                                         @endif
                                     </div>
                                 </div>
+                            </td>
+                            <td>
+                                @if($item->code)
+                                    <span class="badge badge-secondary">{{ $item->code }}</span>
+                                @else
+                                    <span class="text-gray-400">-</span>
+                                @endif
                             </td>
                             <td>
                                 <span class="badge badge-primary">{{ $item->period }} Days</span>
@@ -105,7 +113,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="6" class="text-center py-12">
+                            <td colspan="7" class="text-center py-12">
                                 <div class="flex flex-col items-center">
                                     <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mb-4">
                                         <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

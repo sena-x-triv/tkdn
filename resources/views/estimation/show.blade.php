@@ -124,6 +124,7 @@
                         <th>No</th>
                         <th>Kategori</th>
                         <th>Nama/Peralatan</th>
+                        <th>Satuan</th>
                         <th>Koefisien</th>
                         <th>Harga</th>
                         <th>Jumlah Harga</th>
@@ -131,6 +132,22 @@
                     </thead>
                     <tbody>
                     @forelse($estimation->items as $i => $item)
+                        @php
+                            // Get the correct name and unit based on category and reference
+                            $itemName = $item->equipment_name;
+                            $itemUnit = '';
+                            
+                            if ($item->category === 'worker' && $item->worker) {
+                                $itemName = $item->worker->name;
+                                $itemUnit = $item->worker->unit;
+                            } elseif ($item->category === 'material' && $item->material) {
+                                $itemName = $item->material->name . ($item->material->specification ? ' - ' . $item->material->specification : '');
+                                $itemUnit = $item->material->unit;
+                            } elseif ($item->category === 'equipment' && $item->equipment) {
+                                $itemName = $item->equipment->name . ($item->equipment->description ? ' - ' . $item->equipment->description : '');
+                                $itemUnit = 'jam';
+                            }
+                        @endphp
                         <tr>
                         <td>{{ $i+1 }}</td>
                         <td>
@@ -156,14 +173,15 @@
                                 {{ ucfirst($item->category) }}
                             </span>
                         </td>
-                        <td>{{ $item->equipment_name }}</td>
+                        <td>{{ $itemName }}</td>
+                        <td>{{ $itemUnit }}</td>
                         <td>{{ number_format($item->coefficient, 2, ',', '.') }}</td>
                         <td>Rp {{ number_format($item->unit_price, 0, ',', '.') }}</td>
                         <td>Rp {{ number_format($item->total_price, 0, ',', '.') }}</td>
                         </tr>
                         @empty
                         <tr>
-                        <td colspan="6" class="text-center py-8 text-gray-400">Belum ada item AHS</td>
+                        <td colspan="7" class="text-center py-8 text-gray-400">Belum ada item AHS</td>
                         </tr>
                         @endforelse
                     </tbody>

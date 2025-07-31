@@ -39,6 +39,8 @@
                         <tr>
                             <th>No</th>
                             <th>Name</th>
+                            <th>Code</th>
+                            <th>Category</th>
                             <th>Unit</th>
                             <th>Price (Rp)</th>
                             <th>TKDN (%)</th>
@@ -60,6 +62,20 @@
                                         <div class="font-medium text-gray-900 dark:text-white">{{ $worker->name }}</div>
                                     </div>
                                 </div>
+                            </td>
+                            <td>
+                                @if($worker->code)
+                                    <span class="badge badge-secondary">{{ $worker->code }}</span>
+                                @else
+                                    <span class="text-gray-400">-</span>
+                                @endif
+                            </td>
+                            <td>
+                                @if($worker->category)
+                                    <span class="badge badge-primary">{{ $worker->category->name }}</span>
+                                @else
+                                    <span class="text-gray-400">-</span>
+                                @endif
                             </td>
                             <td>
                                 <span class="badge badge-primary">{{ $worker->unit }}</span>
@@ -98,7 +114,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="6" class="text-center py-12">
+                            <td colspan="8" class="text-center py-12">
                                 <div class="flex flex-col items-center">
                                     <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mb-4">
                                         <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

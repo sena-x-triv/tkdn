@@ -39,7 +39,8 @@
                         <tr>
                             <th>No</th>
                             <th>Nama Barang/Jasa</th>
-                            <th>Tipe</th>
+                            <th>Kode</th>
+                            <th>Kategori</th>
                             <th>Merk</th>
                             <th>Harga Satuan</th>
                             <th class="text-center">Actions</th>
@@ -65,8 +66,15 @@
                                 </div>
                             </td>
                             <td>
-                                @if($material->type)
-                                    <span class="badge badge-primary">{{ $material->type }}</span>
+                                @if($material->code)
+                                    <span class="badge badge-secondary">{{ $material->code }}</span>
+                                @else
+                                    <span class="text-gray-400">-</span>
+                                @endif
+                            </td>
+                            <td>
+                                @if($material->category)
+                                    <span class="badge badge-primary">{{ $material->category->name }}</span>
                                 @else
                                     <span class="text-gray-400">-</span>
                                 @endif
@@ -107,7 +115,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="6" class="text-center py-12">
+                            <td colspan="7" class="text-center py-12">
                                 <div class="flex flex-col items-center">
                                     <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mb-4">
                                         <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

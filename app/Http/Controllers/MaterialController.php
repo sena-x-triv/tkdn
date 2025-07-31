@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Material;
+use App\Models\Category;
 use Illuminate\Http\Request;
 
 class MaterialController extends Controller
@@ -27,13 +28,15 @@ class MaterialController extends Controller
     }
 
     public function create() {
-        return view('material.create');
+        $categories = Category::orderBy('name')->get();
+        return view('material.create', compact('categories'));
     }
 
     public function store(Request $request) {
         $request->validate([
+            'code' => 'required|unique:material,code',
             'name' => 'required',
-            'type' => 'required',
+            'category_id' => 'required|exists:categories,id',
             'brand' => 'required',
             'price' => 'required|integer',
             'unit' => 'required'
@@ -47,13 +50,15 @@ class MaterialController extends Controller
     }
 
     public function edit(Material $material) {
-        return view('material.edit', compact('material'));
+        $categories = Category::orderBy('name')->get();
+        return view('material.edit', compact('material', 'categories'));
     }
 
     public function update(Request $request, Material $material) {
         $request->validate([
+            'code' => 'required|unique:material,code,' . $material->id . ',id',
             'name' => 'required',
-            'type' => 'required',
+            'category_id' => 'required|exists:categories,id',
             'brand' => 'required',
             'price' => 'required|integer',
             'unit' => 'required'

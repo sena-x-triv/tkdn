@@ -240,6 +240,7 @@
                             <th class="px-3 py-2 text-xs font-medium text-gray-500 dark:text-gray-300 uppercase" style="width: 175px;">Kategori</th>
                             <th class="px-3 py-2 text-xs font-medium text-gray-500 dark:text-gray-300 uppercase" style="width: 125px;">Kode</th>
                             <th class="px-3 py-2 text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Nama/Peralatan</th>
+                            <th class="px-3 py-2 text-xs font-medium text-gray-500 dark:text-gray-300 uppercase" style="width: 100px;">Satuan</th>
                             <th class="px-3 py-2 text-xs font-medium text-gray-500 dark:text-gray-300 uppercase" style="width: 130px;">Koefisien</th>
                             <th class="px-3 py-2 text-xs font-medium text-gray-500 dark:text-gray-300 uppercase" style="width: 185px;">Harga</th>
                             <th class="px-3 py-2 text-xs font-medium text-gray-500 dark:text-gray-300 uppercase" style="width: 185px;">Jumlah Harga</th>
@@ -275,6 +276,19 @@
                                     }
                                 @endphp
                                 <input type="text" name="items[{{ $loop->index }}][equipment_name]" class="form-input equipment-name-input" value="{{ $equipmentName }}" placeholder="Nama/Peralatan">
+                            </td>
+                            <td class="px-2 py-2">
+                                @php
+                                    $unit = '';
+                                    if ($item->category === 'worker' && $item->worker) {
+                                        $unit = $item->worker->unit;
+                                    } elseif ($item->category === 'material' && $item->material) {
+                                        $unit = $item->material->unit;
+                                    } elseif ($item->category === 'equipment' && $item->equipment) {
+                                        $unit = 'jam';
+                                    }
+                                @endphp
+                                <input type="text" name="items[{{ $loop->index }}][unit]" class="form-input unit-input" value="{{ $unit }}" placeholder="Satuan" readonly>
                             </td>
                             <td class="px-2 py-2"><input type="number" name="items[{{ $loop->index }}][coefficient]" class="form-input" value="{{ $item->coefficient }}" step="0.01" oninput="updateTotalPrice(this)" placeholder="Koefisien"></td>
                             <td class="px-2 py-2"><input type="number" name="items[{{ $loop->index }}][unit_price]" class="form-input" value="{{ $item->unit_price }}" step="0.01" oninput="updateTotalPrice(this)" placeholder="Harga Satuan"></td>
@@ -367,6 +381,9 @@ function addItemRow(item = {}) {
                 <input type="hidden" name="items[${itemIndex}][reference_id]" class="reference-id-input" value="${item.reference_id || ''}">
                 <input type="text" name="items[${itemIndex}][equipment_name]" class="form-input equipment-name-input" value="${item.equipment_name || ''}" placeholder="Nama/Peralatan">
             </td>
+            <td class="px-2 py-2">
+                <input type="text" name="items[${itemIndex}][unit]" class="form-input unit-input" value="${item.unit || ''}" placeholder="Satuan" readonly>
+            </td>
             <td class="px-2 py-2"><input type="number" name="items[${itemIndex}][coefficient]" class="form-input" value="${item.coefficient || ''}" step="0.01" oninput="updateTotalPrice(this)" placeholder="Koefisien"></td>
             <td class="px-2 py-2"><input type="number" name="items[${itemIndex}][unit_price]" class="form-input" value="${item.unit_price || ''}" step="0.01" oninput="updateTotalPrice(this)" placeholder="Harga Satuan"></td>
             <td class="px-2 py-2"><input type="number" name="items[${itemIndex}][total_price]" class="form-input" value="${item.total_price || ''}" readonly placeholder="Jumlah Harga"></td>
@@ -401,6 +418,7 @@ function toggleEquipmentInput(select) {
         const equipmentNameTd = equipmentElement ? equipmentElement.closest('td') : row.querySelector('td:nth-child(4)');
         const referenceIdInput = row.querySelector('.reference-id-input');
         const unitPriceInput = row.querySelector('input[name*="[unit_price]"]');
+        const unitInput = row.querySelector('input[name*="[unit]"]');
         const category = select.value;
         
         // Store the reference_id field name before clearing
@@ -437,6 +455,7 @@ function toggleEquipmentInput(select) {
                 option.textContent = `${worker.name} (${worker.unit})`;
                 option.setAttribute('data-price', worker.price);
                 option.setAttribute('data-name', worker.name);
+                option.setAttribute('data-unit', worker.unit);
                 selectElement.appendChild(option);
             });
             
@@ -451,6 +470,7 @@ function toggleEquipmentInput(select) {
                 if (selectedOption && selectedOption.value) {
                     currentReferenceIdInput.value = selectedOption.value;
                     unitPriceInput.value = selectedOption.getAttribute('data-price') || '';
+                    unitInput.value = selectedOption.getAttribute('data-unit') || '';
                     
                     // Remove existing hidden equipment_name input if exists
                     const existingHidden = equipmentNameTd.querySelector('input[type="hidden"]:not(.reference-id-input)');
@@ -467,6 +487,7 @@ function toggleEquipmentInput(select) {
                 } else {
                     currentReferenceIdInput.value = '';
                     unitPriceInput.value = '';
+                    unitInput.value = '';
                     // Remove hidden equipment_name input when cleared
                     const existingHidden = equipmentNameTd.querySelector('input[type="hidden"]:not(.reference-id-input)');
                     if (existingHidden) {
@@ -490,6 +511,7 @@ function toggleEquipmentInput(select) {
                 option.textContent = `${material.name}${material.specification ? ' - ' + material.specification : ''} (${material.unit})`;
                 option.setAttribute('data-price', material.price);
                 option.setAttribute('data-name', `${material.name}${material.specification ? ' - ' + material.specification : ''}`);
+                option.setAttribute('data-unit', material.unit);
                 selectElement.appendChild(option);
             });
             
@@ -509,6 +531,7 @@ function toggleEquipmentInput(select) {
                         if (selectedOption && selectedOption.value) {
                             currentReferenceIdInput.value = selectedOption.value;
                             unitPriceInput.value = selectedOption.getAttribute('data-price') || '';
+                            unitInput.value = selectedOption.getAttribute('data-unit') || '';
                             
                             // Remove existing hidden equipment_name input if exists
                             const existingHidden = equipmentNameTd.querySelector('input[type="hidden"]:not(.reference-id-input)');
@@ -525,13 +548,14 @@ function toggleEquipmentInput(select) {
                         } else {
                             currentReferenceIdInput.value = '';
                             unitPriceInput.value = '';
+                            unitInput.value = '';
                             // Remove hidden equipment_name input when cleared
                             const existingHidden = equipmentNameTd.querySelector('input[type="hidden"]:not(.reference-id-input)');
                             if (existingHidden) {
                                 existingHidden.remove();
                             }
                         }
-                        updateTotalPrice(unitPriceInput);
+                                                updateTotalPrice(unitPriceInput);
                     });
                 }
             }, 100);
@@ -550,6 +574,7 @@ function toggleEquipmentInput(select) {
                 option.textContent = `${equipment.name}${equipment.description ? ' - ' + equipment.description : ''} (${equipment.period} jam)`;
                 option.setAttribute('data-price', equipment.price);
                 option.setAttribute('data-name', `${equipment.name}${equipment.description ? ' - ' + equipment.description : ''}`);
+                option.setAttribute('data-unit', 'jam');
                 selectElement.appendChild(option);
             });
             
@@ -569,6 +594,7 @@ function toggleEquipmentInput(select) {
                         if (selectedOption && selectedOption.value) {
                             currentReferenceIdInput.value = selectedOption.value;
                             unitPriceInput.value = selectedOption.getAttribute('data-price') || '';
+                            unitInput.value = selectedOption.getAttribute('data-unit') || '';
                             
                             // Remove existing hidden equipment_name input if exists
                             const existingHidden = equipmentNameTd.querySelector('input[type="hidden"]:not(.reference-id-input)');
@@ -585,6 +611,7 @@ function toggleEquipmentInput(select) {
                         } else {
                             currentReferenceIdInput.value = '';
                             unitPriceInput.value = '';
+                            unitInput.value = '';
                             // Remove hidden equipment_name input when cleared
                             const existingHidden = equipmentNameTd.querySelector('input[type="hidden"]:not(.reference-id-input)');
                             if (existingHidden) {
