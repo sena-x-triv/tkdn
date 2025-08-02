@@ -163,18 +163,6 @@
         @csrf
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="relative">
-                <label for="code" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Kode AHS</label>
-                <div class="relative">
-                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7l10 10M7 7l-4 4a2 2 0 002 2l4-4m0 0l10 10a2 2 0 01-2 2l-10-10z" /></svg>
-                    </span>
-                    <input type="text" name="code" id="code" value="{{ old('code') }}" class="form-input w-full pl-10 @error('code') border-red-500 @enderror" placeholder="Kode AHS">
-                </div>
-                @error('code')
-                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                @enderror
-            </div>
-            <div class="relative">
                 <label for="title" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Judul AHS <span class="text-red-500">*</span></label>
                 <div class="relative">
                     <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -311,7 +299,7 @@ function addItemRow(item = {}) {
     const tbody = document.getElementById('items-body');
     const row = document.createElement('tr');
     row.innerHTML = `
-        <td class="px-3 py-2 item-no">${itemIndex + 1}</td>
+        <td class="px-3 py-2 item-no dark:text-white">${itemIndex + 1}</td>
         <td class="px-2 py-2">
             <select name="items[${itemIndex}][category]" class="form-input" required onchange="toggleEquipmentInput(this)">
                         <option value="">Pilih Kategori</option>
@@ -393,6 +381,7 @@ function toggleEquipmentInput(select) {
                     option.setAttribute('data-price', worker.price);
                     option.setAttribute('data-name', worker.name);
                     option.setAttribute('data-unit', worker.unit);
+                    option.setAttribute('data-code', worker.code);
                     selectElement.appendChild(option);
                 });
                 
@@ -403,11 +392,17 @@ function toggleEquipmentInput(select) {
                 $(selectElement).on('change', function() {
                     const selectedOption = this.options[this.selectedIndex];
                     const currentReferenceIdInput = equipmentNameTd.querySelector('.reference-id-input');
+                    const codeInput = row.querySelector('input[name*="[code]"]');
                     
                     if (selectedOption && selectedOption.value) {
                         currentReferenceIdInput.value = selectedOption.value;
                         unitPriceInput.value = selectedOption.getAttribute('data-price') || '';
                         unitInput.value = selectedOption.getAttribute('data-unit') || '';
+                        
+                        // Fill code automatically
+                        if (codeInput) {
+                            codeInput.value = selectedOption.getAttribute('data-code') || '';
+                        }
                         
                         // Remove existing hidden equipment_name input if exists
                         const existingHidden = equipmentNameTd.querySelector('input[type="hidden"]:not(.reference-id-input)');
@@ -425,15 +420,18 @@ function toggleEquipmentInput(select) {
                         currentReferenceIdInput.value = '';
                         unitPriceInput.value = '';
                         unitInput.value = '';
+                        if (codeInput) {
+                            codeInput.value = '';
+                        }
                         // Remove hidden equipment_name input when cleared
                         const existingHidden = equipmentNameTd.querySelector('input[type="hidden"]:not(.reference-id-input)');
                         if (existingHidden) {
                             existingHidden.remove();
                         }
                     }
-                                                updateTotalPrice(unitPriceInput);
-                        });
-                    } else if (category === 'material') {
+                    updateTotalPrice(unitPriceInput);
+                });
+            } else if (category === 'material') {
                 // Create select2 dropdown for materials
                 const selectElement = document.createElement('select');
                 selectElement.name = referenceIdName.replace('[reference_id]', '[equipment_name]');
@@ -448,6 +446,7 @@ function toggleEquipmentInput(select) {
                     option.setAttribute('data-price', material.price);
                     option.setAttribute('data-name', `${material.name}${material.specification ? ' - ' + material.specification : ''}`);
                     option.setAttribute('data-unit', material.unit);
+                    option.setAttribute('data-code', material.code);
                     selectElement.appendChild(option);
                 });
                 
@@ -463,11 +462,17 @@ function toggleEquipmentInput(select) {
                         }).on('change', function() {
                             const selectedOption = this.options[this.selectedIndex];
                             const currentReferenceIdInput = equipmentNameTd.querySelector('.reference-id-input');
+                            const codeInput = row.querySelector('input[name*="[code]"]');
                             
                             if (selectedOption && selectedOption.value) {
                                 currentReferenceIdInput.value = selectedOption.value;
                                 unitPriceInput.value = selectedOption.getAttribute('data-price') || '';
                                 unitInput.value = selectedOption.getAttribute('data-unit') || '';
+                                
+                                // Fill code automatically
+                                if (codeInput) {
+                                    codeInput.value = selectedOption.getAttribute('data-code') || '';
+                                }
                                 
                                 // Remove existing hidden equipment_name input if exists
                                 const existingHidden = equipmentNameTd.querySelector('input[type="hidden"]:not(.reference-id-input)');
@@ -485,6 +490,9 @@ function toggleEquipmentInput(select) {
                                 currentReferenceIdInput.value = '';
                                 unitPriceInput.value = '';
                                 unitInput.value = '';
+                                if (codeInput) {
+                                    codeInput.value = '';
+                                }
                                 // Remove hidden equipment_name input when cleared
                                 const existingHidden = equipmentNameTd.querySelector('input[type="hidden"]:not(.reference-id-input)');
                                 if (existingHidden) {
@@ -511,6 +519,7 @@ function toggleEquipmentInput(select) {
                     option.setAttribute('data-price', equipment.price);
                     option.setAttribute('data-name', `${equipment.name}${equipment.description ? ' - ' + equipment.description : ''}`);
                     option.setAttribute('data-unit', 'jam');
+                    option.setAttribute('data-code', equipment.code);
                     selectElement.appendChild(option);
                 });
                 
@@ -526,11 +535,17 @@ function toggleEquipmentInput(select) {
                         }).on('change', function() {
                             const selectedOption = this.options[this.selectedIndex];
                             const currentReferenceIdInput = equipmentNameTd.querySelector('.reference-id-input');
+                            const codeInput = row.querySelector('input[name*="[code]"]');
                             
                             if (selectedOption && selectedOption.value) {
                                 currentReferenceIdInput.value = selectedOption.value;
                                 unitPriceInput.value = selectedOption.getAttribute('data-price') || '';
                                 unitInput.value = selectedOption.getAttribute('data-unit') || '';
+                                
+                                // Fill code automatically
+                                if (codeInput) {
+                                    codeInput.value = selectedOption.getAttribute('data-code') || '';
+                                }
                                 
                                 // Remove existing hidden equipment_name input if exists
                                 const existingHidden = equipmentNameTd.querySelector('input[type="hidden"]:not(.reference-id-input)');
@@ -548,6 +563,9 @@ function toggleEquipmentInput(select) {
                                 currentReferenceIdInput.value = '';
                                 unitPriceInput.value = '';
                                 unitInput.value = '';
+                                if (codeInput) {
+                                    codeInput.value = '';
+                                }
                                 // Remove hidden equipment_name input when cleared
                                 const existingHidden = equipmentNameTd.querySelector('input[type="hidden"]:not(.reference-id-input)');
                                 if (existingHidden) {

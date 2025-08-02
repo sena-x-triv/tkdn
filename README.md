@@ -262,3 +262,114 @@ For support and questions:
 ---
 
 **Built with ❤️ using Laravel 12**
+
+# TKDN - Sistem Analisa Harga Satuan
+
+## Sistem Pembuatan Kode Estimasi
+
+Sistem ini menggunakan kombinasi kode kategori dan kode material/jasa untuk membuat kode estimasi yang unik dan bermakna.
+
+### Format Kode Estimasi
+```
+AHS.{kode_kategori}.{kode_item}.{timestamp}
+```
+
+### Contoh Kode Estimasi
+- `AHS.PJ.MT.PJ001.MT001.20241201143022` - Estimasi dengan pekerja dan material
+- `AHS.PJ.EQ.PJ001.EQ001.20241201143023` - Estimasi dengan pekerja dan peralatan
+- `AHS.MT.MT001.MT002.20241201143024` - Estimasi dengan multiple material
+
+### Kode Kategori
+- `PJ` - Pekerja (Worker)
+- `MT` - Material
+- `EQ` - Peralatan (Equipment)
+
+### Kode Item
+- **Pekerja**: `PJ001`, `PJ002`, dst.
+- **Material**: `MT001`, `MT002`, dst.
+- **Peralatan**: `EQ001`, `EQ002`, dst.
+
+### Logika Pembuatan Kode
+1. Sistem mengambil semua item yang dipilih dalam estimasi
+2. Untuk setiap item, sistem mengambil:
+   - Kode kategori (PJ/MT/EQ)
+   - Kode item spesifik (PJ001/MT001/EQ001)
+3. Kode kategori dan item yang unik digabungkan
+4. Ditambahkan timestamp untuk memastikan keunikan
+5. Format final: `AHS.{kode_kategori}.{kode_item}.{timestamp}`
+
+### Fallback
+Jika tidak ada item yang dipilih atau kode tidak valid, sistem akan menggunakan format default:
+```
+AHS.{YYYYMMDD}.{0001}
+```
+
+## Contoh Penggunaan
+
+### Skenario 1: Estimasi Pekerjaan Pengecatan
+**Item yang dipilih:**
+- Pekerja: Tukang Cat (PJ010)
+- Material: Cat Dasar Dulux Interior (MT007)
+- Material: Cat Akhir Dulux Interior (MT011)
+
+**Kode estimasi yang dihasilkan:**
+```
+AHS.PJ.MT.PJ010.MT007.MT011.20241201143022
+```
+
+### Skenario 2: Estimasi Pekerjaan Konstruksi
+**Item yang dipilih:**
+- Pekerja: Kepala Tukang Batu (PJ003)
+- Pekerja: Tukang Batu (PJ004)
+- Material: Semen Portland Komposit (MT003)
+- Material: Pasir (MT005)
+
+**Kode estimasi yang dihasilkan:**
+```
+AHS.PJ.MT.PJ003.PJ004.MT003.MT005.20241201143023
+```
+
+### Skenario 3: Estimasi Pekerjaan Administrasi
+**Item yang dipilih:**
+- Pekerja: Arsiparis (PJ021)
+- Peralatan: Sewa Laptop (EQ009)
+- Peralatan: Sewa Printer (EQ010)
+
+**Kode estimasi yang dihasilkan:**
+```
+AHS.PJ.EQ.PJ021.EQ009.EQ010.20241201143024
+```
+
+## Struktur Database
+
+### Tabel Categories
+- `code` - Kode kategori (PJ, MT, EQ, EL, HS)
+- `name` - Nama kategori
+
+### Tabel Workers
+- `code` - Kode pekerja (PJ001, PJ002, dst.)
+- `category_id` - Relasi ke kategori
+
+### Tabel Materials  
+- `code` - Kode material (MT001, MT002, dst.)
+- `category_id` - Relasi ke kategori
+
+### Tabel Equipment
+- `code` - Kode peralatan (EQ001, EQ002, dst.)
+- `category_id` - Relasi ke kategori
+
+### Tabel Estimations
+- `code` - Kode estimasi yang digenerate otomatis
+- `title` - Judul estimasi
+- `total` - Total harga
+- `margin` - Margin dalam persen
+- `total_unit_price` - Harga satuan setelah margin
+
+### Tabel Estimation_Items
+- `estimation_id` - Relasi ke estimasi
+- `category` - Kategori item (worker/material/equipment)
+- `reference_id` - ID referensi ke worker/material/equipment
+- `code` - Kode item
+- `coefficient` - Koefisien
+- `unit_price` - Harga satuan
+- `total_price` - Total harga item
