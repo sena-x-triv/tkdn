@@ -12,6 +12,7 @@ class CategorySeeder extends Seeder
             ['name' => 'Material', 'code' => 'MT'],
             ['name' => 'Pekerja', 'code' => 'PJ'],
             ['name' => 'Elektrika', 'code' => 'EL'],
+            ['name' => 'Peralatan', 'code' => 'EQ'],
             ['name' => 'HSE', 'code' => 'HS'],
         ];
         foreach ($data as $item) {

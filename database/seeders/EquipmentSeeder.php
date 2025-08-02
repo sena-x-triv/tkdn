@@ -14,9 +14,9 @@ class EquipmentSeeder extends Seeder
      */
     public function run(): void
     {
-        // Get Elektrika category ID
-        $elektrikaCategory = Category::where('code', 'EL')->first();
-        $categoryId = $elektrikaCategory ? $elektrikaCategory->id : null;
+        // Get Peralatan category ID
+        $peralatanCategory = Category::where('code', 'EQ')->first();
+        $categoryId = $peralatanCategory ? $peralatanCategory->id : null;
 
         $equipment = [
             ['code' => 'EQ001', 'name' => 'Kardus ukuran standard', 'category_id' => $categoryId, 'tkdn' => 0.00, 'period' => 1, 'price' => 31500, 'description' => 'Ukuran Standard'],
