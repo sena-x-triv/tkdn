@@ -238,7 +238,7 @@
                     <tbody id="items-body">
                         @foreach($estimation->items as $item)
                         <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition">
-                            <td class="px-3 py-2 item-no">{{ $loop->iteration }}</td>
+                            <td class="px-3 py-2 item-no dark:text-white">{{ $loop->iteration }}</td>
                             <td class="px-2 py-2">
                                 <select name="items[{{ $loop->index }}][category]" class="form-input" required>
                                     <option value="">Pilih Kategori</option>
@@ -357,7 +357,7 @@ function addItemRow(item = {}) {
     const tbody = document.getElementById('items-body');
     const row = document.createElement('tr');
     row.innerHTML = `
-        <td class="px-3 py-2 item-no">${itemIndex + 1}</td>
+        <td class="px-3 py-2 item-no dark:text-white">${itemIndex + 1}</td>
             <td class="px-2 py-2">
             <select name="items[${itemIndex}][category]" class="form-input" required>
                     <option value="">Pilih Kategori</option>
