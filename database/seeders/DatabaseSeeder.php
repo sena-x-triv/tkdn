@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             ProjectSeeder::class,
             EquipmentSeeder::class,
             EstimationSeeder::class,
+            ServiceSeeder::class,
         ]);
     }
 }

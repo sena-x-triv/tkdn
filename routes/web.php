@@ -23,4 +23,9 @@ Route::prefix('master')->name('master.')->group(function () {
     Route::resource('category', App\Http\Controllers\CategoryController::class);
 });
 
+Route::resource('service', App\Http\Controllers\ServiceController::class);
+Route::post('service/{service}/submit', [App\Http\Controllers\ServiceController::class, 'submit'])->name('service.submit');
+Route::post('service/{service}/approve', [App\Http\Controllers\ServiceController::class, 'approve'])->name('service.approve');
+Route::post('service/{service}/reject', [App\Http\Controllers\ServiceController::class, 'reject'])->name('service.reject');
+
 Route::view('support', 'support')->name('support');
