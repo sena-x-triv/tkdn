@@ -17,4 +17,9 @@ class Project extends Model
         'description',
         'location',
     ];
+
+    public function services()
+    {
+        return $this->hasMany(Service::class);
+    }
 } 
