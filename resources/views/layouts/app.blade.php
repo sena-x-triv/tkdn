@@ -126,6 +126,14 @@
                         </div>
                     </div>
                     
+                    <!-- TKDN -->
+                    <a href="{{ route('master.tkdn.index') }}" class="nav-link group {{ request()->is('master/tkdn*') ? 'active' : '' }}">
+                        <svg class="w-5 h-5 mr-3 text-gray-400 group-hover:text-primary-500 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>TKDN</span>
+                    </a>
+                    
                     <!-- Form Service -->
                     <a href="{{ route('service.index') }}" class="nav-link group">
                         <svg class="w-5 h-5 mr-3 text-gray-400 group-hover:text-primary-500 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">

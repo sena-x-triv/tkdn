@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             EquipmentSeeder::class,
             EstimationSeeder::class,
             ServiceSeeder::class,
+            TkdnItemSeeder::class,
         ]);
     }
 }

@@ -21,6 +21,12 @@ Route::prefix('master')->name('master.')->group(function () {
     Route::resource('estimation', \App\Http\Controllers\EstimationController::class);
     Route::resource('equipment', \App\Http\Controllers\EquipmentController::class);
     Route::resource('category', App\Http\Controllers\CategoryController::class);
+    Route::resource('tkdn', App\Http\Controllers\TkdnController::class)->parameters(['tkdn' => 'tkdnItem']);
+    Route::patch('tkdn/{tkdnItem}/toggle-status', [App\Http\Controllers\TkdnController::class, 'toggleStatus'])->name('tkdn.toggle-status');
+    
+    // TKDN Breakdown
+    Route::get('tkdn-breakdown', [App\Http\Controllers\TkdnBreakdownController::class, 'index'])->name('tkdn.breakdown');
+    Route::get('tkdn-breakdown/print', [App\Http\Controllers\TkdnBreakdownController::class, 'print'])->name('tkdn.breakdown.print');
 });
 
 Route::resource('service', App\Http\Controllers\ServiceController::class);
