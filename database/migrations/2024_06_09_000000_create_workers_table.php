@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->ulid('category_id')->nullable();
             $table->unsignedBigInteger('price');
             $table->unsignedTinyInteger('tkdn')->default(100);
+            $table->string('location')->nullable();
             $table->timestamps();
         });
     }

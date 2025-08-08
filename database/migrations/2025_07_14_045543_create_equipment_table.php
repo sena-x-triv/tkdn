@@ -24,6 +24,7 @@ return new class extends Migration
             $table->integer('period')->comment('Satuan Hari');
             $table->unsignedBigInteger('price');
             $table->string('description')->nullable();
+            $table->string('location')->nullable();
             $table->timestamps();
         });
     }

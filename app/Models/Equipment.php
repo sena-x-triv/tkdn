@@ -20,6 +20,7 @@ class Equipment extends Model
         'period',
         'price',
         'description',
+        'location',
     ];
 
     public function category()
