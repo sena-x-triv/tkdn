@@ -44,6 +44,7 @@
                             <th>Unit</th>
                             <th>Price (Rp)</th>
                             <th>TKDN (%)</th>
+                            <th>Lokasi</th>
                             <th class="text-center">Actions</th>
                         </tr>
                     </thead>
@@ -92,6 +93,13 @@
                                     </div>
                                     <span class="text-sm font-medium text-gray-900 dark:text-white">{{ $worker->tkdn }}%</span>
                                 </div>
+                            </td>
+                            <td>
+                                @if($worker->location)
+                                    <span class="badge badge-success">{{ $worker->location }}</span>
+                                @else
+                                    <span class="text-gray-400">-</span>
+                                @endif
                             </td>
                             <td>
                                 <div class="flex items-center justify-center space-x-2" onclick="event.stopPropagation()">

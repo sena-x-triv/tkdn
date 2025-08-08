@@ -39,6 +39,7 @@ class EquipmentController extends Controller
             'period' => 'required|integer|min:1',
             'price' => 'required|integer|min:0',
             'description' => 'nullable|string|max:255',
+            'location' => 'nullable|string|max:255',
         ]);
         Equipment::create($data);
         return redirect()->route('master.equipment.index')->with('status', 'Peralatan berhasil ditambahkan!');
@@ -74,6 +75,7 @@ class EquipmentController extends Controller
             'period' => 'required|integer|min:1',
             'price' => 'required|integer|min:0',
             'description' => 'nullable|string|max:255',
+            'location' => 'nullable|string|max:255',
         ]);
         $equipment->update($data);
         return redirect()->route('master.equipment.index')->with('status', 'Peralatan berhasil diupdate!');

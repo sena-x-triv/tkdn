@@ -14,7 +14,7 @@ class Worker extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'code', 'name', 'unit', 'category_id', 'price', 'tkdn',
+        'code', 'name', 'unit', 'category_id', 'price', 'tkdn', 'location',
     ];
 
     public function getRouteKeyName()

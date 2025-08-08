@@ -24,6 +24,7 @@ class Material extends Model
         'link',
         'price_inflasi',
         'description',
+        'location',
     ];
 
     public function getRouteKeyName()

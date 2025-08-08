@@ -35,6 +35,7 @@ class WorkerController extends Controller
             'category_id' => 'nullable|exists:categories,id',
             'price' => 'required|integer',
             'tkdn' => 'required|integer',
+            'location' => 'nullable|string'
         ]);
         Worker::create($request->all());
         return redirect()->route('master.worker.index')->with('success', 'Worker created!');
@@ -57,6 +58,7 @@ class WorkerController extends Controller
             'category_id' => 'nullable|exists:categories,id',
             'price' => 'required|integer',
             'tkdn' => 'required|integer',
+            'location' => 'nullable|string'
         ]);
         $worker->update($request->all());
         return redirect()->route('master.worker.index')->with('success', 'Worker updated!');
