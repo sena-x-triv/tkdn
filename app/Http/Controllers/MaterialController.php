@@ -39,7 +39,8 @@ class MaterialController extends Controller
             'category_id' => 'required|exists:categories,id',
             'brand' => 'required',
             'price' => 'required|integer',
-            'unit' => 'required'
+            'unit' => 'required',
+            'location' => 'nullable|string'
         ]);
         Material::create($request->all());
         return redirect()->route('master.material.index')->with('success', 'Material created!');
@@ -61,7 +62,8 @@ class MaterialController extends Controller
             'category_id' => 'required|exists:categories,id',
             'brand' => 'required',
             'price' => 'required|integer',
-            'unit' => 'required'
+            'unit' => 'required',
+            'location' => 'nullable|string'
         ]);
         $material->update($request->all());
         return redirect()->route('master.material.index')->with('success', 'Material updated!');

@@ -208,6 +208,27 @@
                         </div>
                     </div>
                     
+                    <!-- Location Section -->
+                    <div class="space-y-3">
+                        <label for="location" class="form-label flex items-center">
+                            <svg class="w-5 h-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 12.414a4 4 0 10-5.657 5.657l4.243 4.243a8 8 0 0011.314-11.314l-4.243-4.243a4 4 0 00-5.657 5.657l4.243 4.243z"></path>
+                            </svg>
+                            Lokasi Material
+                        </label>
+                        <select name="location" id="location" class="form-input select2-modern @error('location') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror" style="width:100%">
+                            <option value="">Pilih Kota Material...</option>
+                        </select>
+                        @error('location')
+                            <p class="mt-1 text-sm text-red-600 dark:text-red-400 flex items-center">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                {{ $message }}
+                            </p>
+                        @enderror
+                    </div>
+                    
                     <!-- Form Actions -->
                     <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200 dark:border-gray-700">
                         <a href="{{ route('master.material.index') }}" class="btn btn-outline flex items-center">
@@ -228,4 +249,81 @@
         </div>
     </div>
 </div>
-@endsection 
+@endsection
+
+@push('styles')
+<style>
+.select2-container--default .select2-selection--single {
+    background: #f9fafb;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    min-height: 44px;
+    padding: 8px 12px;
+    font-size: 1rem;
+    color: #111827;
+    transition: border 0.2s;
+}
+.select2-container--default .select2-selection--single:focus,
+.select2-container--default .select2-selection--single.select2-selection--focus {
+    border-color: #2563eb;
+    outline: none;
+}
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #111827;
+    line-height: 28px;
+}
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 100%;
+    right: 10px;
+}
+.select2-dropdown {
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 24px 0 rgba(0,0,0,0.08);
+}
+.select2-results__option {
+    padding-left: 2.5rem;
+    position: relative;
+}
+.select2-results__option .city-icon {
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #2563eb;
+}
+</style>
+@endpush
+
+@push('scripts')
+<script>
+const cities = [
+    'Jakarta', 'Surabaya', 'Bandung', 'Medan', 'Bekasi', 'Depok', 'Tangerang', 'Semarang', 'Palembang', 'Makassar',
+    'Bogor', 'Batam', 'Padang', 'Pekanbaru', 'Denpasar', 'Malang', 'Samarinda', 'Tasikmalaya', 'Pontianak', 'Banjarmasin',
+    'Balikpapan', 'Jambi', 'Cimahi', 'Yogyakarta', 'Kediri', 'Cilegon', 'Cirebon', 'Mataram', 'Manado', 'Kupang',
+    'Ambon', 'Jayapura', 'Palu', 'Kendari', 'Ternate', 'Sorong', 'Banda Aceh', 'Pangkal Pinang', 'Bengkulu', 'Gorontalo',
+    'Tarakan', 'Bitung', 'Tanjung Pinang', 'Lubuklinggau', 'Pematangsiantar', 'Banjarbaru', 'Probolinggo', 'Magelang', 'Blitar', 'Mojokerto'
+];
+$(function() {
+    const select = $('#location');
+    select.empty();
+    select.append('<option value="">Pilih Kota Material...</option>');
+    cities.forEach(function(city) {
+        const isSelected = city === @json(old('location')) ? 'selected' : '';
+        select.append(`<option value="${city}" ${isSelected} data-icon="city">${city}</option>`);
+    });
+    select.select2({
+        placeholder: 'Pilih Kota Material...',
+        allowClear: true,
+        width: '100%',
+        templateResult: function (data) {
+            if (!data.id) return data.text;
+            return $('<span> '+data.text+'</span>');
+        },
+        templateSelection: function (data) {
+            if (!data.id) return data.text;
+            return $('<span> '+data.text+'</span>');
+        }
+    });
+});
+</script>
+@endpush 

@@ -22,6 +22,7 @@ return new class extends Migration {
             $table->string('link')->nullable();
             $table->unsignedBigInteger('price_inflasi')->nullable();
             $table->string('description')->nullable();
+            $table->string('location')->nullable();
             $table->timestamps();
         });
     }

@@ -43,6 +43,7 @@
                             <th>Kategori</th>
                             <th>Merk</th>
                             <th>Harga Satuan</th>
+                            <th>Lokasi</th>
                             <th class="text-center">Actions</th>
                         </tr>
                     </thead>
@@ -92,6 +93,13 @@
                                 </div>
                                 @if($material->unit)
                                     <div class="text-sm text-gray-500 dark:text-gray-400">per {{ $material->unit }}</div>
+                                @endif
+                            </td>
+                            <td>
+                                @if($material->location)
+                                    <span class="badge badge-success">{{ $material->location }}</span>
+                                @else
+                                    <span class="text-gray-400">-</span>
                                 @endif
                             </td>
                             <td>
