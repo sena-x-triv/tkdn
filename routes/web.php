@@ -28,4 +28,9 @@ Route::post('service/{service}/submit', [App\Http\Controllers\ServiceController:
 Route::post('service/{service}/approve', [App\Http\Controllers\ServiceController::class, 'approve'])->name('service.approve');
 Route::post('service/{service}/reject', [App\Http\Controllers\ServiceController::class, 'reject'])->name('service.reject');
 
+// HPP Routes
+Route::resource('hpp', App\Http\Controllers\HppController::class);
+Route::get('hpp/{hpp}/get-estimation-items', [App\Http\Controllers\HppController::class, 'getEstimationItems'])->name('hpp.get-estimation-items');
+Route::get('hpp/get-ahs-data', [App\Http\Controllers\HppController::class, 'getAhsDataAjax'])->name('hpp.get-ahs-data');
+
 Route::view('support', 'support')->name('support');
