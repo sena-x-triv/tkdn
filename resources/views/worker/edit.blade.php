@@ -31,21 +31,6 @@
                     <!-- Basic Information -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label for="code" class="form-label">Code <span class="text-red-500">*</span></label>
-                            <div class="relative">
-                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
-                                    </svg>
-                                </div>
-                                <input type="text" name="code" id="code" class="form-input pl-10 @error('code') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror" value="{{ old('code', $worker->code) }}" required placeholder="Enter worker code">
-                            </div>
-                            @error('code')
-                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <div>
                             <label for="name" class="form-label">Name <span class="text-red-500">*</span></label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -56,6 +41,21 @@
                                 <input type="text" name="name" id="name" class="form-input pl-10 @error('name') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror" value="{{ old('name', $worker->name) }}" required placeholder="Enter worker name">
                             </div>
                             @error('name')
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label for="unit" class="form-label">Unit <span class="text-red-500">*</span></label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                                    </svg>
+                                </div>
+                                <input type="text" name="unit" id="unit" class="form-input pl-10 @error('unit') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror" value="{{ old('unit', $worker->unit) }}" required placeholder="e.g., OH, Person, Day">
+                            </div>
+                            @error('unit')
                                 <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                             @enderror
                         </div>
@@ -86,16 +86,18 @@
                         </div>
 
                         <div>
-                            <label for="unit" class="form-label">Unit <span class="text-red-500">*</span></label>
+                            <label for="location" class="form-label">Location</label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 12.414a4 4 0 10-5.657 5.657l4.243 4.243a8 8 0 0011.314-11.314l-4.243-4.243a4 4 0 00-5.657 5.657l4.243 4.243z"></path>
                                     </svg>
                                 </div>
-                                <input type="text" name="unit" id="unit" class="form-input pl-10 @error('unit') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror" value="{{ old('unit', $worker->unit) }}" required placeholder="e.g., OH, Person, Day">
+                                <select name="location" id="location" class="form-input pl-10 @error('location') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror">
+                                    <option value="">Pilih Kota Worker...</option>
+                                </select>
                             </div>
-                            @error('unit')
+                            @error('location')
                                 <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                             @enderror
                         </div>
@@ -132,27 +134,6 @@
                                 <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                             @enderror
                         </div>
-                    </div>
-
-                    <!-- Location Section -->
-                    <div class="space-y-3">
-                        <label for="location" class="form-label flex items-center">
-                            <svg class="w-5 h-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 12.414a4 4 0 10-5.657 5.657l4.243 4.243a8 8 0 0011.314-11.314l-4.243-4.243a4 4 0 00-5.657 5.657l4.243 4.243z"></path>
-                            </svg>
-                            Lokasi Worker
-                        </label>
-                        <select name="location" id="location" class="form-input select2-modern @error('location') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror" style="width:100%">
-                            <option value="">Pilih Kota Worker...</option>
-                        </select>
-                        @error('location')
-                            <p class="mt-1 text-sm text-red-600 dark:text-red-400 flex items-center">
-                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                                {{ $message }}
-                            </p>
-                        @enderror
                     </div>
                     
                     <!-- Form Actions -->
