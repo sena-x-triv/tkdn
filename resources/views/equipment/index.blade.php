@@ -43,7 +43,6 @@
                             <th>Period (Days)</th>
                             <th>Price (Rp)</th>
                             <th>TKDN (%)</th>
-                            <th>Lokasi</th>
                             <th class="text-center">Actions</th>
                         </tr>
                     </thead>
@@ -91,13 +90,6 @@
                                     </div>
                                 @else
                                     <span class="text-sm text-gray-500 dark:text-gray-400">-</span>
-                                @endif
-                            </td>
-                            <td>
-                                @if($item->location)
-                                    <span class="badge badge-success">{{ $item->location }}</span>
-                                @else
-                                    <span class="text-gray-400">-</span>
                                 @endif
                             </td>
                             <td>
