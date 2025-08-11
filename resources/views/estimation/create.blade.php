@@ -616,7 +616,7 @@ function updateTotalPrice(input) {
     const row = input.closest('tr');
     const coef = parseFloat(row.querySelector('input[name*="[coefficient]"]').value) || 0;
     const unitPrice = parseFloat(row.querySelector('input[name*="[unit_price]"]').value) || 0;
-    const totalPrice = coef * unitPrice;
+    const totalPrice = Math.ceil(coef * unitPrice);
     
     row.querySelector('input[name*="[total_price]"]').value = totalPrice;
     
@@ -638,7 +638,7 @@ function updateMainTotal() {
     // Update the main total input
     const mainTotalInput = document.getElementById('total');
     if (mainTotalInput) {
-        mainTotalInput.value = totalPrice;
+        mainTotalInput.value =  Math.ceil(totalPrice);
     }
 
     // update unit price = total * (1 + margin/100), hasil penghitungan pembulatan keatas
