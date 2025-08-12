@@ -4,10 +4,22 @@ namespace App\Http\Controllers;
 
 use App\Models\Equipment;
 use App\Models\Category;
+use App\Contracts\CodeGenerationServiceInterface;
 use Illuminate\Http\Request;
 
 class EquipmentController extends Controller
 {
+    protected $codeGenerationService;
+
+    /**
+     * Create a new controller instance.
+     */
+    public function __construct(CodeGenerationServiceInterface $codeGenerationService)
+    {
+        $this->middleware('auth');
+        $this->codeGenerationService = $codeGenerationService;
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -32,7 +44,6 @@ class EquipmentController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'code' => 'required|string|max:255|unique:equipment,code',
             'name' => 'required|string|max:255',
             'category_id' => 'nullable|exists:categories,id',
             'tkdn' => 'nullable|numeric|min:0|max:100',
@@ -41,8 +52,14 @@ class EquipmentController extends Controller
             'description' => 'nullable|string|max:255',
             'location' => 'nullable|string|max:255',
         ]);
+
+        // Generate code otomatis
+        $code = $this->codeGenerationService->generateCode('equipment');
+        
+        $data['code'] = $code;
+        
         Equipment::create($data);
-        return redirect()->route('master.equipment.index')->with('status', 'Peralatan berhasil ditambahkan!');
+        return redirect()->route('master.equipment.index')->with('status', 'Peralatan berhasil ditambahkan dengan code: ' . $code);
     }
 
     /**

@@ -13,7 +13,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(
+            \App\Contracts\CodeGenerationServiceInterface::class,
+            \App\Services\CodeGenerationService::class
+        );
     }
 
     /**

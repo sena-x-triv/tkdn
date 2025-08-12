@@ -3,18 +3,22 @@ namespace App\Http\Controllers;
 
 use App\Models\Worker;
 use App\Models\Category;
+use App\Contracts\CodeGenerationServiceInterface;
 use Illuminate\Http\Request;
 
 class WorkerController extends Controller
 {
+    protected $codeGenerationService;
+
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(CodeGenerationServiceInterface $codeGenerationService)
     {
         $this->middleware('auth');
+        $this->codeGenerationService = $codeGenerationService;
     }
 
     public function index() {
@@ -29,7 +33,6 @@ class WorkerController extends Controller
 
     public function store(Request $request) {
         $request->validate([
-            'code' => 'required|unique:workers,code',
             'name' => 'required',
             'unit' => 'required',
             'category_id' => 'nullable|exists:categories,id',
@@ -37,8 +40,15 @@ class WorkerController extends Controller
             'tkdn' => 'required|integer',
             'location' => 'nullable|string'
         ]);
-        Worker::create($request->all());
-        return redirect()->route('master.worker.index')->with('success', 'Worker created!');
+
+        // Generate code otomatis
+        $code = $this->codeGenerationService->generateCode('worker');
+        
+        $data = $request->all();
+        $data['code'] = $code;
+        
+        Worker::create($data);
+        return redirect()->route('master.worker.index')->with('success', 'Worker created with code: ' . $code);
     }
 
     public function show(Worker $worker) {

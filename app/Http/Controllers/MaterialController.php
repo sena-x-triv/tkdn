@@ -3,18 +3,22 @@ namespace App\Http\Controllers;
 
 use App\Models\Material;
 use App\Models\Category;
+use App\Contracts\CodeGenerationServiceInterface;
 use Illuminate\Http\Request;
 
 class MaterialController extends Controller
 {
+    protected $codeGenerationService;
+
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(CodeGenerationServiceInterface $codeGenerationService)
     {
         $this->middleware('auth');
+        $this->codeGenerationService = $codeGenerationService;
     }
 
     /**
@@ -34,7 +38,6 @@ class MaterialController extends Controller
 
     public function store(Request $request) {
         $request->validate([
-            'code' => 'required|unique:material,code',
             'name' => 'required',
             'category_id' => 'required|exists:categories,id',
             'brand' => 'required',
@@ -42,8 +45,15 @@ class MaterialController extends Controller
             'unit' => 'required',
             'location' => 'nullable|string'
         ]);
-        Material::create($request->all());
-        return redirect()->route('master.material.index')->with('success', 'Material created!');
+
+        // Generate code otomatis
+        $code = $this->codeGenerationService->generateCode('material');
+        
+        $data = $request->all();
+        $data['code'] = $code;
+        
+        Material::create($data);
+        return redirect()->route('master.material.index')->with('success', 'Material created with code: ' . $code);
     }
 
     public function show(Material $material) {

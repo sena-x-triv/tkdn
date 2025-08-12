@@ -41,9 +41,7 @@
                             <th>Nama Barang/Jasa</th>
                             <th>Kode</th>
                             <th>Kategori</th>
-                            <th>Merk</th>
                             <th>Harga Satuan</th>
-                            <th>Lokasi</th>
                             <th class="text-center">Actions</th>
                         </tr>
                     </thead>
@@ -81,25 +79,11 @@
                                 @endif
                             </td>
                             <td>
-                                @if($material->brand)
-                                    <span class="text-sm font-medium text-gray-900 dark:text-white">{{ $material->brand }}</span>
-                                @else
-                                    <span class="text-gray-400">-</span>
-                                @endif
-                            </td>
-                            <td>
                                 <div class="font-medium text-gray-900 dark:text-white">
                                     Rp {{ number_format($material->price, 0, ',', '.') }}
                                 </div>
                                 @if($material->unit)
                                     <div class="text-sm text-gray-500 dark:text-gray-400">per {{ $material->unit }}</div>
-                                @endif
-                            </td>
-                            <td>
-                                @if($material->location)
-                                    <span class="badge badge-success">{{ $material->location }}</span>
-                                @else
-                                    <span class="text-gray-400">-</span>
                                 @endif
                             </td>
                             <td>
