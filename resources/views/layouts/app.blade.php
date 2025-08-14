@@ -28,6 +28,9 @@
             console.log('✅ jQuery and Select2 loaded from CDN and ready');
         });
     </script>
+    
+    <!-- Global cities data -->
+    <script src="{{ asset('js/cities-data.js') }}"></script>
 </head>
 <body class="h-full bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
     <!-- Sidebar Overlay -->
