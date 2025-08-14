@@ -105,6 +105,9 @@
 .select2-container--default .select2-selection--single .select2-selection__placeholder {
     color: #9ca3af !important;
 }
+.select2-container--default .select2-selection--single .select2-selection__clear {
+    display: none !important;
+}
 </style>
 @endpush
 
@@ -202,6 +205,20 @@
                 @enderror
             </div>
             <div class="relative">
+                <label for="location" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Lokasi <span class="text-red-500">*</span></label>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                    </span>
+                    <select name="location" id="location" class="form-input w-full pl-10 @error('location') border-red-500 @enderror" required>
+                        <option value="">Pilih Lokasi...</option>
+                    </select>
+                </div>
+                @error('location')
+                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+            <div class="relative">
                 <label for="total_unit_price" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Harga Satuan</label>
                 <div class="relative">
                     <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -215,10 +232,16 @@
             </div>
         </div>
         <div class="mt-10">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                <svg class="w-6 h-6 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2a4 4 0 014-4h4" /></svg>
-                Item AHS
-            </h3>
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                    <svg class="w-6 h-6 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2a4 4 0 014-4h4" /></svg>
+                    Item AHS
+                </h3>
+                <button type="button" class="btn btn-secondary flex items-center gap-2" onclick="addItemRow()">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
+                    Tambah Item
+                </button>
+            </div>
             <div class="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
                 <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm">
                     <thead class="bg-gray-50 dark:bg-gray-700">
@@ -238,10 +261,6 @@
                     </tbody>
                 </table>
             </div>
-            <button type="button" class="btn btn-secondary mt-4 flex items-center gap-2" onclick="addItemRow()">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
-                Tambah Item
-            </button>
         </div>
     
         <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200 dark:border-gray-700">
@@ -267,8 +286,9 @@
      data-workers="{{ json_encode($workers) }}" 
      data-materials="{{ json_encode($materials) }}" 
      data-equipment="{{ json_encode($equipment) }}" 
-     style="display:none;"></div>
-<script>
+     style="display:none;">
+</div>
+<script data-selected-location="{{ old('location') }}">
 // Initialize when dependencies are ready
 $(document).ready(function() {
     console.log('🚀 Initializing AHS functionality...');
@@ -283,6 +303,65 @@ $(document).ready(function() {
 let itemIndex = 0;
     
     console.log('📦 Data loaded - Workers:', window.workersData?.length || 0, 'Materials:', window.materialsData?.length || 0, 'Equipment:', window.equipmentData?.length || 0);
+
+    // Setup location select
+    const locationSelect = $('#location');
+    if (locationSelect.length) {
+        window.setupLocationSelect(locationSelect, $('script[data-selected-location]').attr('data-selected-location'));
+        
+        // Handle location change to filter data
+        locationSelect.on('change', function() {
+            const selectedLocation = $(this).val();
+            console.log('📍 Location changed to:', selectedLocation);
+            filterDataByLocation(selectedLocation);
+        });
+    }
+
+    // Filter data based on selected location
+    function filterDataByLocation(location) {
+        if (!location) {
+            console.log('⚠️ No location selected, showing all data');
+            // Reset filtered data to original if no location selected
+            window.filteredWorkersData = null;
+            window.filteredMaterialsData = null;
+            window.filteredEquipmentData = null;
+            return;
+        }
+        
+        console.log('🔍 Filtering data for location:', location);
+        
+        // Filter workers by location
+        const filteredWorkers = window.workersData.filter(worker => 
+            worker.location === location
+        );
+        
+        // Filter materials by location
+        const filteredMaterials = window.materialsData.filter(material => 
+            material.location === location
+        );
+        
+        // Filter equipment by location
+        const filteredEquipment = window.equipmentData.filter(equipment => 
+            equipment.location === location
+        );
+        
+        console.log('📊 Filtered data - Workers:', filteredWorkers.length, 'Materials:', filteredMaterials.length, 'Equipment:', filteredEquipment.length);
+        
+        // Update global data with filtered results
+        window.filteredWorkersData = filteredWorkers;
+        window.filteredMaterialsData = filteredMaterials;
+        window.filteredEquipmentData = filteredEquipment;
+        
+        // TIDAK refresh existing item rows - biarkan data yang sudah ada tetap utuh
+        console.log('ℹ️ Location changed but existing AHS items remain unchanged');
+    }
+    
+    // Refresh existing item rows with filtered data - DISABLED untuk location change
+    function refreshExistingItemRows() {
+        // Function ini tidak akan dipanggil saat location berubah
+        // Hanya untuk keperluan lain jika diperlukan
+        console.log('⚠️ refreshExistingItemRows called - this should not happen on location change');
+    }
 
     // Simple select2 initialization  
     function initSelect2(element, placeholder) {
@@ -373,8 +452,10 @@ function toggleEquipmentInput(select) {
                 selectElement.className = 'form-input equipment-name-select';
                 selectElement.innerHTML = '<option value="">Pilih Pekerja</option>';
                 
-                // Add workers options
-                window.workersData.forEach(worker => {
+                // Add workers options (filtered by location if available)
+                // Untuk items yang sudah ada, gunakan data original jika filtered data tidak tersedia
+                const workersToShow = window.filteredWorkersData || window.workersData;
+                workersToShow.forEach(worker => {
                     const option = document.createElement('option');
                     option.value = worker.id;
                     option.textContent = `${worker.name} (${worker.unit})`;
@@ -438,8 +519,10 @@ function toggleEquipmentInput(select) {
                 selectElement.className = 'form-input equipment-name-select';
                 selectElement.innerHTML = '<option value="">Pilih Material</option>';
                 
-                // Add materials options
-                window.materialsData.forEach(material => {
+                // Add materials options (filtered by location if available)
+                // Untuk items yang sudah ada, gunakan data original jika filtered data tidak tersedia
+                const materialsToShow = window.filteredMaterialsData || window.materialsData;
+                materialsToShow.forEach(material => {
                     const option = document.createElement('option');
                     option.value = material.id;
                     option.textContent = `${material.name}${material.specification ? ' - ' + material.specification : ''} (${material.unit})`;
@@ -511,8 +594,10 @@ function toggleEquipmentInput(select) {
                 selectElement.className = 'form-input equipment-name-select';
                 selectElement.innerHTML = '<option value="">Pilih Peralatan</option>';
                 
-                // Add equipment options
-                window.equipmentData.forEach(equipment => {
+                // Add equipment options (filtered by location if available)
+                // Untuk items yang sudah ada, gunakan data original jika filtered data tidak tersedia
+                const equipmentToShow = window.filteredEquipmentData || window.equipmentData;
+                equipmentToShow.forEach(equipment => {
                     const option = document.createElement('option');
                     option.value = equipment.id;
                     option.textContent = `${equipment.name}${equipment.description ? ' - ' + equipment.description : ''} (${equipment.period} jam)`;

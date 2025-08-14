@@ -37,23 +37,34 @@ class MaterialController extends Controller
     }
 
     public function store(Request $request) {
-        $request->validate([
-            'name' => 'required',
-            'category_id' => 'required|exists:categories,id',
-            'brand' => 'required',
-            'price' => 'required|integer',
-            'unit' => 'required',
-            'location' => 'nullable|string'
-        ]);
+        try {
+            $request->validate([
+                'name' => 'required',
+                'category_id' => 'required|exists:categories,id',
+                'brand' => 'nullable|string',
+                'specification' => 'nullable|string',
+                'tkdn' => 'nullable|integer|min:0|max:100',
+                'price' => 'required|integer',
+                'unit' => 'required',
+                'link' => 'nullable|url',
+                'price_inflasi' => 'nullable|integer|min:0',
+                'description' => 'nullable|string',
+                'location' => 'nullable|string'
+            ]);
 
-        // Generate code otomatis
-        $code = $this->codeGenerationService->generateCode('material');
-        
-        $data = $request->all();
-        $data['code'] = $code;
-        
-        Material::create($data);
-        return redirect()->route('master.material.index')->with('success', 'Material created with code: ' . $code);
+            // Generate code otomatis
+            $code = $this->codeGenerationService->generateCode('material');
+            
+            $data = $request->all();
+            $data['code'] = $code;
+            
+            Material::create($data);
+            return redirect()->route('master.material.index')->with('success', 'Material created successfully with code: ' . $code);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()->withErrors($e->validator)->withInput();
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'An error occurred while creating material: ' . $e->getMessage()])->withInput();
+        }
     }
 
     public function show(Material $material) {
@@ -66,21 +77,36 @@ class MaterialController extends Controller
     }
 
     public function update(Request $request, Material $material) {
-        $request->validate([
-            'code' => 'required|unique:material,code,' . $material->id . ',id',
-            'name' => 'required',
-            'category_id' => 'required|exists:categories,id',
-            'brand' => 'required',
-            'price' => 'required|integer',
-            'unit' => 'required',
-            'location' => 'nullable|string'
-        ]);
-        $material->update($request->all());
-        return redirect()->route('master.material.index')->with('success', 'Material updated!');
+        try {
+            $request->validate([
+                'name' => 'required',
+                'category_id' => 'required|exists:categories,id',
+                'brand' => 'nullable|string',
+                'specification' => 'nullable|string',
+                'tkdn' => 'nullable|integer|min:0|max:100',
+                'price' => 'required|integer',
+                'unit' => 'required',
+                'link' => 'nullable|url',
+                'price_inflasi' => 'nullable|integer|min:0',
+                'description' => 'nullable|string',
+                'location' => 'nullable|string'
+            ]);
+            
+            $material->update($request->all());
+            return redirect()->route('master.material.index')->with('success', 'Material updated successfully!');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()->withErrors($e->validator)->withInput();
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'An error occurred while updating material: ' . $e->getMessage()])->withInput();
+        }
     }
 
     public function destroy(Material $material) {
-        $material->delete();
-        return redirect()->route('master.material.index')->with('success', 'Material deleted!');
+        try {
+            $material->delete();
+            return redirect()->route('master.material.index')->with('success', 'Material deleted successfully!');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'An error occurred while deleting material: ' . $e->getMessage()]);
+        }
     }
 } 
