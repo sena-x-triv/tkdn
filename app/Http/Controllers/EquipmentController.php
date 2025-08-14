@@ -47,16 +47,30 @@ class EquipmentController extends Controller
             'name' => 'required|string|max:255',
             'category_id' => 'nullable|exists:categories,id',
             'tkdn' => 'nullable|numeric|min:0|max:100',
-            'period' => 'required|integer|min:1',
+            'equipment_type' => 'required|in:disposable,reusable',
+            'period' => 'required|integer|min:0',
             'price' => 'required|integer|min:0',
             'description' => 'nullable|string|max:255',
             'location' => 'nullable|string|max:255',
         ]);
 
+        // Validasi period berdasarkan jenis equipment
+        if ($data['equipment_type'] === 'disposable') {
+            $data['period'] = 0; // Force period to 0 for disposable items
+        } else {
+            // Untuk reusable equipment, period minimal 1
+            $request->validate([
+                'period' => 'required|integer|min:1',
+            ]);
+        }
+
         // Generate code otomatis
         $code = $this->codeGenerationService->generateCode('equipment');
         
         $data['code'] = $code;
+        
+        // Remove equipment_type from data as it's not stored in database
+        unset($data['equipment_type']);
         
         Equipment::create($data);
         return redirect()->route('master.equipment.index')->with('status', 'Peralatan berhasil ditambahkan dengan code: ' . $code);
@@ -89,11 +103,26 @@ class EquipmentController extends Controller
             'name' => 'required|string|max:255',
             'category_id' => 'nullable|exists:categories,id',
             'tkdn' => 'nullable|numeric|min:0|max:100',
-            'period' => 'required|integer|min:1',
+            'equipment_type' => 'required|in:disposable,reusable',
+            'period' => 'required|integer|min:0',
             'price' => 'required|integer|min:0',
             'description' => 'nullable|string|max:255',
             'location' => 'nullable|string|max:255',
         ]);
+
+        // Validasi period berdasarkan jenis equipment
+        if ($data['equipment_type'] === 'disposable') {
+            $data['period'] = 0; // Force period to 0 for disposable items
+        } else {
+            // Untuk reusable equipment, period minimal 1
+            $request->validate([
+                'period' => 'required|integer|min:1',
+            ]);
+        }
+
+        // Remove equipment_type from data as it's not stored in database
+        unset($data['equipment_type']);
+        
         $equipment->update($data);
         return redirect()->route('master.equipment.index')->with('status', 'Peralatan berhasil diupdate!');
     }
