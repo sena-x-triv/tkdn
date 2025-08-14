@@ -274,36 +274,13 @@
 
 @push('scripts')
 <script data-selected-location="{{ old('location') }}">
-const cities = [
-    'Jakarta', 'Surabaya', 'Bandung', 'Medan', 'Bekasi', 'Depok', 'Tangerang', 'Semarang', 'Palembang', 'Makassar',
-    'Bogor', 'Batam', 'Padang', 'Pekanbaru', 'Denpasar', 'Malang', 'Samarinda', 'Tasikmalaya', 'Pontianak', 'Banjarmasin',
-    'Balikpapan', 'Jambi', 'Cimahi', 'Yogyakarta', 'Kediri', 'Cilegon', 'Cirebon', 'Mataram', 'Manado', 'Kupang',
-    'Ambon', 'Jayapura', 'Palu', 'Kendari', 'Ternate', 'Sorong', 'Banda Aceh', 'Pangkal Pinang', 'Bengkulu', 'Gorontalo',
-    'Tarakan', 'Bitung', 'Tanjung Pinang', 'Lubuklinggau', 'Pematangsiantar', 'Banjarbaru', 'Probolinggo', 'Magelang', 'Blitar', 'Mojokerto'
-];
 $(function() {
-    // Location Select2 Setup  
+    // Location Select2 Setup menggunakan global cities data
     const selectedLocation = $('script[data-selected-location]').attr('data-selected-location');
     const select = $('#location');
-    select.empty();
-    select.append('<option value="">Pilih Kota Peralatan...</option>');
-    cities.forEach(function(city) {
-        const isSelected = city === selectedLocation ? 'selected' : '';
-        select.append(`<option value="${city}" ${isSelected} data-icon="city">${city}</option>`);
-    });
-    select.select2({
-        placeholder: 'Pilih Kota Peralatan...',
-        allowClear: true,
-        width: '100%',
-        templateResult: function (data) {
-            if (!data.id) return data.text;
-            return $('<span> '+data.text+'</span>');
-        },
-        templateSelection: function (data) {
-            if (!data.id) return data.text;
-            return $('<span> '+data.text+'</span>');
-        }
-    });
+    
+    // Setup location select menggunakan helper function global
+    window.setupLocationSelect(select, selectedLocation);
 
     // Equipment Type Logic
     function updateEquipmentTypeUI() {

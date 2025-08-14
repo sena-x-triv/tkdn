@@ -237,35 +237,14 @@ document.addEventListener('DOMContentLoaded', function() {
 @endpush
 
 @push('scripts')
-<script>
-const cities = [
-    'Jakarta', 'Surabaya', 'Bandung', 'Medan', 'Bekasi', 'Depok', 'Tangerang', 'Semarang', 'Palembang', 'Makassar',
-    'Bogor', 'Batam', 'Padang', 'Pekanbaru', 'Denpasar', 'Malang', 'Samarinda', 'Tasikmalaya', 'Pontianak', 'Banjarmasin',
-    'Balikpapan', 'Jambi', 'Cimahi', 'Yogyakarta', 'Kediri', 'Cilegon', 'Cirebon', 'Mataram', 'Manado', 'Kupang',
-    'Ambon', 'Jayapura', 'Palu', 'Kendari', 'Ternate', 'Sorong', 'Banda Aceh', 'Pangkal Pinang', 'Bengkulu', 'Gorontalo',
-    'Tarakan', 'Bitung', 'Tanjung Pinang', 'Lubuklinggau', 'Pematangsiantar', 'Banjarbaru', 'Probolinggo', 'Magelang', 'Blitar', 'Mojokerto'
-];
+<script data-selected-location="{{ old('location') }}">
+// Menggunakan global cities data
 $(function() {
     const select = $('#location');
-    select.empty();
-    select.append('<option value="">Pilih Kota Project...</option>');
-    cities.forEach(function(city) {
-        const isSelected = city === @json(old('location')) ? 'selected' : '';
-        select.append(`<option value="${city}" ${isSelected} data-icon="city">${city}</option>`);
-    });
-    select.select2({
-        placeholder: 'Pilih Kota Project...',
-        allowClear: true,
-        width: '100%',
-        templateResult: function (data) {
-            if (!data.id) return data.text;
-            return $('<span> '+data.text+'</span>');
-        },
-        templateSelection: function (data) {
-            if (!data.id) return data.text;
-            return $('<span> '+data.text+'</span>');
-        }
-    });
+    const oldLocation = $('script[data-selected-location]').attr('data-selected-location');
+    
+    // Setup location select menggunakan helper function global
+    window.setupLocationSelect(select, oldLocation);
 });
 </script>
 @endpush 
