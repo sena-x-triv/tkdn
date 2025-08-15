@@ -11,7 +11,6 @@ return new class extends Migration {
             
             $table->id();
             $table->ulid('estimation_id');
-            $table->foreign('estimation_id')->references('id')->on('estimations')->onDelete('cascade');
             $table->enum('category', ['worker', 'material', 'equipment']); // jenis input
             $table->ulid('reference_id')->nullable(); // id dari tabel worker/material
             $table->string('code')->nullable();
@@ -19,7 +18,9 @@ return new class extends Migration {
             $table->unsignedBigInteger('unit_price')->default(0);
             $table->unsignedBigInteger('total_price')->default(0);
             $table->timestamps();
+            
             $table->index(['category', 'reference_id']);
+            $table->foreign('estimation_id')->references('id')->on('estimations')->onDelete('cascade');
         });
     }
     public function down() {

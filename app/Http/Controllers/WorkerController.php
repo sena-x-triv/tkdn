@@ -62,7 +62,6 @@ class WorkerController extends Controller
 
     public function update(Request $request, Worker $worker) {
         $request->validate([
-            'code' => 'required|unique:workers,code,' . $worker->id . ',id',
             'name' => 'required',
             'unit' => 'required',
             'category_id' => 'nullable|exists:categories,id',

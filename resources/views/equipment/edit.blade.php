@@ -17,6 +17,29 @@
         </div>
     </div>
 
+    <!-- Notification Messages -->
+    @if(session('success'))
+        <div class="mb-6">
+            <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl relative flex items-center" role="alert">
+                <svg class="w-5 h-5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                </svg>
+                <span>{{ session('success') }}</span>
+            </div>
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="mb-6">
+            <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl relative flex items-center" role="alert">
+                <svg class="w-5 h-5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                </svg>
+                <span>{{ session('error') }}</span>
+            </div>
+        </div>
+    @endif
+
     <!-- Equipment Form -->
     <div class="max-w-4xl">
         <div class="card">
@@ -85,15 +108,88 @@
                             @enderror
                         </div>
                         
+                        <!-- Equipment Type Selection -->
+                        <div class="col-span-2">
+                            <label class="form-label">Jenis Barang <span class="text-red-500">*</span></label>
+                            <div class="mt-4">
+                                <div class="flex space-x-4">
+                                    @php
+                                        $currentType = old('equipment_type', $equipment->period == 0 ? 'disposable' : 'reusable');
+                                    @endphp
+                                    
+                                    <!-- Barang Sekali Pakai -->
+                                    <label class="equipment-type-option cursor-pointer flex items-center" data-type="disposable">
+                                        <input type="radio" name="equipment_type" value="disposable" class="sr-only equipment-type-radio" {{ $currentType === 'disposable' ? 'checked' : '' }}>
+                                        <div class="equipment-type-card relative px-3 py-1.5 rounded-md border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-200 flex items-center space-x-2">
+                                            <div class="equipment-type-icon w-4 h-4 bg-red-100 dark:bg-red-900/30 rounded flex items-center justify-center">
+                                                <svg class="w-3 h-3 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                                </svg>
+                                            </div>
+                                            <span class="text-sm font-medium text-gray-900 dark:text-white">Sekali Pakai</span>
+                                        </div>
+                                    </label>
+
+                                    <!-- Barang Bukan Sekali Pakai -->
+                                    <label class="equipment-type-option cursor-pointer flex items-center" data-type="reusable">
+                                        <input type="radio" name="equipment_type" value="reusable" class="sr-only equipment-type-radio" {{ $currentType === 'reusable' ? 'checked' : '' }}>
+                                        <div class="equipment-type-card relative px-3 py-1.5 rounded-md border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-200 flex items-center space-x-2">
+                                            <div class="equipment-type-icon w-4 h-4 bg-green-100 dark:bg-green-900/30 rounded flex items-center justify-center">
+                                                <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                                </svg>
+                                            </div>
+                                            <span class="text-sm font-medium text-gray-900 dark:text-white">Dapat Dipakai Ulang</span>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                            @error('equipment_type')
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label for="period" class="form-label">Period (Hari) <span class="text-red-500">*</span></label>
+                            <label for="description" class="form-label">Keterangan</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                    </svg>
+                                </div>
+                                <input type="text" name="description" id="description" value="{{ old('description', $equipment->description) }}" class="form-input pl-10 w-full @error('description') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror" placeholder="Keterangan tambahan (opsional)">
+                            </div>
+                            @error('description')
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <!-- Period Input (Dynamic) -->
+                        <div id="period-container">
+                            <label for="period" class="form-label">
+                                Period (Hari) 
+                                <span class="text-red-500">*</span>
+                                <span id="period-help-text" class="text-sm font-normal text-gray-500 dark:text-gray-400"></span>
+                            </label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                     </svg>
                                 </div>
-                                <input type="number" name="period" id="period" value="{{ old('period', $equipment->period) }}" class="form-input pl-10 w-full @error('period') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror" min="1" required placeholder="Masukkan periode (hari)">
+                                <input type="number" name="period" id="period" value="{{ old('period', $equipment->period) }}" class="form-input pl-10 w-full @error('period') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror" min="0" required placeholder="Masukkan periode (hari)">
+                                <div id="period-status" class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                    <div class="hidden" data-status="disposable">
+                                        <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300">
+                                            Habis Pakai
+                                        </span>
+                                    </div>
+                                    <div class="hidden" data-status="reusable">
+                                        <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300">
+                                            Dapat Dipakai Ulang
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
                             @error('period')
                                 <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
@@ -135,24 +231,6 @@
                                     </svg>
                                     {{ $message }}
                                 </p>
-                            @enderror
-                        </div>
-                    </div>
-                    
-                    <!-- Additional Information -->
-                    <div class="grid grid-cols-1 gap-6">
-                        <div>
-                            <label for="description" class="form-label">Keterangan</label>
-                            <div class="relative">
-                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                    </svg>
-                                </div>
-                                <input type="text" name="description" id="description" value="{{ old('description', $equipment->description) }}" class="form-input pl-10 w-full @error('description') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror" placeholder="Keterangan tambahan (opsional)">
-                            </div>
-                            @error('description')
-                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                             @enderror
                         </div>
                     </div>
@@ -223,33 +301,85 @@
 @endpush
 
 @push('scripts')
-<script>
-const cities = [
-    'Jakarta', 'Surabaya', 'Bandung', 'Medan', 'Bekasi', 'Depok', 'Tangerang', 'Semarang', 'Palembang', 'Makassar',
-    'Bogor', 'Batam', 'Padang', 'Pekanbaru', 'Denpasar', 'Malang', 'Samarinda', 'Tasikmalaya', 'Pontianak', 'Banjarmasin',
-    'Balikpapan', 'Jambi', 'Cimahi', 'Yogyakarta', 'Kediri', 'Cilegon', 'Cirebon', 'Mataram', 'Manado', 'Kupang',
-    'Ambon', 'Jayapura', 'Palu', 'Kendari', 'Ternate', 'Sorong', 'Banda Aceh', 'Pangkal Pinang', 'Bengkulu', 'Gorontalo',
-    'Tarakan', 'Bitung', 'Tanjung Pinang', 'Lubuklinggau', 'Pematangsiantar', 'Banjarbaru', 'Probolinggo', 'Magelang', 'Blitar', 'Mojokerto'
-];
+<script data-selected-location="{{ old('location', $equipment->location) }}">
 $(function() {
+    // Location Select2 Setup menggunakan global cities data
+    const selectedLocation = $('script[data-selected-location]').attr('data-selected-location');
     const select = $('#location');
-    select.empty();
-    select.append('<option value="">Pilih Kota Peralatan...</option>');
-    cities.forEach(function(city) {
-        const isSelected = city === @json(old('location', $equipment->location)) ? 'selected' : '';
-        select.append(`<option value="${city}" ${isSelected} data-icon="city">${city}</option>`);
+    
+    // Setup location select menggunakan helper function global
+    window.setupLocationSelect(select, selectedLocation);
+
+    // Equipment Type Logic
+    function updateEquipmentTypeUI() {
+        // Update visual state of cards
+        $('.equipment-type-option').each(function() {
+            const $option = $(this);
+            const $radio = $option.find('.equipment-type-radio');
+            const $card = $option.find('.equipment-type-card');
+            const $check = $option.find('.equipment-type-check');
+            
+            if ($radio.is(':checked')) {
+                $card.removeClass('border-gray-200 dark:border-gray-700')
+                     .addClass('border-blue-500 dark:border-blue-400 bg-blue-50 dark:bg-blue-900/20');
+                $check.removeClass('hidden');
+            } else {
+                $card.removeClass('border-blue-500 dark:border-blue-400 bg-blue-50 dark:bg-blue-900/20')
+                     .addClass('border-gray-200 dark:border-gray-700');
+                $check.addClass('hidden');
+            }
+        });
+    }
+
+    function updatePeriodInput() {
+        const selectedType = $('input[name="equipment_type"]:checked').val();
+        const $periodInput = $('#period');
+        const $periodHelpText = $('#period-help-text');
+        const $periodStatusElements = $('#period-status [data-status]');
+        
+        // Hide all status indicators first
+        $periodStatusElements.addClass('hidden');
+        
+        if (selectedType === 'disposable') {
+            // Barang sekali pakai - period = 0
+            $periodInput.val(0)
+                       .prop('readonly', true)
+                       .removeClass('bg-white dark:bg-gray-800')
+                       .addClass('bg-gray-100 dark:bg-gray-700 cursor-not-allowed');
+            $periodHelpText.text('(Otomatis diset 0 untuk barang sekali pakai)');
+            $('#period-status [data-status="disposable"]').removeClass('hidden');
+        } else if (selectedType === 'reusable') {
+            // Barang bukan sekali pakai - period bisa diisi manual
+            $periodInput.prop('readonly', false)
+                       .removeClass('bg-gray-100 dark:bg-gray-700 cursor-not-allowed')
+                       .addClass('bg-white dark:bg-gray-800');
+            if ($periodInput.val() === '0') {
+                $periodInput.val(1);
+            }
+            $periodHelpText.text('(Masukkan periode penggunaan dalam hari)');
+            $('#period-status [data-status="reusable"]').removeClass('hidden');
+        }
+    }
+
+    // Handle equipment type selection
+    $('.equipment-type-option').on('click', function() {
+        const $radio = $(this).find('.equipment-type-radio');
+        $radio.prop('checked', true);
+        updateEquipmentTypeUI();
+        updatePeriodInput();
     });
-    select.select2({
-        placeholder: 'Pilih Kota Peralatan...',
-        allowClear: true,
-        width: '100%',
-        templateResult: function (data) {
-            if (!data.id) return data.text;
-            return $('<span> '+data.text+'</span>');
-        },
-        templateSelection: function (data) {
-            if (!data.id) return data.text;
-            return $('<span> '+data.text+'</span>');
+
+    // Initialize on page load
+    updateEquipmentTypeUI();
+    updatePeriodInput();
+
+    // Handle period input validation for reusable equipment
+    $('#period').on('input', function() {
+        const selectedType = $('input[name="equipment_type"]:checked').val();
+        const value = parseInt($(this).val());
+        
+        if (selectedType === 'reusable' && value < 1) {
+            $(this).val(1);
         }
     });
 });

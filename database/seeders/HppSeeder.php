@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 use App\Models\Hpp;
 use App\Models\HppItem;
 use Illuminate\Support\Str;
+use App\Models\Project;
 
 class HppSeeder extends Seeder
 {
@@ -14,12 +15,11 @@ class HppSeeder extends Seeder
      */
     public function run(): void
     {
+        $project = Project::first();
         // Buat HPP contoh sesuai dengan gambar
         $hpp = Hpp::create([
             'code' => 'HPP-' . date('Ymd') . '-001',
-            'title' => 'HPP',
-            'company_name' => 'PT JUARA DATA',
-            'work_description' => 'PEKERJAAN PENGANGKUTAN, PENATAAN DAN PENYIMPANAN ARSIP',
+            'project_id' => $project->id,
             'sub_total_hpp' => 1294026000,
             'overhead_percentage' => 8.00,
             'overhead_amount' => 103522080,

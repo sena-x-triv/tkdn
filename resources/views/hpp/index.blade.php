@@ -20,18 +20,25 @@
         </div>
     </div>
 
+    <!-- Notification Messages -->
     @if(session('success'))
-        <div class="mb-4">
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
-                <span class="block sm:inline">{{ session('success') }}</span>
+        <div class="mb-6">
+            <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl relative flex items-center" role="alert">
+                <svg class="w-5 h-5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                </svg>
+                <span>{{ session('success') }}</span>
             </div>
         </div>
     @endif
 
     @if(session('error'))
-        <div class="mb-4">
-            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-                <span class="block sm:inline">{{ session('error') }}</span>
+        <div class="mb-6">
+            <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl relative flex items-center" role="alert">
+                <svg class="w-5 h-5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                </svg>
+                <span>{{ session('error') }}</span>
             </div>
         </div>
     @endif
@@ -57,7 +64,7 @@
                         <tr>
                             <th>No</th>
                             <th>Kode HPP</th>
-                            <th>Judul</th>
+                            <th>Project</th>
                             <th>Perusahaan</th>
                             <th>Sub Total HPP</th>
                             <th>Grand Total</th>
@@ -84,12 +91,12 @@
                             </td>
                             <td>
                                 <div>
-                                    <div class="font-medium text-gray-900 dark:text-white">{{ $hpp->title }}</div>
-                                    <div class="text-sm text-gray-500 dark:text-gray-400">{{ \App\Helpers\StringHelper::safeLimit($hpp->work_description, 50) }}</div>
+                                    <div class="font-medium text-gray-900 dark:text-white">{{ $hpp->project->name ?? 'N/A' }}</div>
+                                    <div class="text-sm text-gray-500 dark:text-gray-400">{{ \App\Helpers\StringHelper::safeLimit($hpp->project->description ?? '', 20) }}</div>
                                 </div>
                             </td>
                             <td>
-                                <span class="text-sm text-gray-700 dark:text-gray-200">{{ $hpp->company_name }}</span>
+                                <span class="text-sm text-gray-700 dark:text-gray-200">{{ $hpp->project->company ?? 'N/A' }}</span>
                             </td>
                             <td>
                                 <span class="text-sm font-medium text-gray-700 dark:text-gray-200">Rp {{ number_format($hpp->sub_total_hpp, 0, ',', '.') }}</span>

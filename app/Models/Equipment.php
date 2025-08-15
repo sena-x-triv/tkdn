@@ -27,4 +27,28 @@ class Equipment extends Model
     {
         return $this->belongsTo(Category::class, 'category_id');
     }
+
+    /**
+     * Check if equipment is disposable (single use)
+     */
+    public function isDisposable()
+    {
+        return $this->period == 0;
+    }
+
+    /**
+     * Get equipment type label
+     */
+    public function getTypeLabel()
+    {
+        return $this->isDisposable() ? 'Sekali Pakai' : 'Dapat Dipakai Ulang';
+    }
+
+    /**
+     * Get equipment type badge class
+     */
+    public function getTypeBadgeClass()
+    {
+        return $this->isDisposable() ? 'badge-danger' : 'badge-success';
+    }
 }

@@ -12,11 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('hpps', function (Blueprint $table) {
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_unicode_ci';
+
             $table->ulid('id')->primary();
             $table->string('code')->unique();
-            $table->string('title');
-            $table->string('company_name');
-            $table->text('work_description');
+            $table->ulid('project_id');
             $table->decimal('sub_total_hpp', 15, 2)->default(0);
             $table->decimal('overhead_percentage', 5, 2)->default(8.00);
             $table->decimal('overhead_amount', 15, 2)->default(0);
@@ -29,6 +30,8 @@ return new class extends Migration
             $table->text('notes')->nullable();
             $table->enum('status', ['draft', 'submitted', 'approved', 'rejected'])->default('draft');
             $table->timestamps();
+
+            $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');
         });
     }
 

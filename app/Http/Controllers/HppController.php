@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Hpp;
 use App\Models\HppItem;
+use App\Models\Project;
 use App\Models\Estimation;
 use App\Models\EstimationItem;
 use App\Models\Worker;
@@ -20,7 +21,7 @@ class HppController extends Controller
      */
     public function index()
     {
-        $hpps = Hpp::with('items')->latest()->paginate(10);
+        $hpps = Hpp::with(['items', 'project'])->latest()->paginate(10);
         return view('hpp.index', compact('hpps'));
     }
 
@@ -29,9 +30,9 @@ class HppController extends Controller
      */
     public function create()
     {
-        $estimations = Estimation::with('items')->get();
+        $projects = Project::all();
         $ahsData = $this->getAhsData();
-        return view('hpp.create', compact('estimations', 'ahsData'));
+        return view('hpp.create', compact('projects', 'ahsData'));
     }
 
     /**
@@ -40,9 +41,7 @@ class HppController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'required|string|max:255',
-            'company_name' => 'required|string|max:255',
-            'work_description' => 'required|string',
+            'project_id' => 'required|exists:projects,id',
             'overhead_percentage' => 'required|numeric|min:0|max:100',
             'margin_percentage' => 'required|numeric|min:0|max:100',
             'ppn_percentage' => 'required|numeric|min:0|max:100',
@@ -87,9 +86,7 @@ class HppController extends Controller
             // Buat HPP
             $hpp = Hpp::create([
                 'code' => $code,
-                'title' => $request->title,
-                'company_name' => $request->company_name,
-                'work_description' => $request->work_description,
+                'project_id' => $request->project_id,
                 'sub_total_hpp' => $subTotalHpp,
                 'overhead_percentage' => $request->overhead_percentage,
                 'overhead_amount' => $overheadAmount,
@@ -133,7 +130,7 @@ class HppController extends Controller
      */
     public function show(string $id)
     {
-        $hpp = Hpp::with('items')->findOrFail($id);
+        $hpp = Hpp::with(['items', 'project'])->findOrFail($id);
         return view('hpp.show', compact('hpp'));
     }
 
@@ -142,10 +139,10 @@ class HppController extends Controller
      */
     public function edit(string $id)
     {
-        $hpp = Hpp::with('items')->findOrFail($id);
-        $estimations = Estimation::with('items')->get();
+        $hpp = Hpp::with(['items', 'project'])->findOrFail($id);
+        $projects = Project::all();
         $ahsData = $this->getAhsData();
-        return view('hpp.edit', compact('hpp', 'estimations', 'ahsData'));
+        return view('hpp.edit', compact('hpp', 'projects', 'ahsData'));
     }
 
     /**
@@ -154,9 +151,7 @@ class HppController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
-            'title' => 'required|string|max:255',
-            'company_name' => 'required|string|max:255',
-            'work_description' => 'required|string',
+            'project_id' => 'required|exists:projects,id',
             'overhead_percentage' => 'required|numeric|min:0|max:100',
             'margin_percentage' => 'required|numeric|min:0|max:100',
             'ppn_percentage' => 'required|numeric|min:0|max:100',
@@ -199,9 +194,7 @@ class HppController extends Controller
 
             // Update HPP
             $hpp->update([
-                'title' => $request->title,
-                'company_name' => $request->company_name,
-                'work_description' => $request->work_description,
+                'project_id' => $request->project_id,
                 'sub_total_hpp' => $subTotalHpp,
                 'overhead_percentage' => $request->overhead_percentage,
                 'overhead_amount' => $overheadAmount,

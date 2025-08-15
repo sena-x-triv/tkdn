@@ -14,7 +14,6 @@ return new class extends Migration {
             $table->string('name');
             $table->string('specification')->nullable();
             $table->ulid('category_id')->nullable();
-
             $table->string('brand')->nullable();
             $table->unsignedTinyInteger('tkdn')->default(100);
             $table->unsignedBigInteger('price')->nullable();
@@ -24,6 +23,8 @@ return new class extends Migration {
             $table->string('description')->nullable();
             $table->string('location')->nullable();
             $table->timestamps();
+            
+            $table->foreign('category_id')->references('id')->on('categories')->onDelete('set null');
         });
     }
     public function down() {
