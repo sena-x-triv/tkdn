@@ -110,7 +110,16 @@
                             
                             <div>
                                 <label class="form-label">Klasifikasi TKDN <span class="text-red-500">*</span></label>
-                                <input type="text" name="items[{{ $index }}][tkdn_classification]" value="{{ $item->tkdn_classification }}" class="form-input tkdn-classification-input" required>
+                                <select name="items[{{ $index }}][tkdn_classification]" class="form-select tkdn-classification-input" required>
+                                    <option value="">Pilih Klasifikasi TKDN</option>
+                                    <option value="3.1" {{ $item->tkdn_classification == '3.1' ? 'selected' : '' }}>3.1</option>
+                                    <option value="3.2" {{ $item->tkdn_classification == '3.2' ? 'selected' : '' }}>3.2</option>
+                                    <option value="3.3" {{ $item->tkdn_classification == '3.3' ? 'selected' : '' }}>3.3</option>
+                                    <option value="3.4" {{ $item->tkdn_classification == '3.4' ? 'selected' : '' }}>3.4</option>
+                                    <option value="3.5" {{ $item->tkdn_classification == '3.5' ? 'selected' : '' }}>3.5</option>
+                                    <option value="3.6" {{ $item->tkdn_classification == '3.6' ? 'selected' : '' }}>3.6</option>
+                                    <option value="3.7" {{ $item->tkdn_classification == '3.7' ? 'selected' : '' }}>3.7</option>
+                                </select>
                             </div>
                             
                             <div>
@@ -236,7 +245,16 @@
             
             <div>
                 <label class="form-label">Klasifikasi TKDN <span class="text-red-500">*</span></label>
-                <input type="text" name="items[INDEX][tkdn_classification]" class="form-input tkdn-classification-input" required>
+                <select name="items[INDEX][tkdn_classification]" class="form-select tkdn-classification-input" required>
+                    <option value="">Pilih Klasifikasi TKDN</option>
+                    <option value="3.1">3.1</option>
+                    <option value="3.2">3.2</option>
+                    <option value="3.3">3.3</option>
+                    <option value="3.4">3.4</option>
+                    <option value="3.5">3.5</option>
+                    <option value="3.6">3.6</option>
+                    <option value="3.7">3.7</option>
+                </select>
             </div>
             
             <div>
@@ -414,9 +432,25 @@ function selectAhsItem(item) {
     
     // Set TKDN classification
     if (item.tkdn) {
-        tkdnClassificationInput.value = `TKDN ${item.tkdn}%`;
+        // Find the closest TKDN classification option
+        const tkdnValue = parseFloat(item.tkdn);
+        if (tkdnValue <= 30) {
+            tkdnClassificationInput.value = '3.1';
+        } else if (tkdnValue <= 40) {
+            tkdnClassificationInput.value = '3.2';
+        } else if (tkdnValue <= 50) {
+            tkdnClassificationInput.value = '3.3';
+        } else if (tkdnValue <= 60) {
+            tkdnClassificationInput.value = '3.4';
+        } else if (tkdnValue <= 70) {
+            tkdnClassificationInput.value = '3.5';
+        } else if (tkdnValue <= 80) {
+            tkdnClassificationInput.value = '3.6';
+        } else {
+            tkdnClassificationInput.value = '3.7';
+        }
     } else {
-        tkdnClassificationInput.value = 'TKDN 100%';
+        tkdnClassificationInput.value = '3.7'; // Default to highest TKDN
     }
     
     // Recalculate total
