@@ -64,7 +64,7 @@
                         <tr>
                             <th>No</th>
                             <th>Kode HPP</th>
-                            <th>Judul</th>
+                            <th>Project</th>
                             <th>Perusahaan</th>
                             <th>Sub Total HPP</th>
                             <th>Grand Total</th>
@@ -91,12 +91,12 @@
                             </td>
                             <td>
                                 <div>
-                                    <div class="font-medium text-gray-900 dark:text-white">{{ $hpp->title }}</div>
-                                    <div class="text-sm text-gray-500 dark:text-gray-400">{{ \App\Helpers\StringHelper::safeLimit($hpp->work_description, 20) }}</div>
+                                    <div class="font-medium text-gray-900 dark:text-white">{{ $hpp->project->name ?? 'N/A' }}</div>
+                                    <div class="text-sm text-gray-500 dark:text-gray-400">{{ \App\Helpers\StringHelper::safeLimit($hpp->project->description ?? '', 20) }}</div>
                                 </div>
                             </td>
                             <td>
-                                <span class="text-sm text-gray-700 dark:text-gray-200">{{ $hpp->company_name }}</span>
+                                <span class="text-sm text-gray-700 dark:text-gray-200">{{ $hpp->project->company ?? 'N/A' }}</span>
                             </td>
                             <td>
                                 <span class="text-sm font-medium text-gray-700 dark:text-gray-200">Rp {{ number_format($hpp->sub_total_hpp, 0, ',', '.') }}</span>

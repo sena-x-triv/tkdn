@@ -29,28 +29,39 @@
             </div>
             <div class="card-body">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label for="title" class="form-label">Judul HPP <span class="text-red-500">*</span></label>
-                        <input type="text" id="title" name="title" value="{{ old('title', $hpp->title) }}" class="form-input @error('title') border-red-500 @enderror" required>
-                        @error('title')
-                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
-                    
-                    <div>
-                        <label for="company_name" class="form-label">Nama Perusahaan <span class="text-red-500">*</span></label>
-                        <input type="text" id="company_name" name="company_name" value="{{ old('company_name', $hpp->company_name) }}" class="form-input @error('company_name') border-red-500 @enderror" required>
-                        @error('company_name')
+                    <div class="md:col-span-2">
+                        <label for="project_id" class="form-label">Pilih Project <span class="text-red-500">*</span></label>
+                        <select id="project_id" name="project_id" class="form-select @error('project_id') border-red-500 @enderror" required>
+                            <option value="">Pilih Project</option>
+                            @foreach($projects as $project)
+                                <option value="{{ $project->id }}" {{ old('project_id', $hpp->project_id) == $project->id ? 'selected' : '' }}>
+                                    {{ $project->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('project_id')
                             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                         @enderror
                     </div>
 
                     <div class="md:col-span-2">
-                        <label for="work_description" class="form-label">Deskripsi Pekerjaan <span class="text-red-500">*</span></label>
-                        <textarea id="work_description" name="work_description" rows="3" class="form-textarea @error('work_description') border-red-500 @enderror" required>{{ old('work_description', $hpp->work_description) }}</textarea>
-                        @error('work_description')
-                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                        @enderror
+                        <div id="project-info" class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                            <h4 class="font-medium text-gray-900 dark:text-white mb-2">Informasi Project</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nama Project</label>
+                                    <p id="project-name" class="text-gray-900 dark:text-white">{{ $hpp->project->name ?? '' }}</p>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Perusahaan</label>
+                                    <p id="project-company" class="text-gray-900 dark:text-white">{{ $hpp->project->company ?? '-' }}</p>
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Deskripsi</label>
+                                    <p id="project-description" class="text-gray-900 dark:text-white">{{ $hpp->project->description ?? '-' }}</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -296,6 +307,7 @@
 let itemIndex = {{ count($hpp->items) }};
 let ahsData = @json($ahsData);
 let currentItemRow = null;
+let projects = @json($projects);
 
 function addItem() {
     const container = document.getElementById('items-container');
@@ -304,7 +316,7 @@ function addItem() {
     
     // Update index
     const inputs = clone.querySelectorAll('input, select, textarea');
-    inputs.forEach(input => {
+    inputs.forEach(function(input) {
         input.name = input.name.replace('INDEX', itemIndex);
     });
     
@@ -319,8 +331,8 @@ function addItem() {
     const unitPriceInput = container.lastElementChild.querySelector('.unit-price-input');
     const totalPriceInput = container.lastElementChild.querySelector('.total-price-input');
     
-    volumeInput.addEventListener('input', () => calculateTotal(container.lastElementChild));
-    unitPriceInput.addEventListener('input', () => calculateTotal(container.lastElementChild));
+    volumeInput.addEventListener('input', function() { calculateTotal(container.lastElementChild); });
+    unitPriceInput.addEventListener('input', function() { calculateTotal(container.lastElementChild); });
     
     itemIndex++;
 }
@@ -352,10 +364,10 @@ function loadAhsData() {
     const ahsList = document.getElementById('ahsList');
     ahsList.innerHTML = '';
     
-    ahsData.forEach(item => {
+    ahsData.forEach(function(item) {
         const div = document.createElement('div');
         div.className = 'p-3 border border-gray-200 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700';
-        div.onclick = () => selectAhsItem(item);
+        div.onclick = function() { selectAhsItem(item); };
         
         div.innerHTML = `
             <div class="flex justify-between items-start">
@@ -364,7 +376,7 @@ function loadAhsData() {
                     <div class="text-sm text-gray-500 dark:text-gray-400">${item.category}</div>
                 </div>
                 <div class="text-right">
-                    <div class="font-medium text-gray-900 dark:text-white">Rp ${numberFormat(item.unit_price)}</div>
+                    <div class="font-medium text-gray-700 dark:text-gray-300">Rp ${numberFormat(item.unit_price)}</div>
                     <div class="text-xs text-gray-500 dark:text-gray-400">${item.code}</div>
                 </div>
             </div>
@@ -417,12 +429,27 @@ function numberFormat(number) {
     return new Intl.NumberFormat('id-ID').format(number);
 }
 
+// Project selection handler
+document.getElementById('project_id').addEventListener('change', function() {
+    const projectId = this.value;
+    const projectInfo = document.getElementById('project-info');
+    
+    if (projectId) {
+        const project = projects.find(function(p) { return p.id === projectId; });
+        if (project) {
+            document.getElementById('project-name').textContent = project.name;
+            document.getElementById('project-company').textContent = project.company || '-';
+            document.getElementById('project-description').textContent = project.description || '-';
+        }
+    }
+});
+
 // Search functionality
 document.getElementById('ahsSearch').addEventListener('input', function(e) {
     const searchTerm = e.target.value.toLowerCase();
     const ahsItems = document.querySelectorAll('#ahsList > div');
     
-    ahsItems.forEach(item => {
+    ahsItems.forEach(function(item) {
         const text = item.textContent.toLowerCase();
         if (text.includes(searchTerm)) {
             item.style.display = 'block';
@@ -440,13 +467,13 @@ document.getElementById('ahsModal').addEventListener('click', function(e) {
 });
 
 // Add event listeners to existing rows
-document.querySelectorAll('#items-container .item-row').forEach(row => {
+document.querySelectorAll('#items-container .item-row').forEach(function(row) {
     const volumeInput = row.querySelector('.volume-input');
     const unitPriceInput = row.querySelector('.unit-price-input');
     
     if (volumeInput && unitPriceInput) {
-        volumeInput.addEventListener('input', () => calculateTotal(row));
-        unitPriceInput.addEventListener('input', () => calculateTotal(row));
+        volumeInput.addEventListener('input', function() { calculateTotal(row); });
+        unitPriceInput.addEventListener('input', function() { calculateTotal(row); });
     }
 });
 </script>

@@ -19,13 +19,14 @@ return new class extends Migration
             $table->string('code')->unique();
             $table->string('name');
             $table->ulid('category_id')->nullable();
-
             $table->decimal('tkdn', 5, 2)->nullable(); // TKDN as percentage, e.g. 87.50
             $table->integer('period')->comment('Satuan Hari');
             $table->unsignedBigInteger('price');
             $table->string('description')->nullable();
             $table->string('location')->nullable();
             $table->timestamps();
+            
+            $table->foreign('category_id')->references('id')->on('categories')->onDelete('set null');
         });
     }
 
