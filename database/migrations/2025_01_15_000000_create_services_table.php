@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('project_services', function (Blueprint $table) {
+        Schema::create('services', function (Blueprint $table) {
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_unicode_ci';
 
@@ -24,6 +24,7 @@ return new class extends Migration
             $table->decimal('total_cost', 15, 2)->default(0); // Total biaya
             $table->decimal('tkdn_percentage', 5, 2)->default(0); // Persentase TKDN
             $table->enum('status', ['draft', 'submitted', 'approved', 'rejected'])->default('draft');
+            $table->enum('service_type', ['project', 'equipment', 'construction'])->default('project');
             $table->timestamps();
 
             $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');
@@ -32,6 +33,6 @@ return new class extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('project_services');
+        Schema::dropIfExists('services');
     }
 }; 

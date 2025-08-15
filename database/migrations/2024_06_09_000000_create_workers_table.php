@@ -18,6 +18,8 @@ return new class extends Migration {
             $table->unsignedTinyInteger('tkdn')->default(100);
             $table->string('location')->nullable();
             $table->timestamps();
+            
+            $table->foreign('category_id')->references('id')->on('categories')->onDelete('set null');
         });
     }
     public function down() {

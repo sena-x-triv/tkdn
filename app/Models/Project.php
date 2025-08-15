@@ -23,4 +23,9 @@ class Project extends Model
     {
         return $this->hasMany(Service::class);
     }
+
+    public function hpps()
+    {
+        return $this->hasMany(Hpp::class);
+    }
 } 

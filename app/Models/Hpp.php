@@ -13,9 +13,7 @@ class Hpp extends Model
 
     protected $fillable = [
         'code',
-        'title',
-        'company_name',
-        'work_description',
+        'project_id',
         'sub_total_hpp',
         'overhead_percentage',
         'overhead_amount',
@@ -46,8 +44,26 @@ class Hpp extends Model
         return $this->hasMany(HppItem::class, 'hpp_id');
     }
 
-    public function estimation()
+    public function project()
     {
-        return $this->belongsTo(Estimation::class, 'estimation_id');
+        return $this->belongsTo(Project::class, 'project_id');
+    }
+
+    // Accessor untuk title dari project
+    public function getTitleAttribute()
+    {
+        return $this->project->name ?? '';
+    }
+
+    // Accessor untuk company_name dari project
+    public function getCompanyNameAttribute()
+    {
+        return $this->project->company ?? '';
+    }
+
+    // Accessor untuk work_description dari project
+    public function getWorkDescriptionAttribute()
+    {
+        return $this->project->description ?? '';
     }
 }

@@ -8,12 +8,12 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('project_service_items', function (Blueprint $table) {
+        Schema::create('service_items', function (Blueprint $table) {
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_unicode_ci';
 
             $table->ulid('id')->primary();
-            $table->ulid('project_service_id');
+            $table->ulid('service_id');
             $table->integer('item_number'); // No. urut
             $table->string('description'); // Uraian
             $table->string('qualification')->nullable(); // Kualifikasi
@@ -27,8 +27,8 @@ return new class extends Migration
             $table->decimal('foreign_cost', 15, 2)->default(0); // Biaya KLN
             $table->decimal('total_cost', 15, 2)->default(0); // Total biaya
             $table->timestamps();
-
-            $table->foreign('project_service_id')->references('id')->on('project_services')->onDelete('cascade');
+            
+            $table->foreign('service_id')->references('id')->on('services')->onDelete('cascade');
         });
     }
 
