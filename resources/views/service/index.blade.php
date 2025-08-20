@@ -56,12 +56,13 @@
                     <thead>
                         <tr>
                             <th>No</th>
+                            <th>Nama Project</th>
+                            <th>Nama Perusahaan</th>
+                            <th>Lokasi</th>
+                            <th>Status Project</th>
+                            <th>Grand Total HPP</th>
                             <th>Nama Service</th>
                             <th>Jenis Service</th>
-                            <th>Proyek</th>
-                            <th>No. Dokumen</th>
-                            <th>TKDN (%)</th>
-                            <th>Total Biaya</th>
                             <th>Status</th>
                             <th class="text-center">Actions</th>
                         </tr>
@@ -70,6 +71,28 @@
                         @forelse($services as $service)
                         <tr class="cursor-pointer hover:bg-blue-100 dark:hover:bg-gray-600 transition-colors border-b border-gray-100 dark:border-gray-700" data-detail-url="{{ route('service.show', $service->id) }}" onclick="goToDetail(this, event)">
                             <td>{{ $loop->iteration + ($services->firstItem() - 1) }}</td>
+                            <td>
+                                <div class="font-medium text-gray-900 dark:text-white">{{ $service->project->name }}</div>
+                            </td>
+                            <td>
+                                <span class="text-sm text-gray-700 dark:text-gray-200">{{ $service->project->company ?: '-' }}</span>
+                            </td>
+                            <td>
+                                <span class="text-sm text-gray-700 dark:text-gray-200">{{ $service->project->location ?: '-' }}</span>
+                            </td>
+                            <td>
+                                <span class="badge {{ $service->project->status === 'completed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
+                                    {{ ucfirst($service->project->status) }}
+                                </span>
+                            </td>
+                            <td>
+                                @php
+                                    $grandTotal = $service->project->hpps->sum('grand_total');
+                                @endphp
+                                <span class="text-sm font-medium text-gray-700 dark:text-gray-200">
+                                    Rp {{ number_format($grandTotal, 0, ',', '.') }}
+                                </span>
+                            </td>
                             <td>
                                 <div class="flex items-center">
                                     <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mr-3">
@@ -92,18 +115,6 @@
                                 </span>
                             </td>
                             <td>
-                                <span class="text-xs text-gray-700 dark:text-gray-200">{{ $service->project->name }}</span>
-                            </td>
-                            <td>
-                                <span class="text-xs text-gray-700 dark:text-gray-200">{{ $service->document_number ?: '-' }}</span>
-                            </td>
-                            <td>
-                                <span class="text-xs font-medium text-gray-700 dark:text-gray-200">{{ number_format($service->tkdn_percentage, 2) }}%</span>
-                            </td>
-                            <td>
-                                <span class="text-xs font-medium text-gray-700 dark:text-gray-200">Rp {{ number_format($service->total_cost, 0, ',', '.') }}</span>
-                            </td>
-                            <td>
                                 <span class="badge {{ $service->getStatusBadgeClass() }}">
                                     @switch($service->status)
                                         @case('draft')
@@ -118,6 +129,11 @@
                                         @case('rejected')
                                             Ditolak
                                             @break
+                                        @case('generated')
+                                            Generated
+                                            @break
+                                        @default
+                                            Draft
                                     @endswitch
                                 </span>
                             </td>
@@ -139,12 +155,23 @@
                                             </button>
                                         </form>
                                     @endif
+                                    
+                                    @if($service->status === 'approved')
+                                        <form action="{{ route('service.generate', $service) }}" method="POST" class="inline">
+                                            @csrf
+                                            <button type="submit" class="btn btn-outline p-2 text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300" title="Generate Form TKDN">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    @endif
                                 </div>
                             </td>
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="9" class="text-center py-12">
+                            <td colspan="10" class="text-center py-12">
                                 <div class="flex flex-col items-center">
                                     <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mb-4">
                                         <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
