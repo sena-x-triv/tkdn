@@ -1,12 +1,14 @@
 <?php
+
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use App\Traits\UsesUlid;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Estimation extends Model
 {
-    use UsesUlid;
+    use HasFactory, UsesUlid;
 
     protected $table = 'estimations';
 
@@ -22,4 +24,4 @@ class Estimation extends Model
     {
         return $this->hasMany(EstimationItem::class, 'estimation_id');
     }
-} 
+}

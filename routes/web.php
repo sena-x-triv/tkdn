@@ -23,6 +23,8 @@ Route::prefix('master')->name('master.')->group(function () {
     Route::resource('category', App\Http\Controllers\CategoryController::class);
 });
 
+// Service Routes - Specific routes must come BEFORE resource route
+Route::get('service/get-hpp-data', [App\Http\Controllers\ServiceController::class, 'getHppData'])->name('service.get-hpp-data');
 Route::resource('service', App\Http\Controllers\ServiceController::class);
 Route::post('service/{service}/submit', [App\Http\Controllers\ServiceController::class, 'submit'])->name('service.submit');
 Route::post('service/{service}/approve', [App\Http\Controllers\ServiceController::class, 'approve'])->name('service.approve');

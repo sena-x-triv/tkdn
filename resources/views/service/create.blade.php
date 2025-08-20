@@ -5,8 +5,8 @@
     <!-- Header -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
-            <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Tambah Service</h1>
-            <p class="text-gray-600 dark:text-gray-400">Buat formulir TKDN jasa baru</p>
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Generate Service TKDN</h1>
+            <p class="text-gray-600 dark:text-gray-400">Buat formulir TKDN jasa otomatis dari data HPP yang dipilih</p>
         </div>
     </div>
 
@@ -21,16 +21,16 @@
     <form action="{{ route('service.store') }}" method="POST" class="space-y-6">
         @csrf
         
-        <!-- Informasi Umum -->
+        <!-- Pilihan Data Sumber -->
         <div class="card">
             <div class="card-header">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Informasi Umum</h3>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Pilihan Data Sumber</h3>
             </div>
             <div class="card-body">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label for="project_id" class="form-label">Proyek <span class="text-red-500">*</span></label>
-                        <select name="project_id" id="project_id" class="form-select @error('project_id') border-red-500 @enderror" required>
+                        <label for="project_id" class="form-label">Pilih Proyek <span class="text-red-500">*</span></label>
+                        <select name="project_id" id="project_id" class="form-select @error('project_id') border-red-500 @enderror" required onchange="loadHppData()">
                             <option value="">Pilih Proyek</option>
                             @foreach($projects as $project)
                                 <option value="{{ $project->id }}" {{ old('project_id') == $project->id ? 'selected' : '' }}>
@@ -45,7 +45,7 @@
 
                     <div>
                         <label for="service_type" class="form-label">Jenis Service <span class="text-red-500">*</span></label>
-                        <select name="service_type" id="service_type" class="form-select @error('service_type') border-red-500 @enderror" required>
+                        <select name="service_type" id="service_type" class="form-select @error('service_type') border-red-500 @enderror" required onchange="updateServiceTypePreview()">
                             <option value="">Pilih Jenis Service</option>
                             @foreach($serviceTypes as $key => $label)
                                 <option value="{{ $key }}" {{ old('service_type') == $key ? 'selected' : '' }}>
@@ -58,42 +58,12 @@
                         @enderror
                     </div>
 
-                    <div>
-                        <label for="service_name" class="form-label">Nama Service <span class="text-red-500">*</span></label>
-                        <input type="text" name="service_name" id="service_name" class="form-input @error('service_name') border-red-500 @enderror" value="{{ old('service_name') }}" required>
-                        @error('service_name')
-                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <div>
-                        <label for="provider_name" class="form-label">Penyedia Barang/Jasa</label>
-                        <input type="text" name="provider_name" id="provider_name" class="form-input @error('provider_name') border-red-500 @enderror" value="{{ old('provider_name') }}">
-                        @error('provider_name')
-                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <div>
-                        <label for="user_name" class="form-label">Pengguna Barang/Jasa</label>
-                        <input type="text" name="user_name" id="user_name" class="form-input @error('user_name') border-red-500 @enderror" value="{{ old('user_name') }}">
-                        @error('user_name')
-                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <div>
-                        <label for="document_number" class="form-label">No. Dokumen Service</label>
-                        <input type="text" name="document_number" id="document_number" class="form-input @error('document_number') border-red-500 @enderror" value="{{ old('document_number') }}">
-                        @error('document_number')
-                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <div class="md:col-span-2">
-                        <label for="provider_address" class="form-label">Alamat Penyedia</label>
-                        <textarea name="provider_address" id="provider_address" rows="3" class="form-textarea @error('provider_address') border-red-500 @enderror">{{ old('provider_address') }}</textarea>
-                        @error('provider_address')
+                    <div id="hpp-selection" class="hidden">
+                        <label for="hpp_id" class="form-label">Pilih HPP <span class="text-red-500">*</span></label>
+                        <select name="hpp_id" id="hpp_id" class="form-select @error('hpp_id') border-red-500 @enderror" required>
+                            <option value="">Pilih HPP</option>
+                        </select>
+                        @error('hpp_id')
                             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                         @enderror
                     </div>
@@ -101,22 +71,39 @@
             </div>
         </div>
 
-        <!-- Detail Item Service -->
+        <!-- Preview Data yang Akan Di-generate -->
         <div class="card">
             <div class="card-header">
-                <div class="flex items-center justify-between">
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Detail Item Service</h3>
-                    <button type="button" onclick="addItem()" class="btn btn-primary">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                        </svg>
-                        Tambah Item
-                    </button>
-                </div>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Preview Data Service yang Akan Di-generate</h3>
             </div>
             <div class="card-body">
-                <div id="items-container">
-                    <!-- Items will be added here dynamically -->
+                <div id="hpp-preview" class="hidden">
+                    <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-4 mb-6">
+                        <h4 class="text-lg font-medium text-blue-800 dark:text-blue-200 mb-3">Data HPP Sumber</h4>
+                        <div id="hpp-details" class="space-y-2">
+                            <!-- HPP details will be loaded here -->
+                        </div>
+                    </div>
+
+                    <!-- Preview Service yang akan dibuat -->
+                    <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 rounded-lg p-4">
+                        <h4 class="text-lg font-medium text-green-800 dark:text-green-200 mb-3">Service yang Akan Dibuat</h4>
+                        <div id="service-preview" class="space-y-2">
+                            <!-- Service preview will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+
+                <div id="no-hpp-message" class="hidden">
+                    <div class="text-center py-8">
+                        <div class="text-gray-500 dark:text-gray-400">
+                            <svg class="w-16 h-16 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                            <p class="text-lg font-medium">Tidak ada HPP ditemukan</p>
+                            <p class="text-sm">Buat HPP terlebih dahulu untuk project ini</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -125,103 +112,209 @@
             <a href="{{ route('service.index') }}" class="btn btn-secondary">
                 Batal
             </a>
-            <button type="submit" class="btn btn-primary">
-                Simpan Service
+            <button type="submit" class="btn btn-primary" id="submit-btn" disabled>
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                </svg>
+                🚀 Generate Service TKDN Otomatis
             </button>
         </div>
     </form>
 </div>
 
-<!-- Template for item -->
-<template id="item-template">
-    <div class="item-row border border-gray-200 dark:border-gray-600 rounded-lg p-4 mb-4">
-        <div class="flex items-center justify-between mb-4">
-            <h4 class="text-md font-medium text-gray-900 dark:text-white">Item <span class="item-number"></span></h4>
-            <button type="button" onclick="removeItem(this)" class="btn btn-outline p-2 text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-            </button>
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div>
-                <label class="form-label">Uraian <span class="text-red-500">*</span></label>
-                <input type="text" name="items[INDEX][description]" class="form-input" required>
-            </div>
-            
-            <div>
-                <label class="form-label">Kualifikasi</label>
-                <input type="text" name="items[INDEX][qualification]" class="form-input">
-            </div>
-            
-            <div>
-                <label class="form-label">Kewarganegaraan <span class="text-red-500">*</span></label>
-                <select name="items[INDEX][nationality]" class="form-select" required>
-                    <option value="">Pilih Kewarganegaraan</option>
-                    <option value="WNI">WNI</option>
-                    <option value="WNA">WNA</option>
-                </select>
-            </div>
-            
-            <div>
-                <label class="form-label">TKDN (%) <span class="text-red-500">*</span></label>
-                <input type="number" name="items[INDEX][tkdn_percentage]" class="form-input" min="0" max="100" step="0.01" required>
-            </div>
-            
-            <div>
-                <label class="form-label">Jumlah <span class="text-red-500">*</span></label>
-                <input type="number" name="items[INDEX][quantity]" class="form-input" min="1" required>
-            </div>
-            
-            <div>
-                <label class="form-label">Durasi <span class="text-red-500">*</span></label>
-                <input type="number" name="items[INDEX][duration]" class="form-input" min="0" step="0.01" required>
-            </div>
-            
-            <div>
-                <label class="form-label">Satuan Durasi <span class="text-red-500">*</span></label>
-                <input type="text" name="items[INDEX][duration_unit]" class="form-input" maxlength="10" required>
-            </div>
-            
-            <div>
-                <label class="form-label">Upah (Rupiah) <span class="text-red-500">*</span></label>
-                <input type="number" name="items[INDEX][wage]" class="form-input" min="0" required>
-            </div>
-        </div>
-    </div>
-</template>
-
 <script>
-let itemIndex = 0;
-
-function addItem() {
-    const container = document.getElementById('items-container');
-    const template = document.getElementById('item-template');
-    const clone = template.content.cloneNode(true);
+function loadHppData() {
+    const projectId = document.getElementById('project_id').value;
+    const hppSelection = document.getElementById('hpp-selection');
+    const noHppMessage = document.getElementById('no-hpp-message');
+    const submitBtn = document.getElementById('submit-btn');
     
-    // Update index
-    const inputs = clone.querySelectorAll('input, select');
-    inputs.forEach(input => {
-        input.name = input.name.replace('INDEX', itemIndex);
+    if (!projectId) {
+        hppSelection.classList.add('hidden');
+        noHppMessage.classList.add('hidden');
+        submitBtn.disabled = true;
+        return;
+    }
+
+    // Show loading
+    hppSelection.classList.remove('hidden');
+    noHppMessage.classList.add('hidden');
+    
+    // Fetch HPP data
+    fetch(`/service/get-hpp-data?project_id=${projectId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.data.length > 0) {
+                populateHppOptions(data.data);
+                hppSelection.classList.remove('hidden');
+                noHppMessage.classList.add('hidden');
+            } else {
+                hppSelection.classList.add('hidden');
+                noHppMessage.classList.remove('hidden');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            hppSelection.classList.add('hidden');
+            noHppMessage.classList.remove('hidden');
+        });
+}
+
+function populateHppOptions(hppData) {
+    const hppSelect = document.getElementById('hpp_id');
+    const hppPreview = document.getElementById('hpp-preview');
+    const hppDetails = document.getElementById('hpp-details');
+    
+    // Clear existing options
+    hppSelect.innerHTML = '<option value="">Pilih HPP</option>';
+    
+    // Add HPP options
+    hppData.forEach(hpp => {
+        const option = document.createElement('option');
+        option.value = hpp.id;
+        option.textContent = `${hpp.code} - Total: Rp ${formatNumber(hpp.total_cost)} (${hpp.items_count} items)`;
+        option.dataset.hppData = JSON.stringify(hpp);
+        hppSelect.appendChild(option);
     });
     
-    // Update item number
-    const itemNumber = clone.querySelector('.item-number');
-    itemNumber.textContent = itemIndex + 1;
+    // Show preview when HPP is selected
+    hppSelect.addEventListener('change', function() {
+        const selectedHpp = this.value;
+        if (selectedHpp) {
+            const hppData = JSON.parse(this.selectedOptions[0].dataset.hppData);
+            showHppPreview(hppData);
+            document.getElementById('submit-btn').disabled = false;
+        } else {
+            hppPreview.classList.add('hidden');
+            document.getElementById('submit-btn').disabled = true;
+        }
+    });
+}
+
+function showHppPreview(hppData) {
+    const hppPreview = document.getElementById('hpp-preview');
+    const hppDetails = document.getElementById('hpp-details');
+    const servicePreview = document.getElementById('service-preview');
     
-    container.appendChild(clone);
-    itemIndex++;
+    // HPP Details
+    let hppDetailsHtml = `
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <span class="font-medium">Kode HPP:</span> ${hppData.code}
+            </div>
+            <div>
+                <span class="font-medium">Total Biaya:</span> Rp ${formatNumber(hppData.total_cost)}
+            </div>
+            <div>
+                <span class="font-medium">Jumlah Items:</span> ${hppData.items_count}
+            </div>
+            <div>
+                <span class="font-medium">Nama Proyek:</span> ${hppData.project_name}
+            </div>
+        </div>
+        
+        <div class="mt-4">
+            <h5 class="font-medium text-blue-800 dark:text-blue-200 mb-2">Breakdown TKDN:</h5>
+            <div class="space-y-2">
+    `;
+    
+    Object.entries(hppData.tkdn_breakdown).forEach(([classification, data]) => {
+        hppDetailsHtml += `
+            <div class="flex justify-between text-sm">
+                <span>Form ${classification}:</span>
+                <span>${data.count} items - Rp ${formatNumber(data.total_cost)}</span>
+            </div>
+        `;
+    });
+    
+    hppDetailsHtml += `
+            </div>
+        </div>
+    `;
+    
+    // Service Preview dengan service type yang dipilih
+    const serviceType = document.getElementById('service_type').value;
+    const serviceTypeLabel = document.getElementById('service_type').selectedOptions[0]?.text || 'Belum dipilih';
+    
+    let servicePreviewHtml = `
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <span class="font-medium">Nama Service:</span> Service TKDN - ${hppData.code}
+            </div>
+            <div>
+                <span class="font-medium">Jenis Service:</span> ${serviceTypeLabel}
+            </div>
+            <div>
+                <span class="font-medium">Penyedia:</span> ${hppData.project_name}
+            </div>
+            <div>
+                <span class="font-medium">Dokumen:</span> DOC-${hppData.code}
+            </div>
+        </div>
+        
+        <div class="mt-4">
+            <h5 class="font-medium text-green-800 dark:text-green-200 mb-2">Yang Akan Di-generate:</h5>
+            <div class="space-y-2 text-sm">
+                <div>✅ Service dengan nama otomatis</div>
+                <div>✅ Provider dan user dari data proyek</div>
+                <div>✅ Dokumen number otomatis</div>
+                <div>✅ Form TKDN sesuai jenis service: ${getTkdnFormDescription(serviceType)}</div>
+                <div>✅ Service items dari HPP items</div>
+            </div>
+        </div>
+    `;
+    
+    hppDetails.innerHTML = hppDetailsHtml;
+    servicePreview.innerHTML = servicePreviewHtml;
+    hppPreview.classList.remove('hidden');
 }
 
-function removeItem(button) {
-    const itemRow = button.closest('.item-row');
-    itemRow.remove();
+function updateServiceTypePreview() {
+    const serviceType = document.getElementById('service_type').value;
+    const hppPreview = document.getElementById('hpp-preview');
+    
+    // Update preview jika sudah ada
+    if (!hppPreview.classList.contains('hidden')) {
+        const hppSelect = document.getElementById('hpp_id');
+        if (hppSelect.value) {
+            const hppData = JSON.parse(hppSelect.selectedOptions[0].dataset.hppData);
+            showHppPreview(hppData);
+        }
+    }
 }
 
-// Add first item on page load
+function getTkdnFormDescription(serviceType) {
+    const descriptions = {
+        'project': 'Form 3.1 (Manajemen Proyek) + Form 3.5 (Rangkuman)',
+        'equipment': 'Form 3.2 (Alat Kerja) + Form 3.5 (Rangkuman)',
+        'construction': 'Form 3.3 (Konstruksi) + Form 3.5 (Rangkuman)'
+    };
+    
+    return descriptions[serviceType] || 'Semua form TKDN (3.1, 3.2, 3.3, 3.4, 3.5)';
+}
+
+function formatNumber(num) {
+    return new Intl.NumberFormat('id-ID').format(num);
+}
+
+// Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
-    addItem();
+    // Form validation
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(e) {
+        const hppId = document.getElementById('hpp_id').value;
+        if (!hppId) {
+            e.preventDefault();
+            alert('Silakan pilih HPP terlebih dahulu');
+            return false;
+        }
+        
+        // Konfirmasi sebelum generate
+        if (!confirm('Apakah Anda yakin ingin generate Service TKDN dari data HPP ini? Semua data akan dibuat otomatis.')) {
+            e.preventDefault();
+            return false;
+        }
+    });
 });
 </script>
 @endsection 

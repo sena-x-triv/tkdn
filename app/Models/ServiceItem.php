@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use App\Traits\UsesUlid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\UsesUlid;
 
 class ServiceItem extends Model
 {
@@ -12,7 +12,9 @@ class ServiceItem extends Model
 
     protected $fillable = [
         'service_id',
+        'estimation_item_id',
         'item_number',
+        'tkdn_classification',
         'description',
         'qualification',
         'nationality',
@@ -36,6 +38,11 @@ class ServiceItem extends Model
         'total_cost' => 'decimal:2',
     ];
 
+    public function estimationItem()
+    {
+        return $this->belongsTo(EstimationItem::class, 'estimation_item_id');
+    }
+
     public function service()
     {
         return $this->belongsTo(Service::class);
@@ -44,7 +51,7 @@ class ServiceItem extends Model
     public function calculateCosts()
     {
         $totalWage = $this->wage * $this->quantity * $this->duration;
-        
+
         if ($this->tkdn_percentage == 100) {
             $this->domestic_cost = $totalWage;
             $this->foreign_cost = 0;
@@ -55,7 +62,7 @@ class ServiceItem extends Model
             $this->domestic_cost = ($totalWage * $this->tkdn_percentage) / 100;
             $this->foreign_cost = $totalWage - $this->domestic_cost;
         }
-        
+
         $this->total_cost = $this->domestic_cost + $this->foreign_cost;
         $this->save();
     }
@@ -79,4 +86,4 @@ class ServiceItem extends Model
     {
         return number_format($this->total_cost, 0, ',', '.');
     }
-} 
+}

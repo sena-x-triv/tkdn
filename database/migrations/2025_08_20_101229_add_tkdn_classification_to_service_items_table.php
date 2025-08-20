@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('services', function (Blueprint $table) {
-            //
+        Schema::table('service_items', function (Blueprint $table) {
+            $table->string('tkdn_classification')->nullable()->after('item_number');
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('services', function (Blueprint $table) {
-            //
+        Schema::table('service_items', function (Blueprint $table) {
+            $table->dropColumn('tkdn_classification');
         });
     }
 };
