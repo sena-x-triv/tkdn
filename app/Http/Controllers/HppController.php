@@ -2,14 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Hpp;
-use App\Models\HppItem;
-use App\Models\Project;
-use App\Models\Estimation;
-use App\Models\EstimationItem;
-use App\Models\Worker;
-use App\Models\Material;
 use App\Models\Equipment;
+use App\Models\Estimation;
+use App\Models\Hpp;
+use App\Models\Material;
+use App\Models\Project;
+use App\Models\Worker;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -22,6 +20,7 @@ class HppController extends Controller
     public function index()
     {
         $hpps = Hpp::with(['items', 'project'])->latest()->paginate(10);
+
         return view('hpp.index', compact('hpps'));
     }
 
@@ -32,6 +31,7 @@ class HppController extends Controller
     {
         $projects = Project::all();
         $ahsData = $this->getAhsData();
+
         return view('hpp.create', compact('projects', 'ahsData'));
     }
 
@@ -60,7 +60,7 @@ class HppController extends Controller
             DB::beginTransaction();
 
             // Generate kode HPP
-            $code = 'HPP-' . date('Ymd') . '-' . strtoupper(Str::random(4));
+            $code = 'HPP-'.date('Ymd').'-'.strtoupper(Str::random(4));
 
             // Hitung total HPP
             $subTotalHpp = 0;
@@ -104,6 +104,7 @@ class HppController extends Controller
             foreach ($request->items as $index => $item) {
                 $hpp->items()->create([
                     'item_number' => $item['item_number'] ?? ($index + 1),
+                    'estimation_id' => $item['estimation_id'] ?? null,
                     'description' => $item['description'],
                     'tkdn_classification' => $item['tkdn_classification'],
                     'volume' => $item['volume'],
@@ -112,7 +113,6 @@ class HppController extends Controller
                     'duration_unit' => $item['duration_unit'],
                     'unit_price' => $item['unit_price'],
                     'total_price' => $item['volume'] * $item['unit_price'],
-                    'estimation_item_id' => $item['estimation_item_id'] ?? null,
                 ]);
             }
 
@@ -121,7 +121,8 @@ class HppController extends Controller
             return redirect()->route('hpp.index')->with('success', 'HPP berhasil dibuat!');
         } catch (\Exception $e) {
             DB::rollback();
-            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+
+            return back()->with('error', 'Terjadi kesalahan: '.$e->getMessage());
         }
     }
 
@@ -131,6 +132,7 @@ class HppController extends Controller
     public function show(string $id)
     {
         $hpp = Hpp::with(['items', 'project'])->findOrFail($id);
+
         return view('hpp.show', compact('hpp'));
     }
 
@@ -142,6 +144,7 @@ class HppController extends Controller
         $hpp = Hpp::with(['items', 'project'])->findOrFail($id);
         $projects = Project::all();
         $ahsData = $this->getAhsData();
+
         return view('hpp.edit', compact('hpp', 'projects', 'ahsData'));
     }
 
@@ -214,6 +217,7 @@ class HppController extends Controller
             foreach ($request->items as $index => $item) {
                 $hpp->items()->create([
                     'item_number' => $item['item_number'] ?? ($index + 1),
+                    'estimation_id' => $item['estimation_id'] ?? null,
                     'description' => $item['description'],
                     'tkdn_classification' => $item['tkdn_classification'],
                     'volume' => $item['volume'],
@@ -222,7 +226,6 @@ class HppController extends Controller
                     'duration_unit' => $item['duration_unit'],
                     'unit_price' => $item['unit_price'],
                     'total_price' => $item['volume'] * $item['unit_price'],
-                    'estimation_item_id' => $item['estimation_item_id'] ?? null,
                 ]);
             }
 
@@ -231,7 +234,8 @@ class HppController extends Controller
             return redirect()->route('hpp.index')->with('success', 'HPP berhasil diperbarui!');
         } catch (\Exception $e) {
             DB::rollback();
-            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+
+            return back()->with('error', 'Terjadi kesalahan: '.$e->getMessage());
         }
     }
 
@@ -243,9 +247,10 @@ class HppController extends Controller
         try {
             $hpp = Hpp::findOrFail($id);
             $hpp->delete();
+
             return redirect()->route('hpp.index')->with('success', 'HPP berhasil dihapus!');
         } catch (\Exception $e) {
-            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+            return back()->with('error', 'Terjadi kesalahan: '.$e->getMessage());
         }
     }
 
@@ -256,15 +261,15 @@ class HppController extends Controller
     {
         $estimationId = $request->estimation_id;
         $estimation = Estimation::with('items')->find($estimationId);
-        
-        if (!$estimation) {
+
+        if (! $estimation) {
             return response()->json(['error' => 'Estimation tidak ditemukan'], 404);
         }
 
         $items = $estimation->items->map(function ($item) {
             return [
                 'id' => $item->id,
-                'description' => $item->code . ' - ' . $item->equipment_name,
+                'description' => $item->code.' - '.$item->equipment_name,
                 'unit_price' => $item->unit_price,
                 'coefficient' => $item->coefficient,
             ];
@@ -288,7 +293,7 @@ class HppController extends Controller
                 'id' => $estimation->id,
                 'code' => $estimation->code,
                 'title' => $estimation->title,
-                'description' => $estimation->code . ' - ' . $estimation->title,
+                'description' => $estimation->code.' - '.$estimation->title,
                 'unit_price' => $estimation->total_unit_price,
                 'category' => 'AHS',
                 'items' => $estimation->items->map(function ($item) {
@@ -300,7 +305,7 @@ class HppController extends Controller
                     } elseif ($item->category === 'equipment' && $item->equipment) {
                         $itemName = $item->equipment->name;
                     }
-                    
+
                     return [
                         'id' => $item->id,
                         'category' => $item->category,
@@ -310,7 +315,7 @@ class HppController extends Controller
                         'unit_price' => $item->unit_price,
                         'total_price' => $item->total_price,
                     ];
-                })
+                }),
             ];
         }
 
@@ -322,7 +327,7 @@ class HppController extends Controller
                 'id' => $worker->id,
                 'code' => $worker->code,
                 'title' => $worker->name,
-                'description' => $worker->code . ' - ' . $worker->name,
+                'description' => $worker->code.' - '.$worker->name,
                 'unit_price' => $worker->price,
                 'category' => 'Pekerja',
                 'unit' => $worker->unit,
@@ -338,7 +343,7 @@ class HppController extends Controller
                 'id' => $material->id,
                 'code' => $material->code,
                 'title' => $material->name,
-                'description' => $material->code . ' - ' . $material->name,
+                'description' => $material->code.' - '.$material->name,
                 'unit_price' => $material->price,
                 'category' => 'Material',
                 'unit' => $material->unit,
@@ -354,7 +359,7 @@ class HppController extends Controller
                 'id' => $eq->id,
                 'code' => $eq->code,
                 'title' => $eq->name,
-                'description' => $eq->code . ' - ' . $eq->name,
+                'description' => $eq->code.' - '.$eq->name,
                 'unit_price' => $eq->price,
                 'category' => 'Peralatan',
                 'period' => $eq->period,
@@ -371,6 +376,7 @@ class HppController extends Controller
     public function getAhsDataAjax(Request $request)
     {
         $ahsData = $this->getAhsData();
+
         return response()->json($ahsData);
     }
 }

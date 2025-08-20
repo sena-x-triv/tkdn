@@ -20,18 +20,25 @@
         </div>
     </div>
 
+    <!-- Notification Messages -->
     @if(session('success'))
-        <div class="mb-4">
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
-                <span class="block sm:inline">{{ session('success') }}</span>
+        <div class="mb-6">
+            <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl relative flex items-center" role="alert">
+                <svg class="w-5 h-5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                </svg>
+                <span>{{ session('success') }}</span>
             </div>
         </div>
     @endif
 
     @if(session('error'))
-        <div class="mb-4">
-            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-                <span class="block sm:inline">{{ session('error') }}</span>
+        <div class="mb-6">
+            <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl relative flex items-center" role="alert">
+                <svg class="w-5 h-5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                </svg>
+                <span>{{ session('error') }}</span>
             </div>
         </div>
     @endif
@@ -56,11 +63,10 @@
                     <thead>
                         <tr>
                             <th>No</th>
+                            <th>Kode Service</th>
+                            <th>Project</th>
+                            <th>Perusahaan</th>
                             <th>Nama Service</th>
-                            <th>Jenis Service</th>
-                            <th>Proyek</th>
-                            <th>No. Dokumen</th>
-                            <th>TKDN (%)</th>
                             <th>Total Biaya</th>
                             <th>Status</th>
                             <th class="text-center">Actions</th>
@@ -79,46 +85,48 @@
                                         </svg>
                                     </div>
                                     <div>
-                                        <div class="font-medium text-gray-900 dark:text-white">{{ $service->service_name }}</div>
-                                        @if($service->provider_name)
-                                            <div class="text-sm text-gray-500 dark:text-gray-400">{{ \App\Helpers\StringHelper::safeLimit($service->provider_name, 40) }}</div>
-                                        @endif
+                                        <div class="font-medium text-gray-900 dark:text-white">{{ $service->id }}</div>
+                                        <div class="text-sm text-gray-500 dark:text-gray-400">{{ $service->created_at->format('d/m/Y') }}</div>
                                     </div>
                                 </div>
                             </td>
                             <td>
-                                <span class="badge bg-blue-100 text-blue-800 text-xs">
-                                    {{ $service->getServiceTypeLabel() }}
-                                </span>
+                                <div>
+                                    <div class="font-medium text-gray-900 dark:text-white">{{ $service->project->name ?? 'N/A' }}</div>
+                                    <div class="text-sm text-gray-500 dark:text-gray-400">{{ \App\Helpers\StringHelper::safeLimit($service->project->description ?? '', 20) }}</div>
+                                </div>
                             </td>
                             <td>
-                                <span class="text-xs text-gray-700 dark:text-gray-200">{{ $service->project->name }}</span>
+                                <span class="text-sm text-gray-700 dark:text-gray-200">{{ $service->project->company ?? 'N/A' }}</span>
                             </td>
                             <td>
-                                <span class="text-xs text-gray-700 dark:text-gray-200">{{ $service->document_number ?: '-' }}</span>
+                                <div>
+                                    <div class="font-medium text-gray-900 dark:text-white">{{ $service->service_name }}</div>
+                                    <div class="text-sm text-gray-500 dark:text-gray-400">{{ $service->getServiceTypeLabel() }}</div>
+                                </div>
                             </td>
                             <td>
-                                <span class="text-xs font-medium text-gray-700 dark:text-gray-200">{{ number_format($service->tkdn_percentage, 2) }}%</span>
+                                <span class="text-sm font-bold text-green-600 dark:text-green-400">Rp {{ number_format($service->total_cost, 0, ',', '.') }}</span>
                             </td>
                             <td>
-                                <span class="text-xs font-medium text-gray-700 dark:text-gray-200">Rp {{ number_format($service->total_cost, 0, ',', '.') }}</span>
-                            </td>
-                            <td>
-                                <span class="badge {{ $service->getStatusBadgeClass() }}">
-                                    @switch($service->status)
-                                        @case('draft')
-                                            Draft
-                                            @break
-                                        @case('submitted')
-                                            Diajukan
-                                            @break
-                                        @case('approved')
-                                            Disetujui
-                                            @break
-                                        @case('rejected')
-                                            Ditolak
-                                            @break
-                                    @endswitch
+                                @php
+                                    $statusClasses = [
+                                        'draft' => 'badge-warning',
+                                        'submitted' => 'badge-primary',
+                                        'approved' => 'badge-success',
+                                        'rejected' => 'badge-danger',
+                                        'generated' => 'badge-purple',
+                                    ];
+                                    $statusLabels = [
+                                        'draft' => 'Draft',
+                                        'submitted' => 'Diajukan',
+                                        'approved' => 'Disetujui',
+                                        'rejected' => 'Ditolak',
+                                        'generated' => 'Generated',
+                                    ];
+                                @endphp
+                                <span class="badge {{ $statusClasses[$service->status] }}">
+                                    {{ $statusLabels[$service->status] }}
                                 </span>
                             </td>
                             <td>
@@ -139,12 +147,23 @@
                                             </button>
                                         </form>
                                     @endif
+                                    
+                                    @if($service->status === 'approved')
+                                        <form action="{{ route('service.generate', $service) }}" method="POST" class="inline">
+                                            @csrf
+                                            <button type="submit" class="btn btn-outline p-2 text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300" title="Generate Form TKDN">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    @endif
                                 </div>
                             </td>
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="9" class="text-center py-12">
+                            <td colspan="8" class="text-center py-12">
                                 <div class="flex flex-col items-center">
                                     <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mb-4">
                                         <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -153,7 +172,7 @@
                                         </svg>
                                     </div>
                                     <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Tidak ada service ditemukan</h3>
-                                    <p class="text-gray-500 dark:text-gray-400 mb-4">Mulai dengan menambah service</p>
+                                    <p class="text-gray-500 dark:text-gray-400 mb-4">Mulai dengan menambah service baru</p>
                                     <a href="{{ route('service.create') }}" class="btn btn-primary">
                                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>

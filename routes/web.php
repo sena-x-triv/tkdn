@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
@@ -23,10 +23,13 @@ Route::prefix('master')->name('master.')->group(function () {
     Route::resource('category', App\Http\Controllers\CategoryController::class);
 });
 
+// Service Routes - Specific routes must come BEFORE resource route
+Route::get('service/get-hpp-data', [App\Http\Controllers\ServiceController::class, 'getHppData'])->name('service.get-hpp-data');
 Route::resource('service', App\Http\Controllers\ServiceController::class);
 Route::post('service/{service}/submit', [App\Http\Controllers\ServiceController::class, 'submit'])->name('service.submit');
 Route::post('service/{service}/approve', [App\Http\Controllers\ServiceController::class, 'approve'])->name('service.approve');
 Route::post('service/{service}/reject', [App\Http\Controllers\ServiceController::class, 'reject'])->name('service.reject');
+Route::post('service/{service}/generate', [App\Http\Controllers\ServiceController::class, 'generate'])->name('service.generate');
 
 // HPP Routes
 Route::resource('hpp', App\Http\Controllers\HppController::class);

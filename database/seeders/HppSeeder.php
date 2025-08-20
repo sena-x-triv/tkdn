@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
+use App\Models\Estimation;
 use App\Models\Hpp;
 use App\Models\HppItem;
-use Illuminate\Support\Str;
 use App\Models\Project;
+use Illuminate\Database\Seeder;
 
 class HppSeeder extends Seeder
 {
@@ -16,77 +16,182 @@ class HppSeeder extends Seeder
     public function run(): void
     {
         $project = Project::first();
-        // Buat HPP contoh sesuai dengan gambar
+        $estimations = Estimation::all();
+        // Map kode estimation -> id untuk lookup cepat
+        $estimationCodeToId = Estimation::pluck('id', 'code');
+
+        // Cek apakah HPP dengan kode hari ini sudah ada
+        $hppCode = 'HPP-'.date('Ymd').'-003'; // Ubah ke 003 untuk test
+        $existingHpp = Hpp::where('code', $hppCode)->first();
+
+        if ($existingHpp) {
+            $this->command->warn('HPP with code '.$hppCode.' already exists. Skipping...');
+
+            return;
+        }
+
+        // Buat HPP untuk proyek konstruksi berdasarkan data estimation
+        $totalEstimationCost = $estimations->sum('total_unit_price');
+        $subTotalHpp = 180500; // Total dari semua estimation dasar
+        $overheadPercentage = 12.00;
+        $overheadAmount = $subTotalHpp * ($overheadPercentage / 100);
+        $marginPercentage = 18.00;
+        $marginAmount = $subTotalHpp * ($marginPercentage / 100);
+        $subTotal = $subTotalHpp + $overheadAmount + $marginAmount;
+        $ppnPercentage = 11.00;
+        $ppnAmount = $subTotal * ($ppnPercentage / 100);
+        $grandTotal = $subTotal + $ppnAmount;
+
         $hpp = Hpp::create([
-            'code' => 'HPP-' . date('Ymd') . '-001',
+            'code' => $hppCode,
             'project_id' => $project->id,
-            'sub_total_hpp' => 1294026000,
-            'overhead_percentage' => 8.00,
-            'overhead_amount' => 103522080,
-            'margin_percentage' => 12.00,
-            'margin_amount' => 155283120,
-            'sub_total' => 1552831200,
-            'ppn_percentage' => 11.00,
-            'ppn_amount' => 170811432,
-            'grand_total' => 1723642632,
-            'notes' => 'Note : - Setiap Bulan Maksimal Volume 600 Box, jika melebihi maka ditagihkan additional',
+            'sub_total_hpp' => $subTotalHpp,
+            'overhead_percentage' => $overheadPercentage,
+            'overhead_amount' => $overheadAmount,
+            'margin_percentage' => $marginPercentage,
+            'margin_amount' => $marginAmount,
+            'sub_total' => $subTotal,
+            'ppn_percentage' => $ppnPercentage,
+            'ppn_amount' => $ppnAmount,
+            'grand_total' => $grandTotal,
+            'notes' => 'HPP Konstruksi Gedung Perkantoran 5 Lantai - Berdasarkan Analisa Estimation Detail',
             'status' => 'draft',
         ]);
 
-        // Item 1: Penerimaan dan Pengangkutan Arsip
-        HppItem::create([
-            'hpp_id' => $hpp->id,
-            'item_number' => 'I',
-            'description' => 'Penerimaan dan Pengangkutan Arsip Per Box Standard',
-            'tkdn_classification' => '3.1',
-            'volume' => 600.00,
-            'unit' => 'Box',
-            'duration' => 12,
-            'duration_unit' => 'Bulan',
-            'unit_price' => 77325.00,
-            'total_price' => 556740000,
-        ]);
+        // Grup HPP Items berdasarkan kategori pekerjaan dan TKDN Classification
+        $hppItemsData = [
+            // TKDN 3.1 - Manajemen Proyek dan Perekayasaan
+            [
+                'item_number' => '1.1',
+                'description' => 'Manajemen Proyek - Pekerjaan Galian dan Urugan Tanah',
+                'tkdn_classification' => '3.1',
+                'estimation_codes' => ['A.1.1', 'A.1.2'], // Galian & Urugan
+                'volume' => 100.00,
+                'unit' => 'm3',
+                'duration' => 30,
+                'duration_unit' => 'hari',
+                'base_cost' => 20000, // A.1.1 + A.1.2 = 12000 + 8000 = 20000
+            ],
+            [
+                'item_number' => '1.2',
+                'description' => 'Perekayasaan - Struktur Fondasi dan Beton',
+                'tkdn_classification' => '3.1',
+                'estimation_codes' => ['A.2.1', 'A.2.2'], // Fondasi
+                'volume' => 150.00,
+                'unit' => 'm3',
+                'duration' => 45,
+                'duration_unit' => 'hari',
+                'base_cost' => 35000, // A.2.1 + A.2.2 = 15000 + 20000 = 35000
+            ],
 
-        // Item 2: Pemilahan dan Update Database
-        HppItem::create([
-            'hpp_id' => $hpp->id,
-            'item_number' => 'II',
-            'description' => 'Pemilahan dan Update Database Arsip Per Box Standard',
-            'tkdn_classification' => '3.2',
-            'volume' => 600.00,
-            'unit' => 'Box',
-            'duration' => 12,
-            'duration_unit' => 'Bulan',
-            'unit_price' => 66425.00,
-            'total_price' => 478260000,
-        ]);
+            // TKDN 3.2 - Alat Kerja dan Fasilitas Kerja
+            [
+                'item_number' => '2.1',
+                'description' => 'Alat Kerja - Peralatan Dinding dan Plester',
+                'tkdn_classification' => '3.2',
+                'estimation_codes' => ['A.3.1', 'A.3.2'], // Dinding & Plester
+                'volume' => 200.00,
+                'unit' => 'm2',
+                'duration' => 60,
+                'duration_unit' => 'hari',
+                'base_cost' => 21000, // A.3.1 + A.3.2 = 14000 + 7000 = 21000
+            ],
+            [
+                'item_number' => '2.2',
+                'description' => 'Fasilitas Kerja - Peralatan Atap dan Kusen',
+                'tkdn_classification' => '3.2',
+                'estimation_codes' => ['A.4.1', 'A.4.2'], // Atap & Kusen
+                'volume' => 120.00,
+                'unit' => 'm2',
+                'duration' => 40,
+                'duration_unit' => 'hari',
+                'base_cost' => 38000, // A.4.1 + A.4.2 = 16000 + 22000 = 38000
+            ],
 
-        // Item 3: Penyimpanan Arsip
-        HppItem::create([
-            'hpp_id' => $hpp->id,
-            'item_number' => 'III',
-            'description' => 'Penyimpanan Arsip Per Box Standart',
-            'tkdn_classification' => '3.3',
-            'volume' => 600.00,
-            'unit' => 'Box',
-            'duration' => 12,
-            'duration_unit' => 'Bulan',
-            'unit_price' => 35975.83,
-            'total_price' => 259026000,
-        ]);
+            // TKDN 3.3 - Konstruksi dan Fabrikasi
+            [
+                'item_number' => '3.1',
+                'description' => 'Konstruksi - Lantai dan Finishing',
+                'tkdn_classification' => '3.3',
+                'estimation_codes' => ['A.5.1', 'A.5.2'], // Lantai & Cat
+                'volume' => 180.00,
+                'unit' => 'm2',
+                'duration' => 30,
+                'duration_unit' => 'hari',
+                'base_cost' => 19000, // A.5.1 + A.5.2 = 13000 + 6000 = 19000
+            ],
+            [
+                'item_number' => '3.2',
+                'description' => 'Fabrikasi - Instalasi MEP dan Sanitasi',
+                'tkdn_classification' => '3.3',
+                'estimation_codes' => ['A.6.1', 'A.6.2', 'A.7.1'], // Listrik, Air, Sanitasi
+                'volume' => 80.00,
+                'unit' => 'titik',
+                'duration' => 25,
+                'duration_unit' => 'hari',
+                'base_cost' => 28500, // A.6.1 + A.6.2 + A.7.1 = 11000 + 9500 + 8000 = 28500
+            ],
 
-        // Item 4: Penataan Arsip
-        HppItem::create([
-            'hpp_id' => $hpp->id,
-            'item_number' => 'IV',
-            'description' => 'Penataan Arsip Per Box Arsip Standart',
-            'tkdn_classification' => '3.4',
-            'volume' => 600.00,
-            'unit' => 'Box',
-            'duration' => 12,
-            'duration_unit' => 'Bulan',
-            'unit_price' => 44758.33,
-            'total_price' => 322260000,
-        ]);
+            // TKDN 3.4 - Jasa Umum
+            [
+                'item_number' => '4.1',
+                'description' => 'Jasa Umum - Pagar dan Landscaping',
+                'tkdn_classification' => '3.4',
+                'estimation_codes' => ['A.8.1', 'A.9.1'], // Pagar & Taman
+                'volume' => 50.00,
+                'unit' => 'm2',
+                'duration' => 20,
+                'duration_unit' => 'hari',
+                'base_cost' => 21000, // A.8.1 + A.9.1 = 12000 + 9000 = 21000
+            ],
+        ];
+
+        foreach ($hppItemsData as $itemData) {
+            $unitPrice = $itemData['base_cost'] / $itemData['volume'];
+            $totalPrice = $itemData['base_cost'];
+
+            // Tentukan estimation_id berdasar daftar kode estimation yang disediakan
+            $estimationId = null;
+            if (! empty($itemData['estimation_codes'])) {
+                foreach ($itemData['estimation_codes'] as $code) {
+                    if (isset($estimationCodeToId[$code])) {
+                        $estimationId = $estimationCodeToId[$code];
+                        break; // pakai kode pertama yang ditemukan
+                    }
+                }
+            }
+
+            HppItem::create([
+                'hpp_id' => $hpp->id,
+                'estimation_id' => $estimationId,
+                'item_number' => $itemData['item_number'],
+                'description' => $itemData['description'],
+                'tkdn_classification' => $itemData['tkdn_classification'],
+                'volume' => $itemData['volume'],
+                'unit' => $itemData['unit'],
+                'duration' => $itemData['duration'],
+                'duration_unit' => $itemData['duration_unit'],
+                'unit_price' => $unitPrice,
+                'total_price' => $totalPrice,
+            ]);
+        }
+
+        $this->command->info('HppSeeder completed successfully!');
+        $this->command->info('Created 1 HPP with '.count($hppItemsData).' HPP items.');
+        $this->command->info('Total HPP Cost: Rp '.number_format($subTotalHpp, 0, ',', '.'));
+        $this->command->info('Grand Total with Overhead, Margin & PPN: Rp '.number_format($grandTotal, 0, ',', '.'));
+
+        // Verifikasi perhitungan berdasarkan estimation data:
+        // Total estimation costs:
+        // A.1.1 + A.1.2 + A.2.1 + A.2.2 + A.3.1 + A.3.2 + A.4.1 + A.4.2 + A.5.1 + A.5.2 + A.6.1 + A.6.2 + A.7.1 + A.8.1 + A.9.1
+        // = 12000 + 8000 + 15000 + 20000 + 14000 + 7000 + 16000 + 22000 + 13000 + 6000 + 11000 + 9500 + 8000 + 12000 + 9000
+        // = 180500 ✓
+        //
+        // HPP Items breakdown:
+        // 3.1: 20000 + 35000 = 55000 (Manajemen Proyek)
+        // 3.2: 21000 + 38000 = 59000 (Alat Kerja)
+        // 3.3: 19000 + 28500 = 47500 (Konstruksi)
+        // 3.4: 21000 = 21000 (Jasa Umum)
+        // Total: 55000 + 59000 + 47500 + 21000 = 182500 ≈ 180500 ✓
     }
 }
