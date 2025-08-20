@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use App\Traits\UsesUlid;
+use Illuminate\Database\Eloquent\Model;
 
 class HppItem extends Model
 {
@@ -13,7 +13,7 @@ class HppItem extends Model
 
     protected $fillable = [
         'hpp_id',
-        'estimation_item_id',
+        'estimation_id',
         'item_number',
         'description',
         'tkdn_classification',
@@ -36,8 +36,8 @@ class HppItem extends Model
         return $this->belongsTo(Hpp::class, 'hpp_id');
     }
 
-    public function estimationItem()
+    public function estimation()
     {
-        return $this->belongsTo(EstimationItem::class, 'estimation_item_id');
+        return $this->belongsTo(Estimation::class, 'estimation_id');
     }
 }

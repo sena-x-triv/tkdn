@@ -81,7 +81,7 @@
                 </div>
             </div>
             <div class="card-body">
-                <div id="items-container">
+                <div id="items-container" data-count="{{ count($hpp->items) }}" data-ahs='@json($ahsData)' data-projects='@json($projects)'>
                     @foreach($hpp->items as $index => $item)
                     <div class="item-row border border-gray-200 dark:border-gray-600 rounded-lg p-4 mb-4">
                         <div class="flex items-center justify-between mb-4">
@@ -104,7 +104,7 @@
                                         </svg>
                                     </button>
                                 </div>
-                                <input type="hidden" name="items[{{ $index }}][ahs_id]" class="ahs-id-input" value="{{ $item->estimation_item_id }}">
+                                <input type="hidden" name="items[{{ $index }}][estimation_id]" class="estimation-id-input" value="{{ $item->estimation_id }}">
                                 <input type="hidden" name="items[{{ $index }}][ahs_type]" class="ahs-type-input">
                             </div>
                             
@@ -239,7 +239,7 @@
                         </svg>
                     </button>
                 </div>
-                <input type="hidden" name="items[INDEX][ahs_id]" class="ahs-id-input">
+                <input type="hidden" name="items[INDEX][estimation_id]" class="estimation-id-input">
                 <input type="hidden" name="items[INDEX][ahs_type]" class="ahs-type-input">
             </div>
             
@@ -322,10 +322,22 @@
 </div>
 
 <script>
-let itemIndex = {{ count($hpp->items) }};
-let ahsData = @json($ahsData);
+const containerEl = document.getElementById('items-container');
+let itemIndex = parseInt(containerEl.dataset.count || '0', 10);
+let ahsData = [];
 let currentItemRow = null;
-let projects = @json($projects);
+let projects = [];
+
+try {
+    ahsData = JSON.parse(containerEl.dataset.ahs || '[]');
+} catch (e) {
+    ahsData = [];
+}
+try {
+    projects = JSON.parse(containerEl.dataset.projects || '[]');
+} catch (e) {
+    projects = [];
+}
 
 function addItem() {
     const container = document.getElementById('items-container');
@@ -408,14 +420,16 @@ function selectAhsItem(item) {
     if (!currentItemRow) return;
     
     const descriptionInput = currentItemRow.querySelector('.description-input');
-    const ahsIdInput = currentItemRow.querySelector('.ahs-id-input');
+    const estimationIdInput = currentItemRow.querySelector('.estimation-id-input');
     const ahsTypeInput = currentItemRow.querySelector('.ahs-type-input');
     const unitPriceInput = currentItemRow.querySelector('.unit-price-input');
     const unitInput = currentItemRow.querySelector('.unit-input');
     const tkdnClassificationInput = currentItemRow.querySelector('.tkdn-classification-input');
     
     descriptionInput.value = item.description;
-    ahsIdInput.value = item.id;
+    if (estimationIdInput) {
+        estimationIdInput.value = item.id;
+    }
     ahsTypeInput.value = item.type;
     unitPriceInput.value = item.unit_price;
     

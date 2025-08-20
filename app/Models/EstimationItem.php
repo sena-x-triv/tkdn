@@ -1,11 +1,13 @@
 <?php
+
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\UsesUlid;
 
 class EstimationItem extends Model
 {
+    use HasFactory;
 
     protected $table = 'estimation_items';
 
@@ -39,4 +41,4 @@ class EstimationItem extends Model
     {
         return $this->belongsTo(Equipment::class, 'reference_id');
     }
-} 
+}

@@ -162,7 +162,7 @@
                         </svg>
                     </button>
                 </div>
-                <input type="hidden" name="items[INDEX][ahs_id]" class="ahs-id-input">
+                <input type="hidden" name="items[INDEX][estimation_id]" class="estimation-id-input">
                 <input type="hidden" name="items[INDEX][ahs_type]" class="ahs-type-input">
             </div>
             
@@ -331,14 +331,14 @@ function selectAhsItem(item) {
     if (!currentItemRow) return;
     
     const descriptionInput = currentItemRow.querySelector('.description-input');
-    const ahsIdInput = currentItemRow.querySelector('.ahs-id-input');
+    const estimationIdInput = currentItemRow.querySelector('.estimation-id-input');
     const ahsTypeInput = currentItemRow.querySelector('.ahs-type-input');
     const unitPriceInput = currentItemRow.querySelector('.unit-price-input');
     const unitInput = currentItemRow.querySelector('.unit-input');
     const tkdnClassificationInput = currentItemRow.querySelector('.tkdn-classification-input');
     
     descriptionInput.value = item.description;
-    ahsIdInput.value = item.id;
+    estimationIdInput.value = item.id; // Set estimation_id untuk HPP item
     ahsTypeInput.value = item.type;
     unitPriceInput.value = item.unit_price;
     

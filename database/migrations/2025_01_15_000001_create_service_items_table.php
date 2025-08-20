@@ -14,6 +14,7 @@ return new class extends Migration
 
             $table->ulid('id')->primary();
             $table->ulid('service_id');
+            $table->integer('estimation_item_id')->nullable();
             $table->integer('item_number'); // No. urut
             $table->string('description'); // Uraian
             $table->string('qualification')->nullable(); // Kualifikasi
@@ -27,7 +28,7 @@ return new class extends Migration
             $table->decimal('foreign_cost', 15, 2)->default(0); // Biaya KLN
             $table->decimal('total_cost', 15, 2)->default(0); // Total biaya
             $table->timestamps();
-            
+
             $table->foreign('service_id')->references('id')->on('services')->onDelete('cascade');
         });
     }
@@ -36,4 +37,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('project_service_items');
     }
-}; 
+};

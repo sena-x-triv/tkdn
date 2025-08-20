@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             EquipmentSeeder::class,
             ProjectSeeder::class,
             EstimationSeeder::class,
+            EstimationItemSeeder::class,
             ServiceSeeder::class,
             HppSeeder::class,
         ]);
