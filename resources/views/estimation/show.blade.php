@@ -175,7 +175,7 @@
                         </td>
                         <td>{{ $itemName }}</td>
                         <td>{{ $itemUnit }}</td>
-                        <td>{{ number_format($item->coefficient, 2, ',', '.') }}</td>
+                        <td>{{ number_format($item->coefficient, 5, ',', '.') }}</td>
                         <td>Rp {{ number_format($item->unit_price, 0, ',', '.') }}</td>
                         <td>Rp {{ number_format($item->total_price, 0, ',', '.') }}</td>
                         </tr>

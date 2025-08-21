@@ -303,8 +303,8 @@
                                 @endphp
                                 <input type="text" name="items[{{ $loop->index }}][unit]" class="form-input unit-input" value="{{ $unit }}" placeholder="Satuan" readonly>
                             </td>
-                            <td class="px-2 py-2"><input type="number" name="items[{{ $loop->index }}][coefficient]" class="form-input" value="{{ $item->coefficient }}" step="0.01" oninput="updateTotalPrice(this)" placeholder="Koefisien"></td>
-                            <td class="px-2 py-2"><input type="number" name="items[{{ $loop->index }}][unit_price]" class="form-input" value="{{ $item->unit_price }}" step="0.01" oninput="updateTotalPrice(this)" placeholder="Harga Satuan"></td>
+                            <td class="px-2 py-2"><input type="number" name="items[{{ $loop->index }}][coefficient]" class="form-input" value="{{ $item->coefficient }}" step="0.00001" oninput="updateTotalPrice(this)" placeholder="Koefisien"></td>
+                            <td class="px-2 py-2"><input type="number" name="items[{{ $loop->index }}][unit_price]" class="form-input" value="{{ $item->unit_price }}" step="0.00001" oninput="updateTotalPrice(this)" placeholder="Harga Satuan"></td>
                             <td class="px-2 py-2"><input type="number" name="items[{{ $loop->index }}][total_price]" class="form-input" value="{{ $item->total_price }}" readonly placeholder="Jumlah Harga"></td>
                             <td class="px-2 py-2">
                                 <button type="button" class="btn btn-danger btn-sm" onclick="removeItemRow(this)" title="Hapus Item">
@@ -453,8 +453,8 @@ function addItemRow(item = {}) {
             <td class="px-2 py-2">
                 <input type="text" name="items[${itemIndex}][unit]" class="form-input unit-input" value="${item.unit || ''}" placeholder="Satuan" readonly>
             </td>
-            <td class="px-2 py-2"><input type="number" name="items[${itemIndex}][coefficient]" class="form-input" value="${item.coefficient || ''}" step="0.01" oninput="updateTotalPrice(this)" placeholder="Koefisien"></td>
-            <td class="px-2 py-2"><input type="number" name="items[${itemIndex}][unit_price]" class="form-input" value="${item.unit_price || ''}" step="0.01" oninput="updateTotalPrice(this)" placeholder="Harga Satuan"></td>
+            <td class="px-2 py-2"><input type="number" name="items[${itemIndex}][coefficient]" class="form-input" value="${item.coefficient || ''}" step="0.00001" oninput="updateTotalPrice(this)" placeholder="Koefisien"></td>
+            <td class="px-2 py-2"><input type="number" name="items[${itemIndex}][unit_price]" class="form-input" value="${item.unit_price || ''}" step="0.00001" oninput="updateTotalPrice(this)" placeholder="Harga Satuan"></td>
             <td class="px-2 py-2"><input type="number" name="items[${itemIndex}][total_price]" class="form-input" value="${item.total_price || ''}" readonly placeholder="Jumlah Harga"></td>
             <td class="px-2 py-2">
                 <button type="button" class="btn btn-danger btn-sm" onclick="removeItemRow(this)" title="Hapus Item">
