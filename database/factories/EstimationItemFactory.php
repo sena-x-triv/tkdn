@@ -39,8 +39,6 @@ class EstimationItemFactory extends Factory
             'total_price' => function (array $attributes) {
                 return (int) ($attributes['coefficient'] * $attributes['unit_price']);
             },
-            'tkdn_classification' => $this->faker->randomElement(['3.1', '3.2', '3.3', '3.4', '3.5', '3.6', '3.7']),
-            'tkdn_value' => $this->faker->randomFloat(2, 20, 100),
         ];
     }
 

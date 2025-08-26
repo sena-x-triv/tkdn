@@ -225,12 +225,12 @@
         <div class="relative px-8 py-8 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800">
             <!-- Close Button - Top Right -->
             <button type="button" onclick="closeAhsModal()" class="absolute top-6 right-6 w-8 h-8 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 transition-colors duration-200">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-            </button>
-        </div>
-
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
         <div class="p-8 bg-gradient-to-br from-slate-50 to-blue-50 dark:from-gray-900 dark:to-gray-800">
             <!-- Step 1: Pilih AHS -->
             <div id="step1" class="step-content">
@@ -658,13 +658,13 @@ function loadAhsData() {
         
         if (item.type === 'ahs') {
             div.onclick = function() { selectAhsForItems(item); };
-            div.innerHTML = `
+        div.innerHTML = `
                 <div class="flex justify-between items-center">
                     <div class="flex items-center space-x-4">
                         <div class="w-12 h-12 bg-gradient-to-br from-emerald-100 to-teal-100 dark:from-emerald-900/30 dark:to-teal-900/30 rounded-2xl flex items-center justify-center shadow-sm">
                             <span class="text-emerald-600 dark:text-emerald-400 text-xl">📋</span>
                         </div>
-                        <div>
+                <div>
                             <h5 class="font-bold text-gray-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors text-lg mb-1">${item.description}</h5>
                             <div class="flex items-center space-x-4 text-sm text-gray-600 dark:text-gray-400">
                                 <span class="flex items-center">
@@ -722,13 +722,13 @@ function loadAhsData() {
                                 </span>
                             </div>
                         </div>
-                    </div>
-                    <div class="text-right">
+                </div>
+                <div class="text-right">
                         <p class="text-lg font-bold text-emerald-600 dark:text-emerald-400">Rp ${numberFormat(item.unit_price)}</p>
                         <p class="text-xs text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-600 px-2 py-1 rounded-full mt-1">${item.unit || 'Unit'}</p>
                     </div>
-                </div>
-            `;
+            </div>
+        `;
         }
         
         ahsList.appendChild(div);

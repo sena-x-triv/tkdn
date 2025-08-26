@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
 use App\Models\Estimation;
 use App\Models\EstimationItem;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -37,7 +37,6 @@ class EstimationTest extends TestCase
                     'coefficient' => 2,
                     'unit_price' => 50000,
                     'total_price' => 100000,
-                    'equipment_name' => 'Tukang Batu',
                 ],
             ],
         ];
@@ -45,7 +44,7 @@ class EstimationTest extends TestCase
             ->post(route('master.estimation.store'), $data);
         $response->assertRedirect();
         $this->assertDatabaseHas('estimations', ['title' => 'AHS Pondasi']);
-        $this->assertDatabaseHas('estimation_items', ['equipment_name' => 'Tukang Batu']);
+        $this->assertDatabaseHas('estimation_items', ['code' => 'W001']);
     }
 
     public function test_ahs_can_be_updated()
@@ -56,8 +55,7 @@ class EstimationTest extends TestCase
             ->put(route('master.estimation.update', $estimation), [
                 'title' => 'AHS Baru',
                 'total' => 200000,
-                'margin' => 15,
-                'total_unit_price' => 230000,
+                'total_unit_price' => 200000,
                 'items' => [],
             ])
             ->assertRedirect();
@@ -80,8 +78,7 @@ class EstimationTest extends TestCase
         $data = [
             'title' => '',
             'total' => 100000,
-            'margin' => 10,
-            'total_unit_price' => 110000,
+            'total_unit_price' => 100000,
             'items' => [],
         ];
         $response = $this->actingAs($user)
@@ -105,8 +102,7 @@ class EstimationTest extends TestCase
         $data = [
             'title' => 'AHS Test',
             'total' => 100000,
-            'margin' => 10,
-            'total_unit_price' => 110000,
+            'total_unit_price' => 100000,
             'items' => [
                 [
                     'category' => '', // missing
@@ -115,7 +111,6 @@ class EstimationTest extends TestCase
                     'coefficient' => 2,
                     'unit_price' => 50000,
                     'total_price' => 100000,
-                    'equipment_name' => 'Tukang Batu',
                 ],
             ],
         ];
@@ -128,29 +123,27 @@ class EstimationTest extends TestCase
     {
         $user = \App\Models\User::factory()->create();
         $estimation = \App\Models\Estimation::factory()->create();
-        $item = \App\Models\EstimationItem::factory()->create(['estimation_id' => $estimation->id, 'equipment_name' => 'Awal']);
+        $item = \App\Models\EstimationItem::factory()->create(['estimation_id' => $estimation->id, 'code' => 'TEST-001']);
         $data = [
             'title' => $estimation->title,
             'total' => $estimation->total,
-            'margin' => $estimation->margin,
             'total_unit_price' => $estimation->total_unit_price,
             'items' => [
                 [
                     'id' => $item->id,
                     'category' => $item->category,
                     'reference_id' => $item->reference_id,
-                    'code' => $item->code,
+                    'code' => 'TEST-002',
                     'coefficient' => $item->coefficient,
                     'unit_price' => $item->unit_price,
                     'total_price' => $item->total_price,
-                    'equipment_name' => 'Diupdate',
                 ],
             ],
         ];
         $this->actingAs($user)
             ->put(route('master.estimation.update', $estimation), $data)
             ->assertRedirect();
-        $this->assertDatabaseHas('estimation_items', ['id' => $item->id, 'equipment_name' => 'Diupdate']);
+        $this->assertDatabaseHas('estimation_items', ['id' => $item->id, 'code' => 'TEST-002']);
     }
 
     public function test_ahs_item_can_be_deleted_via_update()
@@ -162,7 +155,6 @@ class EstimationTest extends TestCase
         $data = [
             'title' => $estimation->title,
             'total' => $estimation->total,
-            'margin' => $estimation->margin,
             'total_unit_price' => $estimation->total_unit_price,
             'items' => [],
         ];
@@ -171,4 +163,4 @@ class EstimationTest extends TestCase
             ->assertRedirect();
         $this->assertDatabaseMissing('estimation_items', ['id' => $item->id]);
     }
-} 
+}

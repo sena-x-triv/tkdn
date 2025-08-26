@@ -46,6 +46,13 @@ class HppItem extends Model
      */
     public function estimation()
     {
-        return $this->hasOneThrough(Estimation::class, EstimationItem::class, 'id', 'id', 'estimation_item_id', 'estimation_id');
+        return $this->hasOneThrough(
+            Estimation::class,
+            EstimationItem::class,
+            'id',           // Foreign key on estimation_items table
+            'id', // Foreign key on estimations table
+            'estimation_item_id', // Local key on hpp_items table
+            'estimation_id'       // Local key on estimation_items table
+        );
     }
 }

@@ -16,7 +16,6 @@ class Estimation extends Model
         'code',
         'title',
         'total',
-        'margin',
         'total_unit_price',
     ];
 

@@ -104,7 +104,6 @@ class HppController extends Controller
             // Buat HPP items
             foreach ($request->items as $index => $item) {
                 $hpp->items()->create([
-                    'item_number' => $item['item_number'] ?? ($index + 1),
                     'estimation_item_id' => $item['estimation_item_id'] ?? null,
                     'description' => $item['description'],
                     'tkdn_classification' => $item['tkdn_classification'],
@@ -217,7 +216,6 @@ class HppController extends Controller
             // Buat HPP items baru
             foreach ($request->items as $index => $item) {
                 $hpp->items()->create([
-                    'item_number' => $item['item_number'] ?? ($index + 1),
                     'estimation_item_id' => $item['estimation_item_id'] ?? null,
                     'description' => $item['description'],
                     'tkdn_classification' => $item['tkdn_classification'],
