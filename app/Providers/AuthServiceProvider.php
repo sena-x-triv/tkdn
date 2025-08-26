@@ -27,6 +27,11 @@ class AuthServiceProvider extends ServiceProvider
             return in_array($user->role, ['super_admin', 'admin']);
         });
 
+        // Gate untuk mengelola master data (hanya super_admin dan admin)
+        Gate::define('manage-master', function (User $user) {
+            return in_array($user->role, ['super_admin', 'admin']);
+        });
+
         // Gate untuk mengelola HPP (hanya super_admin dan admin)
         Gate::define('manage-hpp', function (User $user) {
             return in_array($user->role, ['super_admin', 'admin']);
