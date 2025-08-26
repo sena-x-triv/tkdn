@@ -11,12 +11,14 @@
             <p class="text-gray-600 dark:text-gray-400">Kelola formulir TKDN jasa untuk berbagai jenis layanan</p>
         </div>
         <div class="mt-4 sm:mt-0">
+            @can('manage-service')
             <a href="{{ route('service.create') }}" class="btn btn-primary flex items-center">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                 </svg>
                 Tambah Service
             </a>
+            @endcan
         </div>
     </div>
 
@@ -131,7 +133,7 @@
                             </td>
                             <td>
                                 <div class="flex items-center justify-center space-x-2" onclick="event.stopPropagation()">
-                                    @if($service->status === 'draft')
+                                    @if($service->status === 'draft' && auth()->user()->can('manage-service'))
                                         <a href="{{ route('service.edit', $service) }}" class="btn btn-outline p-2 text-yellow-600 hover:text-yellow-700 dark:text-yellow-400 dark:hover:text-yellow-300" title="Edit">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
@@ -148,7 +150,7 @@
                                         </form>
                                     @endif
                                     
-                                    @if($service->status === 'approved')
+                                    @if($service->status === 'approved' && auth()->user()->can('manage-service'))
                                         <form action="{{ route('service.generate', $service) }}" method="POST" class="inline">
                                             @csrf
                                             <button type="submit" class="btn btn-outline p-2 text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300" title="Generate Form TKDN">

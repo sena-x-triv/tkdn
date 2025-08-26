@@ -13,6 +13,12 @@ use Illuminate\Support\Facades\DB;
 
 class ServiceController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('can:manage-service')->only(['create', 'store', 'edit', 'update', 'destroy', 'generate']);
+    }
+
     public function index()
     {
         $services = Service::with(['project', 'items', 'project.hpps'])
