@@ -47,7 +47,7 @@
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Worker Information</h3>
             </div>
             <div class="card-body">
-                <form action="{{ route('master.worker.update', $worker) }}" method="POST" class="space-y-6">
+                <form action="{{ route('master.worker.update', $worker) }}" method="POST" class="space-y-6" id="workerForm">
                     @csrf
                     @method('PUT')
                     
@@ -87,14 +87,14 @@
                     <!-- Category -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label for="category_id" class="form-label">Category</label>
+                            <label for="category_id" class="form-label">Category <span class="text-red-500">*</span></label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
                                     </svg>
                                 </div>
-                                <select name="category_id" id="category_id" class="form-input pl-10 @error('category_id') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror">
+                                <select name="category_id" id="category_id" required class="form-input pl-10 @error('category_id') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror">
                                     <option value="">Pilih kategori</option>
                                     @foreach($categories as $category)
                                         <option value="{{ $category->id }}" {{ old('category_id', $worker->category_id) == $category->id ? 'selected' : '' }}>
@@ -109,14 +109,14 @@
                         </div>
 
                         <div>
-                            <label for="location" class="form-label">Location</label>
+                            <label for="location" class="form-label">Location <span class="text-red-500">*</span></label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 12.414a4 4 0 10-5.657 5.657l4.243 4.243a8 8 0 0011.314-11.314l-4.243-4.243a4 4 0 00-5.657 5.657l4.243 4.243z"></path>
                                     </svg>
                                 </div>
-                                <select name="location" id="location" class="form-input pl-10 @error('location') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror">
+                                <select name="location" id="location" required class="form-input pl-10 @error('location') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror">
                                     <option value="">Pilih Kota Worker...</option>
                                 </select>
                             </div>
@@ -136,7 +136,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
                                     </svg>
                                 </div>
-                                <input type="number" name="price" id="price" class="form-input pl-10 @error('price') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror" value="{{ old('price', $worker->price) }}" required placeholder="Enter hourly rate" min="0" step="1000">
+                                <input type="text" name="price" id="price" class="form-input pl-10 @error('price') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror" value="{{ old('price', $worker->price) ? number_format(old('price', $worker->price), 0, ',', '.') : '' }}" required placeholder="Enter hourly rate">
                             </div>
                             @error('price')
                                 <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
@@ -233,6 +233,48 @@ $(function() {
     
     // Setup location select menggunakan helper function global
     window.setupLocationSelect(select, oldLocation);
+    
+    // Price formatting dengan pemisah titik
+    const priceInput = $('#price');
+    
+    // Format angka saat input
+    priceInput.on('input', function() {
+        let value = this.value.replace(/[^\d]/g, ''); // Hapus semua karakter kecuali angka
+        
+        if (value) {
+            // Format dengan pemisah titik setiap 3 digit
+            value = parseInt(value).toLocaleString('id-ID');
+            this.value = value;
+        }
+    });
+    
+    // Format angka saat focus out (untuk memastikan format yang benar)
+    priceInput.on('blur', function() {
+        let value = this.value.replace(/[^\d]/g, '');
+        
+        if (value) {
+            value = parseInt(value).toLocaleString('id-ID');
+            this.value = value;
+        }
+    });
+    
+    // Format angka saat focus in (hapus pemisah untuk editing)
+    priceInput.on('focus', function() {
+        let value = this.value.replace(/[^\d]/g, '');
+        if (value) {
+            this.value = value;
+        }
+    });
+    
+    // Handle form submit - hapus pemisah titik sebelum submit
+    $('#workerForm').on('submit', function(e) {
+        const priceValue = priceInput.val();
+        if (priceValue) {
+            // Hapus semua karakter kecuali angka sebelum submit
+            const cleanValue = priceValue.replace(/[^\d]/g, '');
+            priceInput.val(cleanValue);
+        }
+    });
 });
 </script>
 @endpush 
