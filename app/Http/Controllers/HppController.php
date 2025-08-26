@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Equipment;
 use App\Models\Estimation;
+use App\Models\EstimationItem;
 use App\Models\Hpp;
 use App\Models\Material;
 use App\Models\Project;
@@ -103,8 +104,7 @@ class HppController extends Controller
             // Buat HPP items
             foreach ($request->items as $index => $item) {
                 $hpp->items()->create([
-                    'item_number' => $item['item_number'] ?? ($index + 1),
-                    'estimation_id' => $item['estimation_id'] ?? null,
+                    'estimation_item_id' => $item['estimation_item_id'] ?? null,
                     'description' => $item['description'],
                     'tkdn_classification' => $item['tkdn_classification'],
                     'volume' => $item['volume'],
@@ -216,8 +216,7 @@ class HppController extends Controller
             // Buat HPP items baru
             foreach ($request->items as $index => $item) {
                 $hpp->items()->create([
-                    'item_number' => $item['item_number'] ?? ($index + 1),
-                    'estimation_id' => $item['estimation_id'] ?? null,
+                    'estimation_item_id' => $item['estimation_item_id'] ?? null,
                     'description' => $item['description'],
                     'tkdn_classification' => $item['tkdn_classification'],
                     'volume' => $item['volume'],
@@ -246,6 +245,7 @@ class HppController extends Controller
     {
         try {
             $hpp = Hpp::findOrFail($id);
+            $hpp->items()->delete();
             $hpp->delete();
 
             return redirect()->route('hpp.index')->with('success', 'HPP berhasil dihapus!');
@@ -257,23 +257,10 @@ class HppController extends Controller
     /**
      * Get estimation items for AJAX request
      */
-    public function getEstimationItems(Request $request)
+    public function getEstimationItems(Request $request, string $id)
     {
-        $estimationId = $request->estimation_id;
-        $estimation = Estimation::with('items')->find($estimationId);
-
-        if (! $estimation) {
-            return response()->json(['error' => 'Estimation tidak ditemukan'], 404);
-        }
-
-        $items = $estimation->items->map(function ($item) {
-            return [
-                'id' => $item->id,
-                'description' => $item->code.' - '.$item->equipment_name,
-                'unit_price' => $item->unit_price,
-                'coefficient' => $item->coefficient,
-            ];
-        });
+        $hpp = Hpp::with(['items'])->findOrFail($id);
+        $items = $hpp->items;
 
         return response()->json($items);
     }
@@ -281,11 +268,11 @@ class HppController extends Controller
     /**
      * Get AHS data for dropdown
      */
-    private function getAhsData()
+    public function getAhsData()
     {
         $ahsData = [];
 
-        // Get Estimations (AHS)
+        // Get Estimations (AHS) only
         $estimations = Estimation::with('items')->get();
         foreach ($estimations as $estimation) {
             $ahsData[] = [
@@ -294,28 +281,8 @@ class HppController extends Controller
                 'code' => $estimation->code,
                 'title' => $estimation->title,
                 'description' => $estimation->code.' - '.$estimation->title,
-                'unit_price' => $estimation->total_unit_price,
                 'category' => 'AHS',
-                'items' => $estimation->items->map(function ($item) {
-                    $itemName = '';
-                    if ($item->category === 'worker' && $item->worker) {
-                        $itemName = $item->worker->name;
-                    } elseif ($item->category === 'material' && $item->material) {
-                        $itemName = $item->material->name;
-                    } elseif ($item->category === 'equipment' && $item->equipment) {
-                        $itemName = $item->equipment->name;
-                    }
-
-                    return [
-                        'id' => $item->id,
-                        'category' => $item->category,
-                        'code' => $item->code,
-                        'name' => $itemName,
-                        'coefficient' => $item->coefficient,
-                        'unit_price' => $item->unit_price,
-                        'total_price' => $item->total_price,
-                    ];
-                }),
+                'item_count' => $estimation->items->count(),
             ];
         }
 
@@ -371,6 +338,40 @@ class HppController extends Controller
     }
 
     /**
+     * Get item name based on category
+     */
+    private function getItemName(EstimationItem $item): string
+    {
+        switch ($item->category) {
+            case 'worker':
+                return $item->worker ? $item->worker->name : 'Pekerja';
+            case 'material':
+                return $item->material ? $item->material->name : 'Material';
+            case 'equipment':
+                return $item->equipment ? $item->equipment->name : 'Peralatan';
+            default:
+                return 'Item';
+        }
+    }
+
+    /**
+     * Get item unit based on category
+     */
+    private function getItemUnit(EstimationItem $item): string
+    {
+        switch ($item->category) {
+            case 'worker':
+                return 'OH';
+            case 'material':
+                return 'Unit';
+            case 'equipment':
+                return 'Hari';
+            default:
+                return 'Unit';
+        }
+    }
+
+    /**
      * Get AHS data for AJAX request
      */
     public function getAhsDataAjax(Request $request)
@@ -378,5 +379,41 @@ class HppController extends Controller
         $ahsData = $this->getAhsData();
 
         return response()->json($ahsData);
+    }
+
+    /**
+     * Get AHS items for AJAX request
+     */
+    public function getAhsItems(Request $request)
+    {
+        $estimationId = $request->estimation_id;
+        $estimation = Estimation::with('items')->find($estimationId);
+
+        if (! $estimation) {
+            return response()->json(['error' => 'Estimation tidak ditemukan'], 404);
+        }
+
+        $items = $estimation->items->map(function ($item) {
+            return [
+                'id' => $item->id,
+                'description' => $this->getItemName($item),
+                'code' => $item->code,
+                'category' => $item->category,
+                'unit_price' => $item->unit_price,
+                'coefficient' => $item->coefficient,
+                'tkdn_classification' => $item->tkdn_classification,
+                'tkdn_value' => $item->tkdn_value,
+                'unit' => $this->getItemUnit($item),
+            ];
+        });
+
+        return response()->json([
+            'estimation' => [
+                'id' => $estimation->id,
+                'code' => $estimation->code,
+                'title' => $estimation->title,
+            ],
+            'items' => $items,
+        ]);
     }
 }

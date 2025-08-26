@@ -13,7 +13,6 @@ return new class extends Migration {
             $table->string('code')->nullable(); // Contoh: A.2.2
             $table->string('title'); // Judul Pekerjaan
             $table->unsignedBigInteger('total')->default(0);
-            $table->unsignedBigInteger('margin')->default(0);
             $table->unsignedBigInteger('total_unit_price')->default(0);
             $table->timestamps();
         });

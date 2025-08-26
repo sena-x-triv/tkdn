@@ -189,28 +189,14 @@
                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                 @enderror
             </div>
+
             <div class="relative">
-                <label for="margin" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Margin (%)</label>
-                <div class="relative">
-                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="7" cy="17" r="2" /><circle cx="17" cy="7" r="2" /><line x1="7" y1="17" x2="17" y2="7" /></svg>
-                    </span>
-                    <input type="number" name="margin" id="margin" value="{{ old('margin', 15) }}" class="form-input w-full pl-10 pr-8 @error('margin') border-red-500 @enderror" placeholder="0" min="0" max="100" step="0.01">
-                    <span class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-gray-500 dark:text-gray-400">
-                        %
-                    </span>
-                </div>
-                @error('margin')
-                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                @enderror
-            </div>
-            <div class="relative">
-                <label for="location" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Lokasi <span class="text-red-500">*</span></label>
+                <label for="location" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Lokasi</label>
                 <div class="relative">
                     <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                     </span>
-                    <select name="location" id="location" class="form-input w-full pl-10 @error('location') border-red-500 @enderror" required>
+                    <select name="location" id="location" class="form-input w-full pl-10 @error('location') border-red-500 @enderror">
                         <option value="">Pilih Lokasi...</option>
                     </select>
                 </div>
@@ -395,7 +381,7 @@ function addItemRow(item = {}) {
                 <td class="px-2 py-2">
                     <input type="text" name="items[${itemIndex}][unit]" class="form-input unit-input" value="${item.unit || ''}" placeholder="Satuan" readonly>
                 </td>
-                <td class="px-2 py-2"><input type="number" name="items[${itemIndex}][coefficient]" class="form-input" value="${item.coefficient || ''}" step="0.01" oninput="updateTotalPrice(this)" placeholder="Koefisien"></td>
+                <td class="px-2 py-2"><input type="number" name="items[${itemIndex}][coefficient]" class="form-input" value="${item.coefficient || ''}" step="0.0001" oninput="updateTotalPrice(this)" placeholder="Koefisien"></td>
                 <td class="px-2 py-2"><input type="number" name="items[${itemIndex}][unit_price]" class="form-input" value="${item.unit_price || ''}" step="0.01" oninput="updateTotalPrice(this)" placeholder="Harga Satuan"></td>
                 <td class="px-2 py-2"><input type="number" name="items[${itemIndex}][total_price]" class="form-input" value="${item.total_price || ''}" readonly placeholder="Jumlah Harga"></td>
         <td class="px-2 py-2">
@@ -726,10 +712,8 @@ function updateMainTotal() {
         mainTotalInput.value =  Math.ceil(totalPrice);
     }
 
-    // update unit price = total * (1 + margin/100), hasil penghitungan pembulatan keatas
-    const margin = parseFloat(document.getElementById('margin').value) || 0;
-    const unitPrice = Math.ceil(totalPrice * (1 + margin/100));
-    document.getElementById('total_unit_price').value = unitPrice;
+    // update unit price = total (tanpa margin)
+    document.getElementById('total_unit_price').value = Math.ceil(totalPrice);
 }
 
         // Make functions global so they can be called from HTML
@@ -747,13 +731,7 @@ function updateMainTotal() {
     // Calculate initial totals if there are existing items
     updateMainTotal();
     
-    // Add event listener for margin input to recalculate unit price
-    const marginInput = document.getElementById('margin');
-    if (marginInput) {
-        marginInput.addEventListener('input', function() {
-            updateMainTotal();
-        });
-    }
+
     
     form.addEventListener('submit', function(e) {
         e.preventDefault(); // Prevent default form submission

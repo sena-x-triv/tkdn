@@ -122,10 +122,12 @@ class ServiceController extends Controller
         $itemNumber = 1;
 
         foreach ($hppItems as $hppItem) {
-            // 2. Ambil data AHS items berdasarkan HPP item (estimation)
-            if ($hppItem->estimation_id) {
-                $estimation = $hppItem->estimation;
-                if ($estimation) {
+            // 2. Ambil data AHS items berdasarkan HPP item (estimation_item)
+            if ($hppItem->estimation_item_id) {
+                $estimationItem = $hppItem->estimationItem;
+                if ($estimationItem) {
+                    // Ambil estimation dari estimation_item
+                    $estimation = $estimationItem->estimation;
                     $ahsItems = $estimation->items;
 
                     // 3. Insert data AHS items ke table service_items

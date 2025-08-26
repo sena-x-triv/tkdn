@@ -20,9 +20,8 @@ class EstimationFactory extends Factory
             'code' => 'A.'.$this->faker->numberBetween(1, 9).'.'.$this->faker->numberBetween(1, 2),
             'title' => $this->faker->sentence(3),
             'total' => $this->faker->numberBetween(5000, 25000),
-            'margin' => $this->faker->numberBetween(10, 25),
             'total_unit_price' => function (array $attributes) {
-                return $attributes['total'] + ($attributes['total'] * $attributes['margin'] / 100);
+                return $attributes['total'];
             },
         ];
     }

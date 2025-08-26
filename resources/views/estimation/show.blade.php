@@ -71,12 +71,8 @@
                         <div>
                             <div class="text-xs text-gray-500 uppercase mb-1 text-center">Total</div>
                             <div class="font-extrabold text-2xl text-gray-900 dark:text-white text-center">Rp {{ number_format($estimation->total, 0, ',', '.') }}</div>
-            </div>
-            <div>
-                            <div class="text-xs text-gray-500 uppercase mb-1 text-center">Margin</div>
-                            <div class="font-extrabold text-2xl text-blue-600 text-center">{{ number_format($estimation->margin, 1, ',', '.') }}%</div>
-            </div>
-            <div>
+                        </div>
+                        <div>
                             <div class="text-xs text-gray-500 uppercase mb-1 text-center">Final Price</div>
                             <div class="font-extrabold text-2xl text-green-600 text-center">Rp {{ number_format($estimation->total_unit_price, 0, ',', '.') }}</div>
                         </div>

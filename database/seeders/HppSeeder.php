@@ -62,7 +62,6 @@ class HppSeeder extends Seeder
         $hppItemsData = [
             // TKDN 3.1 - Manajemen Proyek dan Perekayasaan
             [
-                'item_number' => '1.1',
                 'description' => 'Manajemen Proyek - Pekerjaan Galian dan Urugan Tanah',
                 'tkdn_classification' => '3.1',
                 'estimation_codes' => ['A.1.1', 'A.1.2'], // Galian & Urugan
@@ -73,7 +72,6 @@ class HppSeeder extends Seeder
                 'base_cost' => 20000, // A.1.1 + A.1.2 = 12000 + 8000 = 20000
             ],
             [
-                'item_number' => '1.2',
                 'description' => 'Perekayasaan - Struktur Fondasi dan Beton',
                 'tkdn_classification' => '3.1',
                 'estimation_codes' => ['A.2.1', 'A.2.2'], // Fondasi
@@ -86,7 +84,6 @@ class HppSeeder extends Seeder
 
             // TKDN 3.2 - Alat Kerja dan Fasilitas Kerja
             [
-                'item_number' => '2.1',
                 'description' => 'Alat Kerja - Peralatan Dinding dan Plester',
                 'tkdn_classification' => '3.2',
                 'estimation_codes' => ['A.3.1', 'A.3.2'], // Dinding & Plester
@@ -97,7 +94,6 @@ class HppSeeder extends Seeder
                 'base_cost' => 21000, // A.3.1 + A.3.2 = 14000 + 7000 = 21000
             ],
             [
-                'item_number' => '2.2',
                 'description' => 'Fasilitas Kerja - Peralatan Atap dan Kusen',
                 'tkdn_classification' => '3.2',
                 'estimation_codes' => ['A.4.1', 'A.4.2'], // Atap & Kusen
@@ -110,7 +106,6 @@ class HppSeeder extends Seeder
 
             // TKDN 3.3 - Konstruksi dan Fabrikasi
             [
-                'item_number' => '3.1',
                 'description' => 'Konstruksi - Lantai dan Finishing',
                 'tkdn_classification' => '3.3',
                 'estimation_codes' => ['A.5.1', 'A.5.2'], // Lantai & Cat
@@ -121,7 +116,6 @@ class HppSeeder extends Seeder
                 'base_cost' => 19000, // A.5.1 + A.5.2 = 13000 + 6000 = 19000
             ],
             [
-                'item_number' => '3.2',
                 'description' => 'Fabrikasi - Instalasi MEP dan Sanitasi',
                 'tkdn_classification' => '3.3',
                 'estimation_codes' => ['A.6.1', 'A.6.2', 'A.7.1'], // Listrik, Air, Sanitasi
@@ -134,7 +128,6 @@ class HppSeeder extends Seeder
 
             // TKDN 3.4 - Jasa Umum
             [
-                'item_number' => '4.1',
                 'description' => 'Jasa Umum - Pagar dan Landscaping',
                 'tkdn_classification' => '3.4',
                 'estimation_codes' => ['A.8.1', 'A.9.1'], // Pagar & Taman
@@ -150,12 +143,12 @@ class HppSeeder extends Seeder
             $unitPrice = $itemData['base_cost'] / $itemData['volume'];
             $totalPrice = $itemData['base_cost'];
 
-            // Tentukan estimation_id berdasar daftar kode estimation yang disediakan
-            $estimationId = null;
+            // Tentukan estimation_item_id berdasar daftar kode estimation yang disediakan
+            $estimationItemId = null;
             if (! empty($itemData['estimation_codes'])) {
                 foreach ($itemData['estimation_codes'] as $code) {
                     if (isset($estimationCodeToId[$code])) {
-                        $estimationId = $estimationCodeToId[$code];
+                        $estimationItemId = $estimationCodeToId[$code];
                         break; // pakai kode pertama yang ditemukan
                     }
                 }
@@ -163,8 +156,7 @@ class HppSeeder extends Seeder
 
             HppItem::create([
                 'hpp_id' => $hpp->id,
-                'estimation_id' => $estimationId,
-                'item_number' => $itemData['item_number'],
+                'estimation_item_id' => $estimationItemId,
                 'description' => $itemData['description'],
                 'tkdn_classification' => $itemData['tkdn_classification'],
                 'volume' => $itemData['volume'],

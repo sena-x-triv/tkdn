@@ -39,7 +39,6 @@ Fitur Jasa Proyek adalah modul untuk mengelola formulir TKDN (Tingkat Komponen D
 ### Tabel `project_service_items`
 - `id` (ULID): Primary key
 - `project_service_id` (ULID): Foreign key ke project_services
-- `item_number`: Nomor urut item
 - `description`: Uraian item
 - `qualification`: Kualifikasi
 - `nationality`: Kewarganegaraan (WNI/WNA)
