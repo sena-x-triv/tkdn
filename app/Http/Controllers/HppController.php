@@ -15,6 +15,12 @@ use Illuminate\Support\Str;
 
 class HppController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('can:manage-hpp')->only(['create', 'store', 'edit', 'update', 'destroy']);
+    }
+
     /**
      * Display a listing of the resource.
      */
