@@ -13,7 +13,7 @@ class HppItem extends Model
 
     protected $fillable = [
         'hpp_id',
-        'estimation_id',
+        'estimation_item_id',
         'item_number',
         'description',
         'tkdn_classification',
@@ -36,8 +36,16 @@ class HppItem extends Model
         return $this->belongsTo(Hpp::class, 'hpp_id');
     }
 
+    public function estimationItem()
+    {
+        return $this->belongsTo(EstimationItem::class, 'estimation_item_id');
+    }
+
+    /**
+     * Get estimation through estimation item
+     */
     public function estimation()
     {
-        return $this->belongsTo(Estimation::class, 'estimation_id');
+        return $this->hasOneThrough(Estimation::class, EstimationItem::class, 'id', 'id', 'estimation_item_id', 'estimation_id');
     }
 }

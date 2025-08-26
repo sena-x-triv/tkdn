@@ -31,9 +31,10 @@ Route::post('service/{service}/approve', [App\Http\Controllers\ServiceController
 Route::post('service/{service}/reject', [App\Http\Controllers\ServiceController::class, 'reject'])->name('service.reject');
 Route::post('service/{service}/generate', [App\Http\Controllers\ServiceController::class, 'generate'])->name('service.generate');
 
-// HPP Routes
-Route::resource('hpp', App\Http\Controllers\HppController::class);
-Route::get('hpp/{hpp}/get-estimation-items', [App\Http\Controllers\HppController::class, 'getEstimationItems'])->name('hpp.get-estimation-items');
+// HPP Routes - Specific routes must come BEFORE resource route
 Route::get('hpp/get-ahs-data', [App\Http\Controllers\HppController::class, 'getAhsDataAjax'])->name('hpp.get-ahs-data');
+Route::get('hpp/get-ahs-items', [App\Http\Controllers\HppController::class, 'getAhsItems'])->name('hpp.get-ahs-items');
+Route::get('hpp/{hpp}/get-estimation-items', [App\Http\Controllers\HppController::class, 'getEstimationItems'])->name('hpp.get-estimation-items');
+Route::resource('hpp', App\Http\Controllers\HppController::class);
 
 Route::view('support', 'support')->name('support');
