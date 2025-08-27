@@ -8,7 +8,15 @@
             <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Workers</h1>
             <p class="text-gray-600 dark:text-gray-400">Manage worker information and data</p>
         </div>
-        <div class="mt-4 sm:mt-0">
+        <div class="mt-4 sm:mt-0 flex flex-col sm:flex-row gap-3">
+            <!-- Import Button -->
+            <button type="button" onclick="openImportModal()" class="btn btn-outline flex items-center">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path>
+                </svg>
+                Import Excel
+            </button>
+            <!-- Add Worker Button -->
             <a href="{{ route('master.worker.create') }}" class="btn btn-primary flex items-center">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
@@ -37,6 +45,26 @@
                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
                 </svg>
                 <span>{{ session('error') }}</span>
+            </div>
+        </div>
+    @endif
+
+    @if(session('import_errors'))
+        <div class="mb-6">
+            <div class="bg-yellow-50 border border-yellow-200 text-yellow-700 px-4 py-3 rounded-xl relative" role="alert">
+                <div class="flex items-start">
+                    <svg class="w-5 h-5 mr-2 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                    </svg>
+                    <div>
+                        <h4 class="font-medium mb-2">Import completed with some errors:</h4>
+                        <ul class="list-disc list-inside space-y-1 text-sm">
+                            @foreach(session('import_errors') as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
     @endif
@@ -166,6 +194,78 @@
     </div>
 </div>
 
+<!-- Import Modal -->
+<div id="importModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800">
+        <div class="mt-3">
+            <!-- Header -->
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Import Workers from Excel</h3>
+                <button onclick="closeImportModal()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Instructions -->
+            <div class="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                <h4 class="font-medium text-blue-800 dark:text-blue-200 mb-2">Format Excel yang dibutuhkan:</h4>
+                <ul class="text-sm text-blue-700 dark:text-blue-300 space-y-1">
+                    <li>• <strong>Name</strong> - Nama worker (wajib)</li>
+                    <li>• <strong>Unit</strong> - Satuan (wajib)</li>
+                    <li>• <strong>Category</strong> - Nama kategori (opsional)</li>
+                    <li>• <strong>Price</strong> - Harga dalam angka (wajib)</li>
+                    <li>• <strong>TKDN</strong> - Persentase TKDN 0-100 (wajib)</li>
+                    <li>• <strong>Location</strong> - Lokasi (opsional)</li>
+                </ul>
+            </div>
+
+            <!-- Download Template -->
+            <div class="mb-4">
+                <a href="{{ route('master.worker.download-template') }}" class="btn btn-outline w-full flex items-center justify-center">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    Download Template Excel
+                </a>
+            </div>
+
+            <!-- Import Form -->
+            <form action="{{ route('master.worker.import') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+                @csrf
+                <div>
+                    <label for="excel_file" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Pilih File Excel
+                    </label>
+                    <input type="file" 
+                           name="excel_file" 
+                           id="excel_file" 
+                           accept=".xlsx,.xls,.csv"
+                           class="form-input w-full @error('excel_file') border-red-500 @enderror"
+                           required>
+                    @error('excel_file')
+                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Form Actions -->
+                <div class="flex justify-end space-x-3 pt-4">
+                    <button type="button" onclick="closeImportModal()" class="btn btn-outline">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary flex items-center">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path>
+                        </svg>
+                        Import Data
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script>
 function goToDetail(element, event) {
     // Check if the click is on a button or link
@@ -178,5 +278,29 @@ function goToDetail(element, event) {
         window.location.href = detailUrl;
     }
 }
+
+function openImportModal() {
+    document.getElementById('importModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeImportModal() {
+    document.getElementById('importModal').classList.add('hidden');
+    document.body.style.overflow = 'auto';
+}
+
+// Close modal when clicking outside
+document.getElementById('importModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeImportModal();
+    }
+});
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeImportModal();
+    }
+});
 </script>
 @endsection 
