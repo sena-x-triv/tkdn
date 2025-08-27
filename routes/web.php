@@ -18,11 +18,27 @@ Route::patch('/settings', [App\Http\Controllers\SettingsController::class, 'upda
 Route::resource('users', App\Http\Controllers\UserController::class);
 
 Route::prefix('master')->name('master.')->group(function () {
+    // Worker routes - specific routes must come BEFORE resource route
+    Route::get('worker/download-template', [App\Http\Controllers\WorkerController::class, 'downloadTemplate'])->name('worker.download-template');
+    Route::post('worker/import', [App\Http\Controllers\WorkerController::class, 'import'])->name('worker.import');
     Route::resource('worker', App\Http\Controllers\WorkerController::class);
+    
+    // Material routes - specific routes must come BEFORE resource route
+    Route::get('material/download-template', [App\Http\Controllers\MaterialController::class, 'downloadTemplate'])->name('material.download-template');
+    Route::post('material/import', [App\Http\Controllers\MaterialController::class, 'import'])->name('material.import');
     Route::resource('material', App\Http\Controllers\MaterialController::class);
+    
+    // Project routes - specific routes must come BEFORE resource route
+    Route::get('project/download-template', [App\Http\Controllers\ProjectController::class, 'downloadTemplate'])->name('project.download-template');
+    Route::post('project/import', [App\Http\Controllers\ProjectController::class, 'import'])->name('project.import');
     Route::resource('project', App\Http\Controllers\ProjectController::class);
+    
+    // Equipment routes - specific routes must come BEFORE resource route
+    Route::get('equipment/download-template', [App\Http\Controllers\EquipmentController::class, 'downloadTemplate'])->name('equipment.download-template');
+    Route::post('equipment/import', [App\Http\Controllers\EquipmentController::class, 'import'])->name('equipment.import');
+    Route::resource('equipment', App\Http\Controllers\EquipmentController::class);
+    
     Route::resource('estimation', \App\Http\Controllers\EstimationController::class);
-    Route::resource('equipment', \App\Http\Controllers\EquipmentController::class);
     Route::resource('category', App\Http\Controllers\CategoryController::class);
 });
 
