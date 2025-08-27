@@ -143,6 +143,28 @@
                                             </button>
                                         </form>
                                     @endif
+                                    
+                                    @if($hpp->status === 'submitted' && auth()->user()->can('manage-hpp'))
+                                        <form action="{{ route('hpp.approve', $hpp->id) }}" method="POST" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menyetujui HPP ini?')">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button type="submit" class="btn btn-outline p-2 text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300" title="Approve">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                                </svg>
+                                            </button>
+                                        </form>
+                                        
+                                        <!-- <form action="{{ route('hpp.reject', $hpp->id) }}" method="POST" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menolak HPP ini?')">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button type="submit" class="btn btn-outline p-2 text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300" title="Reject">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                                </svg>
+                                            </button>
+                                        </form> -->
+                                    @endif
                                 </div>
                             </td>
                         </tr>
