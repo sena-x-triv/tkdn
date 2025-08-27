@@ -39,5 +39,7 @@ Route::get('hpp/get-ahs-data', [App\Http\Controllers\HppController::class, 'getA
 Route::get('hpp/get-ahs-items', [App\Http\Controllers\HppController::class, 'getAhsItems'])->name('hpp.get-ahs-items');
 Route::get('hpp/{hpp}/get-estimation-items', [App\Http\Controllers\HppController::class, 'getEstimationItems'])->name('hpp.get-estimation-items');
 Route::resource('hpp', App\Http\Controllers\HppController::class);
+Route::patch('hpp/{hpp}/approve', [App\Http\Controllers\HppController::class, 'approve'])->name('hpp.approve');
+Route::patch('hpp/{hpp}/reject', [App\Http\Controllers\HppController::class, 'reject'])->name('hpp.reject');
 
 Route::view('support', 'support')->name('support');

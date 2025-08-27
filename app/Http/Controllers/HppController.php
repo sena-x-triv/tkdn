@@ -10,6 +10,7 @@ use App\Models\Material;
 use App\Models\Project;
 use App\Models\Worker;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -159,8 +160,14 @@ class HppController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        // Check if user can manage HPP
+        if (! Auth::user()->can('manage-hpp')) {
+            abort(403, 'Unauthorized action.');
+        }
+
         $request->validate([
             'project_id' => 'required|exists:projects,id',
+            'status' => 'required|in:draft,submitted,approved,rejected',
             'overhead_percentage' => 'required|numeric|min:0|max:100',
             'margin_percentage' => 'required|numeric|min:0|max:100',
             'ppn_percentage' => 'required|numeric|min:0|max:100',
@@ -204,6 +211,7 @@ class HppController extends Controller
             // Update HPP
             $hpp->update([
                 'project_id' => $request->project_id,
+                'status' => $request->status,
                 'sub_total_hpp' => $subTotalHpp,
                 'overhead_percentage' => $request->overhead_percentage,
                 'overhead_amount' => $overheadAmount,
@@ -421,5 +429,59 @@ class HppController extends Controller
             ],
             'items' => $items,
         ]);
+    }
+
+    /**
+     * Approve HPP
+     */
+    public function approve(Hpp $hpp)
+    {
+        // Check if user can manage HPP
+        if (! Auth::user()->can('manage-hpp')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        // Check if HPP status is submitted
+        if ($hpp->status !== 'submitted') {
+            return redirect()->route('hpp.index')
+                ->with('error', 'HPP hanya dapat disetujui jika statusnya "Diajukan".');
+        }
+
+        try {
+            $hpp->update(['status' => 'approved']);
+
+            return redirect()->route('hpp.index')
+                ->with('success', 'HPP berhasil disetujui.');
+        } catch (\Exception $e) {
+            return redirect()->route('hpp.index')
+                ->with('error', 'Terjadi kesalahan saat menyetujui HPP.');
+        }
+    }
+
+    /**
+     * Reject HPP
+     */
+    public function reject(Hpp $hpp)
+    {
+        // Check if user can manage HPP
+        if (! Auth::user()->can('manage-hpp')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        // Check if HPP status is submitted
+        if ($hpp->status !== 'submitted') {
+            return redirect()->route('hpp.index')
+                ->with('error', 'HPP hanya dapat ditolak jika statusnya "Diajukan".');
+        }
+
+        try {
+            $hpp->update(['status' => 'rejected']);
+
+            return redirect()->route('hpp.index')
+                ->with('success', 'HPP berhasil ditolak.');
+        } catch (\Exception $e) {
+            return redirect()->route('hpp.index')
+                ->with('error', 'Terjadi kesalahan saat menolak HPP.');
+        }
     }
 }

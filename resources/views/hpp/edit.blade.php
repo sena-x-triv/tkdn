@@ -44,6 +44,58 @@
                         @enderror
                     </div>
 
+                    <div>
+                        <label for="status" class="form-label">Status HPP <span class="text-red-500">*</span></label>
+                        @if(auth()->user()->can('manage-hpp'))
+                            <select id="status" name="status" class="form-select @error('status') border-red-500 @enderror" required>
+                                <option value="draft" {{ old('status', $hpp->status) == 'draft' ? 'selected' : '' }}>Draft</option>
+                                <option value="submitted" {{ old('status', $hpp->status) == 'submitted' ? 'selected' : '' }}>Diajukan</option>
+                                <option value="approved" {{ old('status', $hpp->status) == 'approved' ? 'selected' : '' }}>Disetujui</option>
+                                <option value="rejected" {{ old('status', $hpp->status) == 'rejected' ? 'selected' : '' }}>Ditolak</option>
+                            </select>
+                        @else
+                            <div class="form-input bg-gray-50 dark:bg-gray-700 cursor-not-allowed">
+                                @switch($hpp->status)
+                                    @case('draft')
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
+                                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                            </svg>
+                                            Draft
+                                        </span>
+                                        @break
+                                    @case('submitted')
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"></path>
+                                            </svg>
+                                            Diajukan
+                                        </span>
+                                        @break
+                                    @case('approved')
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                            </svg>
+                                            Disetujui
+                                        </span>
+                                        @break
+                                    @case('rejected')
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
+                                            <svg class="w-3 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                            </svg>
+                                            Ditolak
+                                        </span>
+                                        @break
+                                @endswitch
+                            </div>
+                        @endif
+                        @error('status')
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
                     <div class="md:col-span-2">
                         <div id="project-info" class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                             <h4 class="font-medium text-gray-900 dark:text-white mb-2">Informasi Project</h4>
