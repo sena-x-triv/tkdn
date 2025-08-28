@@ -14,7 +14,7 @@ return new class extends Migration
 
             $table->ulid('id')->primary();
             $table->ulid('service_id');
-            $table->integer('estimation_item_id')->nullable();
+            $table->ulid('estimation_item_id')->nullable();
             $table->integer('item_number'); // No. urut
             $table->string('description'); // Uraian
             $table->string('qualification')->nullable(); // Kualifikasi

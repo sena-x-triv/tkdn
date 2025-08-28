@@ -3,11 +3,12 @@
 namespace App\Models;
 
 use App\Traits\UsesUlid;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class HppItem extends Model
 {
-    use UsesUlid;
+    use HasFactory, UsesUlid;
 
     protected $table = 'hpp_items';
 
