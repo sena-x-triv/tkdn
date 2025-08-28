@@ -91,6 +91,109 @@
                             </svg>
                             Edit Service
                         </a>
+                        
+                        <!-- Generate Individual Forms -->
+                        <div class="relative inline-block">
+                            <button type="button" onclick="showGenerateOptions()" class="inline-flex items-center px-4 py-2 bg-purple-600 hover:bg-purple-700 border border-transparent rounded-lg text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-all duration-200 shadow-lg hover:shadow-xl">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 100 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"></path>
+                                </svg>
+                                Generate Form
+                            </button>
+                            
+                            <!-- Generate Options Dropdown -->
+                            <div id="generateOptions" class="hidden absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 z-50">
+                                <div class="py-2">
+                                    <div class="px-4 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider border-b border-gray-200 dark:border-gray-700">
+                                        Pilih Form TKDN
+                                    </div>
+                                    <form action="{{ route('service.generate-form', ['service' => $service->id, 'formNumber' => '3.1']) }}" method="POST" class="block">
+                                        @csrf
+                                        <button type="submit" class="w-full text-left px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200">
+                                            <div class="flex items-center">
+                                                <svg class="w-4 h-4 mr-3 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                </svg>
+                                                <div>
+                                                    <div class="font-medium">Form 3.1</div>
+                                                    <div class="text-xs text-gray-500 dark:text-gray-400">Manajemen Proyek & Perekayasaan</div>
+                                                </div>
+                                            </div>
+                                        </button>
+                                    </form>
+                                    <form action="{{ route('service.generate-form', ['service' => $service->id, 'formNumber' => '3.2']) }}" method="POST" class="block">
+                                        @csrf
+                                        <button type="submit" class="w-full text-left px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200">
+                                            <div class="flex items-center">
+                                                <svg class="w-4 h-4 mr-3 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                                                </svg>
+                                                <div>
+                                                    <div class="font-medium">Form 3.2</div>
+                                                    <div class="text-xs text-gray-500 dark:text-gray-400">Alat Kerja & Peralatan</div>
+                                                </div>
+                                            </div>
+                                        </button>
+                                    </form>
+                                    <form action="{{ route('service.generate-form', ['service' => $service->id, 'formNumber' => '3.3']) }}" method="POST" class="block">
+                                        @csrf
+                                        <button type="submit" class="w-full text-left px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200">
+                                            <div class="flex items-center">
+                                                <svg class="w-4 h-4 mr-3 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                                                </svg>
+                                                <div>
+                                                    <div class="font-medium">Form 3.3</div>
+                                                    <div class="text-xs text-gray-500 dark:text-gray-400">Konstruksi & Fabrikasi</div>
+                                                </div>
+                                            </div>
+                                        </button>
+                                    </form>
+                                    <form action="{{ route('service.generate-form', ['service' => $service->id, 'formNumber' => '3.4']) }}" method="POST" class="block">
+                                        @csrf
+                                        <button type="submit" class="w-full text-left px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200">
+                                            <div class="flex items-center">
+                                                <svg class="w-4 h-4 mr-3 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                                </svg>
+                                                <div>
+                                                    <div class="font-medium">Form 3.4</div>
+                                                    <div class="text-xs text-gray-500 dark:text-gray-400">Konsultasi & Pengawasan</div>
+                                                </div>
+                                            </div>
+                                        </button>
+                                    </form>
+                                    <form action="{{ route('service.generate-form', ['service' => $service->id, 'formNumber' => '3.5']) }}" method="POST" class="block">
+                                        @csrf
+                                        <button type="submit" class="w-full text-left px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200">
+                                            <div class="flex items-center">
+                                                <svg class="w-4 h-4 mr-3 text-indigo-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                                </svg>
+                                                <div>
+                                                    <div class="font-medium">Form 3.5</div>
+                                                    <div class="text-xs text-gray-500 dark:text-gray-400">Rangkuman Semua Form</div>
+                                                </div>
+                                            </div>
+                                        </button>
+                                    </form>
+                                    <div class="border-t border-gray-200 dark:border-gray-700 mt-2 pt-2">
+                                        <form action="{{ route('service.generate', $service) }}" method="POST" class="block">
+                                            @csrf
+                                            <button type="submit" class="w-full text-left px-4 py-3 text-sm font-medium text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors duration-200">
+                                                <div class="flex items-center">
+                                                    <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6l.586-.586a2 2 0 012.828 0L20 8m-6-6L16 4m-6 6l.586-.586a2 2 0 012.828 0L20 8m-6-6L16 4"></path>
+                                                    </svg>
+                                                    Generate Semua Form
+                                                </div>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
                         <form action="{{ route('service.submit', $service) }}" method="POST" class="inline">
                             @csrf
                             <button type="submit" class="inline-flex items-center ml-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 border border-transparent rounded-lg text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-lg hover:shadow-xl">
@@ -121,6 +224,8 @@
                             </button>
                         </form>
                     @endif
+                    
+
                 </div>
             </div>
         </div>
@@ -249,12 +354,26 @@
         <div id="form-3-1" class="form-content">
             <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
                 <div class="bg-blue-50 dark:bg-blue-900/20 px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-                    <h3 class="text-xl font-bold text-gray-900 dark:text-white flex items-center">
-                        <svg class="w-6 h-6 mr-3 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                        Form 3.1: TKDN Jasa untuk Manajemen Proyek dan Perekayasaan
-                    </h3>
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white flex items-center">
+                            <svg class="w-6 h-6 mr-3 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            Form 3.1: TKDN Jasa untuk Manajemen Proyek dan Perekayasaan
+                        </h3>
+                        
+                        <!-- Export Excel Button for Form 3.1 -->
+                        @if($service->status === 'generated' || $service->status === 'approved')
+                            <div class="flex items-center space-x-2">
+                                <a href="{{ route('service.export.excel', ['service' => $service->id, 'classification' => '3.1']) }}" class="inline-flex items-center px-3 py-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 border border-transparent rounded-lg text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200 shadow-sm hover:shadow-md">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                    </svg>
+                                    Export Excel
+                                </a>
+                            </div>
+                        @endif
+                    </div>
                 </div>
                 <div class="p-6">
                     <!-- Header Information -->
@@ -408,32 +527,78 @@
         </div>
 
         <div id="form-3-2" class="form-content hidden">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Form 3.2: TKDN Jasa untuk Alat Kerja dan Peralatan</h3>
+            <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <div class="bg-green-50 dark:bg-green-900/20 px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white flex items-center">
+                            <svg class="w-6 h-6 mr-3 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                            </svg>
+                            Form 3.2: TKDN Jasa untuk Alat Kerja dan Peralatan
+                        </h3>
+                        
+                        <!-- Export Excel Button for Form 3.2 -->
+                        @if($service->status === 'generated' || $service->status === 'approved')
+                            <div class="flex items-center space-x-2">
+                                <a href="{{ route('service.export.excel', ['service' => $service->id, 'classification' => '3.2']) }}" class="inline-flex items-center px-3 py-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 border border-transparent rounded-lg text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200 shadow-sm hover:shadow-md">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                    </svg>
+                                    Export Excel
+                                </a>
+                            </div>
+                        @endif
+                    </div>
                 </div>
-                <div class="card-body">
+                <div class="p-6">
                     <!-- Header Information -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Penyedia Barang / Jasa</label>
-                            <p class="text-gray-900 dark:text-white">{{ $service->provider_name ?: 'PT Konstruksi Maju' }}</p>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Alamat</label>
-                            <p class="text-gray-900 dark:text-white">{{ $service->provider_address ?: 'Jl. Sudirman No. 123, Jakarta Pusat' }}</p>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nama Jasa</label>
-                            <p class="text-gray-900 dark:text-white">{{ $service->service_name }}</p>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Pengguna Barang/Jasa</label>
-                            <p class="text-gray-900 dark:text-white">{{ $service->user_name ?: 'PT Pembangunan Indonesia' }}</p>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">No. Dokumen Jasa</label>
-                            <p class="text-gray-900 dark:text-white">{{ $service->document_number ?: 'DOC-2024-001' }}</p>
+                    <div class="bg-green-50 dark:bg-green-900/20 rounded-xl p-6 mb-8 border border-green-200 dark:border-green-700">
+                        <h4 class="text-lg font-semibold text-green-900 dark:text-green-100 mb-4 flex items-center">
+                            <svg class="w-5 h-5 mr-2 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            Informasi Umum - Form 3.2
+                        </h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-4">
+                                <div class="flex items-start space-x-3">
+                                    <div class="flex-shrink-0 w-2 h-2 bg-green-500 rounded-full mt-2"></div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-green-700 dark:text-green-300 mb-1">Penyedia Barang / Jasa</label>
+                                        <p class="text-base font-semibold text-green-900 dark:text-green-100">{{ $service->provider_name ?: 'PT Konstruksi Maju' }}</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <div class="flex-shrink-0 w-2 h-2 bg-green-500 rounded-full mt-2"></div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-green-700 dark:text-green-300 mb-1">Alamat</label>
+                                        <p class="text-base font-semibold text-green-900 dark:text-green-100">{{ $service->provider_address ?: 'Jl. Sudirman No. 123, Jakarta Pusat' }}</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <div class="flex-shrink-0 w-2 h-2 bg-green-500 rounded-full mt-2"></div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-green-700 dark:text-green-300 mb-1">Nama Jasa</label>
+                                        <p class="text-base font-semibold text-green-900 dark:text-green-100">{{ $service->service_name }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="space-y-4">
+                                <div class="flex items-start space-x-3">
+                                    <div class="flex-shrink-0 w-2 h-2 bg-emerald-500 rounded-full mt-2"></div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-emerald-700 dark:text-emerald-300 mb-1">Pengguna Barang/Jasa</label>
+                                        <p class="text-base font-semibold text-emerald-900 dark:text-emerald-100">{{ $service->user_name ?: 'PT Pembangunan Indonesia' }}</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <div class="flex-shrink-0 w-2 h-2 bg-emerald-500 rounded-full mt-2"></div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-emerald-700 dark:text-emerald-300 mb-1">No. Dokumen Jasa</label>
+                                        <p class="text-base font-semibold text-emerald-900 dark:text-emerald-100">{{ $service->document_number ?: 'DOC-2024-001' }}</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -513,10 +678,30 @@
         </div>
 
         <div id="form-3-3" class="form-content hidden">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Form 3.3: TKDN Jasa untuk Konstruksi dan Pembangunan</h3>
+            <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <div class="bg-purple-50 dark:bg-purple-900/20 px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white flex items-center">
+                            <svg class="w-6 h-6 mr-3 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                            </svg>
+                            Form 3.3: TKDN Jasa untuk Konstruksi dan Fabrikasi
+                        </h3>
+                        
+                        <!-- Export Excel Button for Form 3.3 -->
+                        @if($service->status === 'generated' || $service->status === 'approved')
+                            <div class="flex items-center space-x-2">
+                                <a href="{{ route('service.export.excel', ['service' => $service->id, 'classification' => '3.3']) }}" class="inline-flex items-center px-3 py-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 border border-transparent rounded-lg text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200 shadow-sm hover:shadow-md">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                    </svg>
+                                    Export Excel
+                                </a>
+                            </div>
+                        @endif
+                    </div>
                 </div>
+                <div class="p-6">
                 <div class="card-body">
                     <!-- Header Information -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -618,10 +803,30 @@
         </div>
 
         <div id="form-3-4" class="form-content hidden">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Form 3.4: TKDN Jasa untuk Konsultasi dan Pengawasan</h3>
+            <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <div class="bg-orange-50 dark:bg-orange-900/20 px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white flex items-center">
+                            <svg class="w-6 h-6 mr-3 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                            Form 3.4: TKDN Jasa untuk Konsultasi dan Pengawasan
+                        </h3>
+                        
+                        <!-- Export Excel Button for Form 3.4 -->
+                        @if($service->status === 'generated' || $service->status === 'approved')
+                            <div class="flex items-center space-x-2">
+                                <a href="{{ route('service.export.excel', ['service' => $service->id, 'classification' => '3.4']) }}" class="inline-flex items-center px-3 py-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 border border-transparent rounded-lg text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200 shadow-sm hover:shadow-md">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                    </svg>
+                                    Export Excel
+                                </a>
+                            </div>
+                        @endif
+                    </div>
                 </div>
+                <div class="p-6">
                 <div class="card-body">
                     <!-- Header Information -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -723,10 +928,30 @@
         </div>
 
         <div id="form-3-5" class="form-content hidden">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Form 3.5: Rangkuman TKDN Jasa</h3>
+            <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <div class="bg-indigo-50 dark:bg-indigo-900/20 px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white flex items-center">
+                            <svg class="w-6 h-6 mr-3 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                            </svg>
+                            Form 3.5: Rangkuman TKDN Jasa
+                        </h3>
+                        
+                        <!-- Export Excel Button for Form 3.5 -->
+                        @if($service->status === 'generated' || $service->status === 'approved')
+                            <div class="flex items-center space-x-2">
+                                <a href="{{ route('service.export.excel', ['service' => $service->id, 'classification' => '3.5']) }}" class="inline-flex items-center px-3 py-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 border border-transparent rounded-lg text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200 shadow-sm hover:shadow-md">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                    </svg>
+                                    Export Excel
+                                </a>
+                            </div>
+                        @endif
+                    </div>
                 </div>
+                <div class="p-6">
                 <div class="card-body">
                     <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-4 mb-6">
                         <div class="flex items-start">
@@ -1093,6 +1318,89 @@
             </div>
         </div>
 
+        <!-- Export Summary Section -->
+        @if($service->status === 'generated' || $service->status === 'approved')
+        <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden mt-8">
+            <div class="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-xl font-bold text-green-900 dark:text-green-100 flex items-center">
+                        <svg class="w-6 h-6 mr-3 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        Export Excel TKDN Forms
+                    </h3>
+                    
+                    <!-- Export All Forms Button -->
+                    <a href="{{ route('service.export.excel', ['service' => $service->id, 'classification' => 'all']) }}" class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 border border-transparent rounded-lg text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200 shadow-sm hover:shadow-md">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6l.586-.586a2 2 0 012.828 0L20 8m-6-6L16 4m-6 6l.586-.586a2 2 0 012.828 0L20 8m-6-6L16 4"></path>
+                        </svg>
+                        Export Semua Form Excel
+                    </a>
+                </div>
+                
+                <p class="text-green-700 dark:text-green-300 text-sm mt-2">Download semua form TKDN dalam satu file Excel atau pilih form tertentu</p>
+            </div>
+            <div class="p-6">
+                <!-- Quick Export Buttons -->
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                    <a href="{{ route('service.export.excel', ['service' => $service->id, 'classification' => '3.1']) }}" class="flex flex-col items-center p-4 bg-white dark:bg-gray-800 rounded-xl border-2 border-blue-200 dark:border-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-200 shadow-sm hover:shadow-md">
+                        <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/40 rounded-full flex items-center justify-center mb-3">
+                            <span class="text-blue-600 dark:text-blue-400 text-lg font-bold">3.1</span>
+                        </div>
+                        <span class="text-sm font-medium text-blue-700 dark:text-blue-300 text-center mb-1">Manajemen</span>
+                        <span class="text-xs text-blue-600 dark:text-blue-400 text-center">Proyek & Perekayasaan</span>
+                    </a>
+                    <a href="{{ route('service.export.excel', ['service' => $service->id, 'classification' => '3.2']) }}" class="flex flex-col items-center p-4 bg-white dark:bg-gray-800 rounded-xl border-2 border-green-200 dark:border-green-700 hover:bg-green-50 dark:hover:bg-green-900/20 hover:border-green-300 dark:hover:border-green-600 transition-all duration-200 shadow-sm hover:shadow-md">
+                        <div class="w-12 h-12 bg-green-100 dark:bg-green-900/40 rounded-full flex items-center justify-center mb-3">
+                            <span class="text-green-600 dark:text-green-400 text-lg font-bold">3.2</span>
+                        </div>
+                        <span class="text-sm font-medium text-green-700 dark:text-green-300 text-center mb-1">Alat Kerja</span>
+                        <span class="text-xs text-green-600 dark:text-green-400 text-center">& Peralatan</span>
+                    </a>
+                    <a href="{{ route('service.export.excel', ['service' => $service->id, 'classification' => '3.3']) }}" class="flex flex-col items-center p-4 bg-white dark:bg-gray-800 rounded-xl border-2 border-purple-200 dark:border-purple-700 hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:border-purple-300 dark:hover:border-purple-600 transition-all duration-200 shadow-sm hover:shadow-md">
+                        <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/40 rounded-full flex items-center justify-center mb-3">
+                            <span class="text-blue-600 dark:text-blue-400 text-lg font-bold">3.3</span>
+                        </div>
+                        <span class="text-sm font-medium text-purple-700 dark:text-purple-300 text-center mb-1">Konstruksi</span>
+                        <span class="text-xs text-purple-600 dark:text-purple-400 text-center">& Fabrikasi</span>
+                    </a>
+                    <a href="{{ route('service.export.excel', ['service' => $service->id, 'classification' => '3.4']) }}" class="flex flex-col items-center p-4 bg-white dark:bg-gray-800 rounded-xl border-2 border-orange-200 dark:border-orange-700 hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:border-orange-300 dark:hover:border-orange-600 transition-all duration-200 shadow-sm hover:shadow-md">
+                        <div class="w-12 h-12 bg-orange-100 dark:bg-orange-900/40 rounded-full flex items-center justify-center mb-3">
+                            <span class="text-orange-600 dark:text-orange-400 text-lg font-bold">3.4</span>
+                        </div>
+                        <span class="text-sm font-medium text-orange-700 dark:text-orange-300 text-center mb-1">Konsultasi</span>
+                        <span class="text-xs text-orange-600 dark:text-orange-400 text-center">& Pengawasan</span>
+                    </a>
+                    <a href="{{ route('service.export.excel', ['service' => $service->id, 'classification' => '3.5']) }}" class="flex flex-col items-center p-4 bg-white dark:bg-gray-800 rounded-xl border-2 border-indigo-200 dark:border-indigo-700 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 hover:border-indigo-300 dark:hover:border-indigo-600 transition-all duration-200 shadow-sm hover:shadow-md">
+                        <div class="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/40 rounded-full flex items-center justify-center mb-3">
+                            <span class="text-indigo-600 dark:text-indigo-400 text-lg font-bold">3.5</span>
+                        </div>
+                        <span class="text-sm font-medium text-indigo-700 dark:text-indigo-300 text-center mb-1">Rangkuman</span>
+                        <span class="text-xs text-indigo-600 dark:text-indigo-400 text-center">Semua Form</span>
+                    </a>
+                </div>
+                
+                <!-- Export Info -->
+                <div class="mt-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                    <div class="flex items-start space-x-3">
+                        <svg class="w-5 h-5 text-gray-400 dark:text-gray-500 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <div class="text-sm text-gray-600 dark:text-gray-400">
+                            <p class="font-medium mb-1">Cara Export Excel:</p>
+                            <ul class="list-disc list-inside space-y-1">
+                                <li>Klik tombol "Export Excel" di header masing-masing form untuk download form tertentu</li>
+                                <li>Atau gunakan tombol "Export Semua Form Excel" untuk download semua form dalam satu file</li>
+                                <li>File Excel akan otomatis terdownload dengan format yang sesuai standar TKDN</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endif
+
         <div class="flex justify-end mt-8">
             <a href="{{ route('service.index') }}" class="inline-flex items-center px-6 py-3 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-xl font-medium hover:border-blue-300 dark:hover:border-blue-600 hover:text-blue-700 dark:hover:text-blue-400 transition-all duration-200 shadow-sm hover:shadow-md">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1211,6 +1519,22 @@ function formatCurrency(amount) {
 document.addEventListener('DOMContentLoaded', function() {
     showForm('form-3-1');
 });
+
+
+
+// Generate options dropdown functionality
+function showGenerateOptions() {
+    const dropdown = document.getElementById('generateOptions');
+    dropdown.classList.toggle('hidden');
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function closeDropdown(e) {
+        if (!dropdown.contains(e.target) && !e.target.closest('button[onclick="showGenerateOptions()"]')) {
+            dropdown.classList.add('hidden');
+            document.removeEventListener('click', closeDropdown);
+        }
+    });
+}
 </script>
 
 @endsection 
