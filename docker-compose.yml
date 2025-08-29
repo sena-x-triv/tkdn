@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+  laravel:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tkdn
+    volumes:
+      - .:/var/www
+      - /var/www/vendor
+    ports:
+      - "9090:8000"
