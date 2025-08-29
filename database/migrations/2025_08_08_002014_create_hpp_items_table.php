@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::create('hpp_items', function (Blueprint $table) {
             $table->ulid('id')->primary();
             $table->ulid('hpp_id');
-            $table->ulid('estimation_id')->nullable();
-            $table->string('item_number');
+            $table->ulid('estimation_item_id')->nullable();
             $table->text('description');
             $table->string('tkdn_classification');
             $table->decimal('volume', 10, 2);

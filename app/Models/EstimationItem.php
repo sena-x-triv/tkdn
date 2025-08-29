@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\UsesUlid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class EstimationItem extends Model
 {
-    use HasFactory;
+    use HasFactory, UsesUlid;
 
     protected $table = 'estimation_items';
 
@@ -15,11 +16,16 @@ class EstimationItem extends Model
         'estimation_id',
         'category',
         'reference_id',
-        'equipment_name',
         'code',
         'coefficient',
         'unit_price',
         'total_price',
+    ];
+
+    protected $casts = [
+        'coefficient' => 'decimal:3',
+        'unit_price' => 'integer',
+        'total_price' => 'integer',
     ];
 
     public function estimation()

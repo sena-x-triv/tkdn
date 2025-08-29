@@ -3,17 +3,18 @@
 namespace App\Models;
 
 use App\Traits\UsesUlid;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class HppItem extends Model
 {
-    use UsesUlid;
+    use HasFactory, UsesUlid;
 
     protected $table = 'hpp_items';
 
     protected $fillable = [
         'hpp_id',
-        'estimation_id',
+        'estimation_item_id',
         'item_number',
         'description',
         'tkdn_classification',
@@ -36,8 +37,23 @@ class HppItem extends Model
         return $this->belongsTo(Hpp::class, 'hpp_id');
     }
 
+    public function estimationItem()
+    {
+        return $this->belongsTo(EstimationItem::class, 'estimation_item_id');
+    }
+
+    /**
+     * Get estimation through estimation item
+     */
     public function estimation()
     {
-        return $this->belongsTo(Estimation::class, 'estimation_id');
+        return $this->hasOneThrough(
+            Estimation::class,
+            EstimationItem::class,
+            'id',           // Foreign key on estimation_items table
+            'id', // Foreign key on estimations table
+            'estimation_item_id', // Local key on hpp_items table
+            'estimation_id'       // Local key on estimation_items table
+        );
     }
 }

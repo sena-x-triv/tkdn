@@ -44,6 +44,58 @@
                         @enderror
                     </div>
 
+                    <div>
+                        <label for="status" class="form-label">Status HPP <span class="text-red-500">*</span></label>
+                        @if(auth()->user()->can('manage-hpp'))
+                            <select id="status" name="status" class="form-select @error('status') border-red-500 @enderror" required>
+                                <option value="draft" {{ old('status', $hpp->status) == 'draft' ? 'selected' : '' }}>Draft</option>
+                                <option value="submitted" {{ old('status', $hpp->status) == 'submitted' ? 'selected' : '' }}>Diajukan</option>
+                                <option value="approved" {{ old('status', $hpp->status) == 'approved' ? 'selected' : '' }}>Disetujui</option>
+                                <option value="rejected" {{ old('status', $hpp->status) == 'rejected' ? 'selected' : '' }}>Ditolak</option>
+                            </select>
+                        @else
+                            <div class="form-input bg-gray-50 dark:bg-gray-700 cursor-not-allowed">
+                                @switch($hpp->status)
+                                    @case('draft')
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
+                                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                            </svg>
+                                            Draft
+                                        </span>
+                                        @break
+                                    @case('submitted')
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"></path>
+                                            </svg>
+                                            Diajukan
+                                        </span>
+                                        @break
+                                    @case('approved')
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                            </svg>
+                                            Disetujui
+                                        </span>
+                                        @break
+                                    @case('rejected')
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
+                                            <svg class="w-3 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                            </svg>
+                                            Ditolak
+                                        </span>
+                                        @break
+                                @endswitch
+                            </div>
+                        @endif
+                        @error('status')
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
                     <div class="md:col-span-2">
                         <div id="project-info" class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                             <h4 class="font-medium text-gray-900 dark:text-white mb-2">Informasi Project</h4>
@@ -104,7 +156,7 @@
                                         </svg>
                                     </button>
                                 </div>
-                                <input type="hidden" name="items[{{ $index }}][estimation_id]" class="estimation-id-input" value="{{ $item->estimation_id }}">
+                                <input type="hidden" name="items[{{ $index }}][estimation_item_id]" class="estimation-item-id-input" value="{{ $item->estimation_item_id }}">
                                 <input type="hidden" name="items[{{ $index }}][ahs_type]" class="ahs-type-input">
                             </div>
                             
@@ -232,14 +284,14 @@
             <div>
                 <label class="form-label">Uraian Barang/Pekerjaan <span class="text-red-500">*</span></label>
                 <div class="relative">
-                    <input type="text" name="items[INDEX][description]" class="form-input description-input" required readonly>
+                    <input type="text" name="items[INDEX][description]" class="form-input description-input" required readonly placeholder="Klik untuk pilih data AHS">
                     <button type="button" class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600" onclick="openAhsModal(this)">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
                     </button>
                 </div>
-                <input type="hidden" name="items[INDEX][estimation_id]" class="estimation-id-input">
+                <input type="hidden" name="items[INDEX][estimation_item_id]" class="estimation-item-id-input">
                 <input type="hidden" name="items[INDEX][ahs_type]" class="ahs-type-input">
             </div>
             
@@ -295,9 +347,9 @@
     </div>
 </template>
 
-<!-- AHS Modal -->
+<!-- AHS Modal - Step 1: Pilih AHS -->
 <div id="ahsModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
-    <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white dark:bg-gray-800">
+    <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-2/3 shadow-lg rounded-md bg-white dark:bg-gray-800">
         <div class="mt-3">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Pilih Data AHS</h3>
@@ -308,13 +360,72 @@
                 </button>
             </div>
             
-            <div class="mb-4">
-                <input type="text" id="ahsSearch" placeholder="Cari data AHS..." class="form-input w-full">
+            <!-- Step 1: Pilih AHS -->
+            <div id="step1" class="step-content">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Pilih Jenis Data</label>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <button type="button" onclick="filterByType('ahs')" class="filter-btn active" data-type="ahs">
+                            <div class="text-center p-4 border-2 border-blue-200 rounded-lg hover:border-blue-400 transition-colors">
+                                <div class="text-2xl mb-2">📋</div>
+                                <div class="font-medium text-blue-600">AHS</div>
+                                <div class="text-sm text-gray-500">Analisis Harga Satuan</div>
+                            </div>
+                        </button>
+                        <button type="button" onclick="filterByType('worker')" class="filter-btn" data-type="worker">
+                            <div class="text-center p-4 border-2 border-gray-200 rounded-lg hover:border-gray-400 transition-colors">
+                                <div class="text-2xl mb-2">👷</div>
+                                <div class="font-medium text-gray-600">Pekerja</div>
+                                <div class="text-sm text-gray-500">Tenaga Kerja</div>
+                            </div>
+                        </button>
+                        <button type="button" onclick="filterByType('material')" class="filter-btn" data-type="material">
+                            <div class="text-center p-4 border-2 border-gray-200 rounded-lg hover:border-gray-400 transition-colors">
+                                <div class="text-2xl mb-2">🧱</div>
+                                <div class="font-medium text-gray-600">Material</div>
+                                <div class="text-sm text-gray-500">Bahan Baku</div>
+                            </div>
+                        </button>
+                        <button type="button" onclick="filterByType('equipment')" class="filter-btn" data-type="equipment">
+                            <div class="text-center p-4 border-2 border-gray-200 rounded-lg hover:border-gray-400 transition-colors">
+                                <div class="text-2xl mb-2">🔧</div>
+                                <div class="font-medium text-gray-600">Peralatan</div>
+                                <div class="text-sm text-gray-500">Alat Kerja</div>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <input type="text" id="ahsSearch" placeholder="Cari data AHS..." class="form-input w-full">
+                </div>
+                
+                <div class="max-h-96 overflow-y-auto">
+                    <div id="ahsList" class="space-y-2">
+                        <!-- AHS data will be loaded here -->
+                    </div>
+                </div>
             </div>
             
-            <div class="max-h-96 overflow-y-auto">
-                <div id="ahsList" class="space-y-2">
-                    <!-- AHS data will be loaded here -->
+            <!-- Step 2: Pilih Item dari AHS -->
+            <div id="step2" class="step-content hidden">
+                <div class="mb-4">
+                    <button type="button" onclick="backToStep1()" class="btn btn-outline mb-4">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                        Kembali ke Pilihan AHS
+                    </button>
+                    
+                    <div id="selectedAhsInfo" class="p-4 bg-blue-50 dark:bg-blue-900 rounded-lg mb-4">
+                        <!-- Selected AHS info will be shown here -->
+                    </div>
+                </div>
+                
+                <div class="max-h-96 overflow-y-auto">
+                    <div id="ahsItemsList" class="space-y-2">
+                        <!-- AHS items will be loaded here -->
+                    </div>
                 </div>
             </div>
         </div>
@@ -327,6 +438,7 @@ let itemIndex = parseInt(containerEl.dataset.count || '0', 10);
 let ahsData = [];
 let currentItemRow = null;
 let projects = [];
+let currentFilterType = 'ahs';
 
 try {
     ahsData = JSON.parse(containerEl.dataset.ahs || '[]');
@@ -382,55 +494,216 @@ function calculateTotal(row) {
 function openAhsModal(button) {
     currentItemRow = button.closest('.item-row');
     document.getElementById('ahsModal').classList.remove('hidden');
+    showStep1();
     loadAhsData();
 }
 
 function closeAhsModal() {
     document.getElementById('ahsModal').classList.add('hidden');
     currentItemRow = null;
+    currentFilterType = 'ahs';
+}
+
+function showStep1() {
+    document.getElementById('step1').classList.remove('hidden');
+    document.getElementById('step2').classList.add('hidden');
+    document.getElementById('ahsSearch').value = '';
+    loadAhsData();
+}
+
+function showStep2() {
+    document.getElementById('step1').classList.add('hidden');
+    document.getElementById('step2').classList.remove('hidden');
+}
+
+function backToStep1() {
+    showStep1();
+}
+
+function filterByType(type) {
+    currentFilterType = type;
+    
+    // Update active button
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+        btn.querySelector('div').classList.remove('border-blue-400', 'border-blue-200');
+        btn.querySelector('div').classList.add('border-gray-200');
+        btn.querySelector('.font-medium').classList.remove('text-blue-600');
+        btn.querySelector('.font-medium').classList.add('text-gray-600');
+    });
+    
+    const activeBtn = document.querySelector(`[data-type="${type}"]`);
+    activeBtn.classList.add('active');
+    activeBtn.querySelector('div').classList.remove('border-gray-200');
+    activeBtn.querySelector('div').classList.add('border-blue-200');
+    activeBtn.querySelector('.font-medium').classList.remove('text-gray-600');
+    activeBtn.querySelector('.font-medium').classList.add('text-blue-600');
+    
+    loadAhsData();
 }
 
 function loadAhsData() {
     const ahsList = document.getElementById('ahsList');
     ahsList.innerHTML = '';
     
-    ahsData.forEach(function(item) {
+    const filteredData = ahsData.filter(item => item.type === currentFilterType);
+    
+    filteredData.forEach(function(item) {
         const div = document.createElement('div');
-        div.className = 'p-3 border border-gray-200 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700';
-        div.onclick = function() { selectAhsItem(item); };
+        div.className = 'p-4 border border-gray-200 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors';
         
-        div.innerHTML = `
-            <div class="flex justify-between items-start">
-                <div>
-                    <div class="font-medium text-gray-900 dark:text-white">${item.description}</div>
-                    <div class="text-sm text-gray-500 dark:text-gray-400">${item.category}</div>
+        if (item.type === 'ahs') {
+            div.onclick = function() { selectAhsForItems(item); };
+            div.innerHTML = `
+                <div class="flex justify-between items-start">
+                    <div class="flex-1">
+                        <div class="font-medium text-gray-900 dark:text-white text-lg">${item.description}</div>
+                        <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">Kode: ${item.code}</div>
+                        <div class="text-sm text-gray-500 dark:text-gray-400">Jumlah Item: ${item.item_count}</div>
+                    </div>
+                    <div class="text-right ml-4">
+                        <div class="text-xs text-gray-500 dark:text-gray-400">AHS</div>
+                        <div class="text-sm text-blue-600 dark:text-blue-400 font-medium">Klik untuk lihat item</div>
+                    </div>
                 </div>
-                <div class="text-right">
-                    <div class="font-medium text-gray-700 dark:text-gray-300">Rp ${numberFormat(item.unit_price)}</div>
-                    <div class="text-xs text-gray-500 dark:text-gray-400">${item.code}</div>
+            `;
+        } else {
+            div.onclick = function() { selectAhsItem(item); };
+            div.innerHTML = `
+                <div class="flex justify-between items-start">
+                    <div class="flex-1">
+                        <div class="font-medium text-gray-900 dark:text-white text-lg">${item.description}</div>
+                        <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">Kode: ${item.code}</div>
+                        <div class="text-sm text-gray-500 dark:text-gray-400">Kategori: ${item.category}</div>
+                    </div>
+                    <div class="text-right ml-4">
+                        <div class="font-medium text-gray-900 dark:text-white">Rp ${numberFormat(item.unit_price)}</div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400">${item.unit || 'Unit'}</div>
+                    </div>
                 </div>
-            </div>
-        `;
+            `;
+        }
         
         ahsList.appendChild(div);
     });
+}
+
+function selectAhsForItems(ahs) {
+    // Load AHS items
+    fetch(`{{ route('hpp.get-ahs-items') }}?estimation_id=${ahs.id}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
+            
+            // Show selected AHS info
+            document.getElementById('selectedAhsInfo').innerHTML = `
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h4 class="font-medium text-gray-900 dark:text-white">${data.estimation.code} - ${data.estimation.title}</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Pilih item dari AHS ini</p>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-sm text-gray-500 dark:text-gray-400">Total Item: ${data.items.length}</div>
+                    </div>
+                </div>
+            `;
+            
+            // Load AHS items
+            const ahsItemsList = document.getElementById('ahsItemsList');
+            ahsItemsList.innerHTML = '';
+            
+            data.items.forEach(function(item) {
+                const div = document.createElement('div');
+                div.className = 'p-4 border border-gray-200 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors';
+                div.onclick = function() { selectAhsItemFromList(item, ahs); };
+                
+                div.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                            <div class="font-medium text-gray-900 dark:text-white">${item.description}</div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">Kode: ${item.code}</div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">Kategori: ${item.category}</div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">TKDN: ${item.tkdn_classification || 'Belum diatur'}</div>
+                        </div>
+                        <div class="text-right ml-4">
+                            <div class="font-medium text-gray-900 dark:text-white">Rp ${numberFormat(item.unit_price)}</div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400">${item.unit || 'Unit'}</div>
+                        </div>
+                    </div>
+                `;
+                
+                ahsItemsList.appendChild(div);
+            });
+            
+            showStep2();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan saat memuat data AHS items');
+        });
+}
+
+function selectAhsItemFromList(item, ahs) {
+    if (!currentItemRow) return;
+    
+    const descriptionInput = currentItemRow.querySelector('.description-input');
+    const estimationItemIdInput = currentItemRow.querySelector('.estimation-item-id-input');
+    const unitPriceInput = currentItemRow.querySelector('.unit-price-input');
+    const unitInput = currentItemRow.querySelector('.unit-input');
+    const tkdnClassificationInput = currentItemRow.querySelector('.tkdn-classification-input');
+    
+    descriptionInput.value = `${ahs.description} - ${item.description}`;
+    estimationItemIdInput.value = item.id;
+    unitPriceInput.value = item.unit_price;
+    unitInput.value = item.unit || 'Unit';
+    
+    // Set TKDN classification
+    if (item.tkdn_classification) {
+        tkdnClassificationInput.value = item.tkdn_classification;
+    } else if (item.tkdn_value) {
+        // Auto-calculate TKDN classification based on value
+        const tkdnValue = parseFloat(item.tkdn_value);
+        if (tkdnValue <= 25) {
+            tkdnClassificationInput.value = '3.1';
+        } else if (tkdnValue <= 35) {
+            tkdnClassificationInput.value = '3.2';
+        } else if (tkdnValue <= 45) {
+            tkdnClassificationInput.value = '3.3';
+        } else if (tkdnValue <= 55) {
+            tkdnClassificationInput.value = '3.4';
+        } else if (tkdnValue <= 65) {
+            tkdnClassificationInput.value = '3.5';
+        } else if (tkdnValue <= 75) {
+            tkdnClassificationInput.value = '3.6';
+        } else {
+            tkdnClassificationInput.value = '3.7';
+        }
+    } else {
+        tkdnClassificationInput.value = '3.7'; // Default to highest TKDN
+    }
+    
+    // Recalculate total
+    calculateTotal(currentItemRow);
+    
+    closeAhsModal();
 }
 
 function selectAhsItem(item) {
     if (!currentItemRow) return;
     
     const descriptionInput = currentItemRow.querySelector('.description-input');
-    const estimationIdInput = currentItemRow.querySelector('.estimation-id-input');
-    const ahsTypeInput = currentItemRow.querySelector('.ahs-type-input');
+    const estimationItemIdInput = currentItemRow.querySelector('.estimation-item-id-input');
     const unitPriceInput = currentItemRow.querySelector('.unit-price-input');
     const unitInput = currentItemRow.querySelector('.unit-input');
     const tkdnClassificationInput = currentItemRow.querySelector('.tkdn-classification-input');
     
     descriptionInput.value = item.description;
-    if (estimationIdInput) {
-        estimationIdInput.value = item.id;
+    if (estimationItemIdInput) {
+        estimationItemIdInput.value = item.id;
     }
-    ahsTypeInput.value = item.type;
     unitPriceInput.value = item.unit_price;
     
     // Set unit based on item type
@@ -446,25 +719,24 @@ function selectAhsItem(item) {
     
     // Set TKDN classification
     if (item.tkdn) {
-        // Find the closest TKDN classification option
         const tkdnValue = parseFloat(item.tkdn);
-        if (tkdnValue <= 30) {
+        if (tkdnValue <= 25) {
             tkdnClassificationInput.value = '3.1';
-        } else if (tkdnValue <= 40) {
+        } else if (tkdnValue <= 35) {
             tkdnClassificationInput.value = '3.2';
-        } else if (tkdnValue <= 50) {
+        } else if (tkdnValue <= 45) {
             tkdnClassificationInput.value = '3.3';
-        } else if (tkdnValue <= 60) {
+        } else if (tkdnValue <= 55) {
             tkdnClassificationInput.value = '3.4';
-        } else if (tkdnValue <= 70) {
+        } else if (tkdnValue <= 65) {
             tkdnClassificationInput.value = '3.5';
-        } else if (tkdnValue <= 80) {
+        } else if (tkdnValue <= 75) {
             tkdnClassificationInput.value = '3.6';
         } else {
             tkdnClassificationInput.value = '3.7';
         }
     } else {
-        tkdnClassificationInput.value = '3.7'; // Default to highest TKDN
+        tkdnClassificationInput.value = '3.7';
     }
     
     // Recalculate total

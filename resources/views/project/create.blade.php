@@ -55,14 +55,14 @@
                             @enderror
                         </div>
                         <div>
-                            <label for="company" class="form-label">Company</label>
+                            <label for="company" class="form-label">Company <span class="text-red-500">*</span></label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
                                     </svg>
                                 </div>
-                                <input type="text" name="company" id="company" class="form-input pl-10 @error('company') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror" value="{{ old('company') }}" placeholder="Masukkan nama company">
+                                <input type="text" name="company" id="company" class="form-input pl-10 @error('company') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror" value="{{ old('company') }}" placeholder="Masukkan nama company" required>
                             </div>
                             @error('company')
                                 <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
@@ -73,7 +73,7 @@
                                 <svg class="w-5 h-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 12.414a4 4 0 10-5.657 5.657l4.243 4.243a8 8 0 0011.314-11.314l-4.243-4.243a4 4 0 00-5.657 5.657l4.243 4.243z"></path>
                                 </svg>
-                                Lokasi Project
+                                Lokasi Project <span class="text-red-500">*</span>
                             </label>
                             <select name="location" id="location" class="form-input select2-modern @error('location') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror" required style="width:100%">
                                 <option value="">Pilih Kota Project...</option>

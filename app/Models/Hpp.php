@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use App\Traits\UsesUlid;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Hpp extends Model
 {
-    use UsesUlid;
+    use HasFactory, UsesUlid;
 
     protected $table = 'hpps';
 

@@ -87,6 +87,7 @@
                             </svg>
                         </button>
                         <div id="masterSubmenu" class="pl-8 space-y-1 {{ request()->is('master*') ? 'block' : 'hidden' }}">
+                        @can('manage-master')
                             <a href="{{ route('master.project.index') }}" class="nav-link text-sm py-2 {{ request()->is('master/project*') ? 'active' : '' }}">
                                 <svg class="w-4 h-4 mr-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2z" />
@@ -119,6 +120,8 @@
                                 </svg>
                                 <span>Peralatan</span>
                             </a>
+                            @endcan
+                            
                             <!-- AHS -->
                             <a href="{{ route('master.estimation.index') }}" class="nav-link text-sm py-2 {{ request()->is('master/estimation') ? 'active' : '' }}">
                                 <svg class="w-5 h-5 mr-3 text-gray-400 group-hover:text-primary-500 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -145,6 +148,16 @@
                         </svg>
                         <span>Form Service</span>
                     </a>
+                    
+                    <!-- Users Management -->
+                    @can('manage-users')
+                    <a href="{{ route('users.index') }}" class="nav-link group">
+                        <svg class="w-5 h-5 mr-3 text-gray-400 group-hover:text-primary-500 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                        </svg>
+                        <span>Users</span>
+                    </a>
+                    @endcan
                     
                     <!-- Settings -->
                     <a href="{{ route('settings.edit') }}" class="nav-link group">

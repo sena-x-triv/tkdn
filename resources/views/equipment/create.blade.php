@@ -47,7 +47,7 @@
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Informasi Peralatan</h3>
             </div>
             <div class="card-body">
-                <form action="{{ route('master.equipment.store') }}" method="POST" class="space-y-6">
+                <form action="{{ route('master.equipment.store') }}" method="POST" class="space-y-6" id="equipmentForm">
                     @csrf
                     
                     <!-- Basic Information -->
@@ -202,7 +202,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
                                     </svg>
                                 </div>
-                                <input type="number" name="price" id="price" value="{{ old('price') }}" class="form-input pl-10 w-full @error('price') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror" min="0" required placeholder="Masukkan harga peralatan">
+                                <input type="text" name="price" id="price" value="{{ old('price') ? number_format(old('price'), 0, ',', '.') : '' }}" class="form-input pl-10 w-full @error('price') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror" required placeholder="Masukkan harga peralatan">
                             </div>
                             @error('price')
                                 <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
@@ -375,6 +375,48 @@ $(function() {
         
         if (selectedType === 'reusable' && value < 1) {
             $(this).val(1);
+        }
+    });
+    
+    // Price formatting dengan pemisah titik
+    const priceInput = $('#price');
+    
+    // Format angka saat input
+    priceInput.on('input', function() {
+        let value = this.value.replace(/[^\d]/g, ''); // Hapus semua karakter kecuali angka
+        
+        if (value) {
+            // Format dengan pemisah titik setiap 3 digit
+            value = parseInt(value).toLocaleString('id-ID');
+            this.value = value;
+        }
+    });
+    
+    // Format angka saat focus out (untuk memastikan format yang benar)
+    priceInput.on('blur', function() {
+        let value = this.value.replace(/[^\d]/g, '');
+        
+        if (value) {
+            value = parseInt(value).toLocaleString('id-ID');
+            this.value = value;
+        }
+    });
+    
+    // Format angka saat focus in (hapus pemisah untuk editing)
+    priceInput.on('focus', function() {
+        let value = this.value.replace(/[^\d]/g, '');
+        if (value) {
+            this.value = value;
+        }
+    });
+    
+    // Handle form submit - hapus pemisah titik sebelum submit
+    $('#equipmentForm').on('submit', function(e) {
+        const priceValue = priceInput.val();
+        if (priceValue) {
+            // Hapus semua karakter kecuali angka sebelum submit
+            const cleanValue = priceValue.replace(/[^\d]/g, '');
+            priceInput.val(cleanValue);
         }
     });
 });

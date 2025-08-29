@@ -11,12 +11,14 @@
             <p class="text-gray-600 dark:text-gray-400">Kelola data HPP (Harga Pokok Pembelian) untuk berbagai jenis pekerjaan</p>
         </div>
         <div class="mt-4 sm:mt-0">
+            @can('manage-hpp')
             <a href="{{ route('hpp.create') }}" class="btn btn-primary flex items-center">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                 </svg>
                 Tambah HPP
             </a>
+            @endcan
         </div>
     </div>
 
@@ -125,7 +127,7 @@
                             </td>
                             <td>
                                 <div class="flex items-center justify-center space-x-2" onclick="event.stopPropagation()">
-                                    @if($hpp->status === 'draft')
+                                    @if($hpp->status === 'draft' && auth()->user()->can('manage-hpp'))
                                         <a href="{{ route('hpp.edit', $hpp->id) }}" class="btn btn-outline p-2 text-yellow-600 hover:text-yellow-700 dark:text-yellow-400 dark:hover:text-yellow-300" title="Edit">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
@@ -140,6 +142,28 @@
                                                 </svg>
                                             </button>
                                         </form>
+                                    @endif
+                                    
+                                    @if($hpp->status === 'submitted' && auth()->user()->can('manage-hpp'))
+                                        <form action="{{ route('hpp.approve', $hpp->id) }}" method="POST" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menyetujui HPP ini?')">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button type="submit" class="btn btn-outline p-2 text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300" title="Approve">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                                </svg>
+                                            </button>
+                                        </form>
+                                        
+                                        <!-- <form action="{{ route('hpp.reject', $hpp->id) }}" method="POST" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menolak HPP ini?')">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button type="submit" class="btn btn-outline p-2 text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300" title="Reject">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                                </svg>
+                                            </button>
+                                        </form> -->
                                     @endif
                                 </div>
                             </td>

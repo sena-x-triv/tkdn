@@ -29,6 +29,7 @@ class ServiceItem extends Model
     ];
 
     protected $casts = [
+        'estimation_item_id' => 'string', // ULID is stored as string
         'tkdn_percentage' => 'decimal:2',
         'quantity' => 'integer',
         'duration' => 'decimal:2',
