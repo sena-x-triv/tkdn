@@ -51,6 +51,8 @@ Route::post('service/{service}/reject', [App\Http\Controllers\ServiceController:
 Route::post('service/{service}/generate', [App\Http\Controllers\ServiceController::class, 'generate'])->name('service.generate');
 Route::post('service/{service}/generate-form/{formNumber}', [App\Http\Controllers\ServiceController::class, 'generateForm'])->name('service.generate-form');
 Route::get('service/{service}/export/excel/{classification}', [App\Http\Controllers\ServiceController::class, 'exportExcel'])->name('service.export.excel');
+Route::get('service/{service}/debug-hpp-items', [App\Http\Controllers\ServiceController::class, 'debugHppItems'])->name('service.debug-hpp-items');
+Route::post('service/{service}/regenerate-form-34', [App\Http\Controllers\ServiceController::class, 'regenerateForm34'])->name('service.regenerate-form-34');
 
 // HPP Routes - Specific routes must come BEFORE resource route
 Route::get('hpp/get-ahs-data', [App\Http\Controllers\HppController::class, 'getAhsDataAjax'])->name('hpp.get-ahs-data');

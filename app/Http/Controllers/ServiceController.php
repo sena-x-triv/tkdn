@@ -192,15 +192,27 @@ class ServiceController extends Controller
         }
 
         // Generate Form 3.4 - Jasa Konsultasi dan Pengawasan (selalu ada)
+        Log::info('Generating Form 3.4 - Jasa Konsultasi dan Pengawasan from HPP');
         $this->createTkdnFormFromHpp($service, $hpp, '3.4', 'Jasa Konsultasi dan Pengawasan');
 
         // Generate Form 3.5 - Rangkuman TKDN Jasa
+        Log::info('Generating Form 3.5 - Rangkuman TKDN Jasa from HPP');
         $this->createTkdnFormFromHpp($service, $hpp, '3.5', 'Rangkuman TKDN Jasa');
+
+        // Verifikasi semua form telah di-generate
+        $generatedForms = $service->items()->distinct('tkdn_classification')->pluck('tkdn_classification')->toArray();
+        Log::info('Generated forms verification from HPP', [
+            'service_id' => $service->id,
+            'generated_forms' => $generatedForms,
+            'expected_forms' => ['3.1', '3.2', '3.3', '3.4', '3.5'],
+            'total_service_items' => $service->items()->count(),
+            'forms_generated' => count($generatedForms),
+        ]);
 
         Log::info('TKDN forms generation from HPP completed', [
             'service_id' => $service->id,
             'total_service_items' => $service->items()->count(),
-            'forms_generated' => $service->items()->distinct('tkdn_classification')->count(),
+            'forms_generated' => count($generatedForms),
         ]);
     }
 
@@ -236,6 +248,12 @@ class ServiceController extends Controller
                 $this->createPlaceholderServiceItems($service, $formNumber, 'Jasa Konsultasi dan Pengawasan');
             } elseif ($formNumber === '3.5') {
                 $this->createPlaceholderServiceItems($service, $formNumber, 'Rangkuman TKDN Jasa');
+            } else {
+                // Untuk form lain yang tidak memiliki HPP items, buat placeholder juga
+                Log::info('Creating placeholder for form without HPP items', [
+                    'form_number' => $formNumber,
+                ]);
+                $this->createPlaceholderServiceItems($service, $formNumber, $formTitle);
             }
 
             return;
@@ -719,16 +737,28 @@ class ServiceController extends Controller
             $this->createTkdnForm($service, '3.3', 'Jasa Konstruksi dan Pembangunan');
         }
 
-        // Generate Form 3.4 - Jasa Konsultasi dan Pengawasan
+        // Generate Form 3.4 - Jasa Konsultasi dan Pengawasan (selalu ada)
+        Log::info('Generating Form 3.4 - Jasa Konsultasi dan Pengawasan');
         $this->createTkdnForm($service, '3.4', 'Jasa Konsultasi dan Pengawasan');
 
-        // Generate Form 3.5 - Rangkuman TKDN Jasa
+        // Generate Form 3.5 - Rangkuman TKDN Jasa (selalu ada)
+        Log::info('Generating Form 3.5 - Rangkuman TKDN Jasa');
         $this->createTkdnForm($service, '3.5', 'Rangkuman TKDN Jasa');
+
+        // Verifikasi semua form telah di-generate
+        $generatedForms = $service->items()->distinct('tkdn_classification')->pluck('tkdn_classification')->toArray();
+        Log::info('Generated forms verification', [
+            'service_id' => $service->id,
+            'generated_forms' => $generatedForms,
+            'expected_forms' => ['3.1', '3.2', '3.3', '3.4', '3.5'],
+            'total_service_items' => $service->items()->count(),
+            'forms_generated' => count($generatedForms),
+        ]);
 
         Log::info('TKDN forms generation completed', [
             'service_id' => $service->id,
             'total_service_items' => $service->items()->count(),
-            'forms_generated' => $service->items()->distinct('tkdn_classification')->count(),
+            'forms_generated' => count($generatedForms),
         ]);
     }
 
@@ -766,6 +796,30 @@ class ServiceController extends Controller
         // Generate service items berdasarkan data HPP
         $this->generateServiceItemsFromHpp($service, $hppItems, $formNumber);
 
+        // Verifikasi bahwa service items telah dibuat untuk form ini
+        $serviceItemsCount = $service->items()->where('tkdn_classification', $formNumber)->count();
+
+        Log::info('Service items verification for form', [
+            'service_id' => $service->id,
+            'form_number' => $formNumber,
+            'form_title' => $formTitle,
+            'service_items_count' => $serviceItemsCount,
+            'hpp_items_count' => $hppItems->count(),
+        ]);
+
+        if ($serviceItemsCount === 0) {
+            Log::warning('No service items created for form, creating placeholder', [
+                'service_id' => $service->id,
+                'form_number' => $formNumber,
+                'form_title' => $formTitle,
+                'hpp_items_count' => $hppItems->count(),
+                'hpp_items_ids' => $hppItems->pluck('id')->toArray(),
+            ]);
+
+            // Buat placeholder item jika tidak ada service items yang dibuat
+            $this->createPlaceholderServiceItems($service, $formNumber, $formTitle);
+        }
+
         // Update field tkdn_classification setelah generate items
         $service->update([
             'tkdn_classification' => $formNumber,
@@ -781,6 +835,11 @@ class ServiceController extends Controller
 
     private function getHppItemsByTkdnClassification(string $projectId, string $tkdnClassification): \Illuminate\Database\Eloquent\Collection
     {
+        Log::info('Getting HPP items by classification', [
+            'project_id' => $projectId,
+            'tkdn_classification' => $tkdnClassification,
+        ]);
+
         // Ambil HPP items berdasarkan project_id dan tkdn_classification
         $hppItems = HppItem::whereHas('hpp', function ($query) use ($projectId) {
             $query->where('project_id', $projectId);
@@ -788,6 +847,24 @@ class ServiceController extends Controller
             ->where('tkdn_classification', $tkdnClassification)
             ->with(['hpp', 'estimationItem.estimation.items'])
             ->get();
+
+        Log::info('HPP items query result', [
+            'project_id' => $projectId,
+            'tkdn_classification' => $tkdnClassification,
+            'hpp_items_count' => $hppItems->count(),
+            'hpp_items_ids' => $hppItems->pluck('id')->toArray(),
+            'hpp_items_details' => $hppItems->map(function ($item) {
+                return [
+                    'id' => $item->id,
+                    'description' => $item->description,
+                    'volume' => $item->volume,
+                    'duration' => $item->duration,
+                    'total_price' => $item->total_price,
+                    'estimation_item_id' => $item->estimation_item_id,
+                    'hpp_id' => $item->hpp_id,
+                ];
+            })->toArray(),
+        ]);
 
         return $hppItems;
     }
@@ -808,10 +885,32 @@ class ServiceController extends Controller
                 $this->createPlaceholderServiceItems($service, $formNumber, 'Jasa Konsultasi dan Pengawasan');
             } elseif ($formNumber === '3.5') {
                 $this->createPlaceholderServiceItems($service, $formNumber, 'Rangkuman TKDN Jasa');
+            } else {
+                // Untuk form lain yang tidak memiliki HPP items, buat placeholder juga
+                Log::info('Creating placeholder for form without HPP items', [
+                    'form_number' => $formNumber,
+                ]);
+                $this->createPlaceholderServiceItems($service, $formNumber, 'Form TKDN '.$formNumber);
             }
 
             return;
         }
+
+        Log::info('Processing HPP items for form', [
+            'service_id' => $service->id,
+            'form_number' => $formNumber,
+            'hpp_items_count' => $hppItems->count(),
+            'hpp_items_details' => $hppItems->map(function ($item) {
+                return [
+                    'id' => $item->id,
+                    'description' => $item->description,
+                    'volume' => $item->volume,
+                    'duration' => $item->duration,
+                    'total_price' => $item->total_price,
+                    'estimation_item_id' => $item->estimation_item_id,
+                ];
+            })->toArray(),
+        ]);
 
         foreach ($hppItems as $index => $hppItem) {
             // Hitung costs berdasarkan TKDN percentage
@@ -865,26 +964,96 @@ class ServiceController extends Controller
      */
     private function createPlaceholderServiceItems(Service $service, string $formNumber, string $formTitle)
     {
+        Log::info('Creating placeholder service items', [
+            'service_id' => $service->id,
+            'form_number' => $formNumber,
+            'form_title' => $formTitle,
+        ]);
+
+        // Tentukan qualification berdasarkan form number
+        $qualification = match ($formNumber) {
+            '3.1' => 'Manajer Proyek',
+            '3.2' => 'Operator Alat',
+            '3.3' => 'Pekerja Konstruksi',
+            '3.4' => 'Konsultan',
+            '3.5' => 'Staff',
+            default => 'Konsultan',
+        };
+
+        // Tentukan quantity dan duration berdasarkan form number
+        $quantity = match ($formNumber) {
+            '3.1' => 1, // Manajer proyek
+            '3.2' => 1, // Operator alat
+            '3.3' => 1, // Pekerja konstruksi
+            '3.4' => 1, // Konsultan
+            '3.5' => 1, // Staff
+            default => 1,
+        };
+
+        $duration = match ($formNumber) {
+            '3.1' => 12, // 12 bulan
+            '3.2' => 6,  // 6 bulan
+            '3.3' => 8,  // 8 bulan
+            '3.4' => 12, // 12 bulan
+            '3.5' => 1,  // 1 bulan (rangkuman)
+            default => 1,
+        };
+
+        $durationUnit = match ($formNumber) {
+            '3.1' => 'Bulan',
+            '3.2' => 'Bulan',
+            '3.3' => 'Bulan',
+            '3.4' => 'Bulan',
+            '3.5' => 'ls',
+            default => 'ls',
+        };
+
+        // Hitung costs berdasarkan TKDN percentage
+        $tkdnPercentage = $this->calculateTkdnPercentageForForm($formNumber);
+        $wage = 1000000; // Default wage 1 juta
+        $totalCost = $wage * $quantity * $duration;
+        $domesticCost = ($totalCost * $tkdnPercentage) / 100;
+        $foreignCost = $totalCost - $domesticCost;
+
+        Log::info('Placeholder service item details', [
+            'form_number' => $formNumber,
+            'qualification' => $qualification,
+            'quantity' => $quantity,
+            'duration' => $duration,
+            'duration_unit' => $durationUnit,
+            'wage' => $wage,
+            'total_cost' => $totalCost,
+            'tkdn_percentage' => $tkdnPercentage,
+            'domestic_cost' => $domesticCost,
+            'foreign_cost' => $foreignCost,
+        ]);
+
         // Buat placeholder item untuk form yang tidak memiliki data HPP
         ServiceItem::create([
             'service_id' => $service->id,
             'tkdn_classification' => $formNumber,
             'item_number' => 1,
             'description' => $formTitle,
-            'qualification' => 'Konsultan',
+            'qualification' => $qualification,
             'nationality' => 'WNI',
-            'tkdn_percentage' => $this->calculateTkdnPercentageForForm($formNumber),
-            'quantity' => 1,
-            'duration' => 1,
-            'duration_unit' => 'ls',
-            'wage' => 0,
-            'domestic_cost' => 0,
-            'foreign_cost' => 0,
-            'total_cost' => 0,
+            'tkdn_percentage' => $tkdnPercentage,
+            'quantity' => $quantity,
+            'duration' => $duration,
+            'duration_unit' => $durationUnit,
+            'wage' => $wage,
+            'domestic_cost' => $domesticCost,
+            'foreign_cost' => $foreignCost,
+            'total_cost' => $totalCost,
         ]);
 
         // Recalculate totals
         $service->calculateTotals();
+
+        Log::info('Placeholder service item created successfully', [
+            'service_id' => $service->id,
+            'form_number' => $formNumber,
+            'service_items_count' => $service->items()->where('tkdn_classification', $formNumber)->count(),
+        ]);
     }
 
     /**
@@ -941,6 +1110,161 @@ class ServiceController extends Controller
             '3.5' => 'Staff',
             default => 'Pekerja',
         };
+    }
+
+    /**
+     * Regenerate form 3.4 secara spesifik
+     */
+    public function regenerateForm34(Service $service)
+    {
+        try {
+            Log::info('Regenerating Form 3.4 for service', [
+                'service_id' => $service->id,
+                'project_id' => $service->project_id,
+            ]);
+
+            // Hapus service items yang lama untuk form 3.4
+            $oldItems = $service->items()->where('tkdn_classification', '3.4')->delete();
+
+            Log::info('Deleted old Form 3.4 items', [
+                'service_id' => $service->id,
+                'deleted_count' => $oldItems,
+            ]);
+
+            // Ambil HPP items untuk form 3.4
+            $hppItems = $this->getHppItemsByTkdnClassification($service->project_id, '3.4');
+
+            Log::info('HPP items for Form 3.4', [
+                'service_id' => $service->id,
+                'hpp_items_count' => $hppItems->count(),
+                'hpp_items_ids' => $hppItems->pluck('id')->toArray(),
+            ]);
+
+            if ($hppItems->isNotEmpty()) {
+                // Generate service items dari HPP items
+                $this->generateServiceItemsFromHpp($service, $hppItems, '3.4');
+
+                Log::info('Form 3.4 regenerated from HPP items', [
+                    'service_id' => $service->id,
+                    'service_items_count' => $service->items()->where('tkdn_classification', '3.4')->count(),
+                ]);
+            } else {
+                // Buat placeholder items
+                $this->createPlaceholderServiceItems($service, '3.4', 'Jasa Konsultasi dan Pengawasan');
+
+                Log::info('Form 3.4 regenerated with placeholder items', [
+                    'service_id' => $service->id,
+                    'service_items_count' => $service->items()->where('tkdn_classification', '3.4')->count(),
+                ]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Form 3.4 berhasil di-regenerate',
+                'data' => [
+                    'service_id' => $service->id,
+                    'form_3_4_items_count' => $service->items()->where('tkdn_classification', '3.4')->count(),
+                    'hpp_items_count' => $hppItems->count(),
+                ],
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error regenerating Form 3.4', [
+                'service_id' => $service->id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'error' => 'Terjadi kesalahan saat regenerate Form 3.4: '.$e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Debug method untuk memeriksa data HPP items
+     */
+    public function debugHppItems(Service $service)
+    {
+        try {
+            $projectId = $service->project_id;
+
+            // Ambil semua HPP items untuk project ini
+            $allHppItems = HppItem::whereHas('hpp', function ($query) use ($projectId) {
+                $query->where('project_id', $projectId);
+            })->with(['hpp', 'estimationItem.estimation.items'])->get();
+
+            // Group by tkdn_classification
+            $groupedItems = $allHppItems->groupBy('tkdn_classification');
+
+            // Log untuk debugging
+            Log::info('Debug HPP Items for Service', [
+                'service_id' => $service->id,
+                'project_id' => $projectId,
+                'total_hpp_items' => $allHppItems->count(),
+                'grouped_by_classification' => $groupedItems->map(function ($items) {
+                    return [
+                        'count' => $items->count(),
+                        'items' => $items->map(function ($item) {
+                            return [
+                                'id' => $item->id,
+                                'description' => $item->description,
+                                'volume' => $item->volume,
+                                'duration' => $item->duration,
+                                'total_price' => $item->total_price,
+                                'estimation_item_id' => $item->estimation_item_id,
+                                'has_estimation_item' => $item->estimationItem ? 'Yes' : 'No',
+                                'has_estimation' => $item->estimationItem && $item->estimationItem->estimation ? 'Yes' : 'No',
+                                'ahs_items_count' => $item->estimationItem && $item->estimationItem->estimation ?
+                                    $item->estimationItem->estimation->items->count() : 0,
+                            ];
+                        })->toArray(),
+                    ];
+                })->toArray(),
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'service_id' => $service->id,
+                    'project_id' => $projectId,
+                    'total_hpp_items' => $allHppItems->count(),
+                    'grouped_by_classification' => $groupedItems->map(function ($items) {
+                        return [
+                            'classification' => $items->first()->tkdn_classification,
+                            'count' => $items->count(),
+                            'items' => $items->map(function ($item) {
+                                return [
+                                    'id' => $item->id,
+                                    'description' => $item->description,
+                                    'volume' => $item->volume,
+                                    'duration' => $item->duration,
+                                    'total_price' => $item->total_price,
+                                    'estimation_item_id' => $item->estimation_item_id,
+                                    'has_estimation_item' => $item->estimationItem ? 'Yes' : 'No',
+                                    'has_estimation' => $item->estimationItem && $item->estimationItem->estimation ? 'Yes' : 'No',
+                                    'ahs_items_count' => $item->estimationItem && $item->estimationItem->estimation ?
+                                        $item->estimationItem->estimation->items->count() : 0,
+                                ];
+                            })->toArray(),
+                        ];
+                    })->values()->toArray(),
+                ],
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error in debugHppItems', [
+                'service_id' => $service->id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'error' => 'Terjadi kesalahan saat debug: '.$e->getMessage(),
+            ], 500);
+        }
     }
 
     /**
