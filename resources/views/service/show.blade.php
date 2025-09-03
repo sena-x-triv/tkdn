@@ -472,6 +472,7 @@
         <!-- Form Navigation Tabs -->
         <div class="mb-8">
             <div class="flex flex-wrap gap-2 overflow-x-auto pb-2">
+                <!-- Individual Form Tabs (3.1, 3.2, 3.3, 3.4) - Same Pattern -->
                 <button 
                     onclick="showForm('form-3-1')" 
                     id="tab-3-1"
@@ -508,14 +509,20 @@
                     </svg>
                     Form 3.4
                 </button>
+                
+                <!-- Summary Form Tab (3.5) - Different Style -->
+                <div class="flex items-center mx-2">
+                    <div class="w-px h-8 bg-gray-300 dark:bg-gray-600"></div>
+                </div>
                 <button 
                     onclick="showForm('form-3-5')" 
                     id="tab-3-5"
-                    class="inline-flex items-center px-6 py-3 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-xl font-medium whitespace-nowrap hover:border-blue-300 dark:hover:border-blue-600 hover:text-blue-700 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 shadow-sm hover:shadow-md">
+                    class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-xl font-medium whitespace-nowrap transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 border-2 border-purple-500">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
                     </svg>
-                    Form 3.5 (Summary)
+                    <span class="font-semibold">Form 3.5</span>
+                    <span class="ml-2 px-2 py-0.5 bg-white/20 rounded-full text-xs font-medium">Summary</span>
                 </button>
             </div>
 
@@ -782,63 +789,87 @@
                     @endphp
 
                     @if($hppItems2->count() > 0)
-                        <div class="overflow-x-auto">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th class="text-center">No.</th>
-                                        <th>Uraian</th>
-                                        <th>Kualifikasi</th>
-                                        <th>WN</th>
-                                        <th class="text-center">TKDN (%)</th>
-                                        <th class="text-center">Jumlah</th>
-                                        <th class="text-center">Durasi</th>
-                                        <th class="text-center">Upah (Rupiah)</th>
-                                        <th class="text-center" colspan="3">BIAYA (Rupiah)</th>
-                                    </tr>
-                                    <tr>
-                                        <th colspan="8"></th>
-                                        <th class="text-center">KDN</th>
-                                        <th class="text-center">KLN</th>
-                                        <th class="text-center">TOTAL</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($hppItems2 as $index => $hppItem)
-                                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
-                                            <td class="text-center">{{ $index + 1 }}</td>
-                                            <td>{{ $hppItem->description }}</td>
-                                            <td>-</td>
-                                            <td>WNI</td>
-                                            <td class="text-center">100%</td>
-                                            <td class="text-center">{{ $hppItem->volume }}</td>
-                                            <td class="text-center">{{ $hppItem->duration }} {{ $hppItem->duration_unit }}</td>
-                                            <td class="text-right">{{ number_format($hppItem->total_price, 0, ',', '.') }}</td>
-                                            <td class="text-right">{{ number_format($hppItem->total_price, 0, ',', '.') }}</td>
-                                            <td class="text-center">-</td>
-                                            <td class="text-right">{{ number_format($hppItem->total_price, 0, ',', '.') }}</td>
+                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+                            <div class="px-6 py-4 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 border-b border-gray-200 dark:border-gray-600">
+                                <h5 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+                                    <svg class="w-5 h-5 mr-2 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                    </svg>
+                                    Data HPP - TKDN Classification 3.2
+                                </h5>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                    <thead class="bg-gray-50 dark:bg-gray-700">
+                                        <tr>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">No.</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Uraian</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Kualifikasi</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">WN</th>
+                                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">TKDN (%)</th>
+                                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Jumlah</th>
+                                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Durasi</th>
+                                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Upah (Rupiah)</th>
+                                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider" colspan="3">BIAYA (Rupiah)</th>
                                         </tr>
-                                    @endforeach
-                                    
-                                    <!-- Sub Total -->
-                                    <tr class="bg-gray-50 dark:bg-gray-700 font-semibold">
-                                        <td colspan="7" class="text-center">SUB TOTAL</td>
-                                        <td class="text-right">{{ number_format($hppItems2->sum('total_price'), 0, ',', '.') }}</td>
-                                        <td class="text-right">{{ number_format($hppItems2->sum('total_price'), 0, ',', '.') }}</td>
-                                        <td class="text-center">-</td>
-                                        <td class="text-right">{{ number_format($hppItems2->sum('total_price'), 0, ',', '.') }}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                                        <tr>
+                                            <th colspan="8" class="px-6 py-2"></th>
+                                            <th class="px-6 py-2 text-center text-xs font-medium text-blue-600 dark:text-blue-400 uppercase tracking-wider">KDN</th>
+                                            <th class="px-6 py-2 text-center text-xs font-medium text-red-600 dark:text-red-400 uppercase tracking-wider">KLN</th>
+                                            <th class="px-6 py-2 text-center text-xs font-medium text-green-600 dark:text-green-400 uppercase tracking-wider">TOTAL</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                                        @foreach($hppItems2 as $index => $hppItem)
+                                            <tr class="hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors duration-200">
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white text-center">{{ $index + 1 }}</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ $hppItem->description }}</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">-</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">WNI</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-center">
+                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                                                        100%
+                                                    </span>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white text-center">{{ $hppItem->volume }}</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white text-center">{{ $hppItem->duration }} {{ $hppItem->duration_unit }}</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white text-right font-medium">{{ number_format($hppItem->total_price, 0, ',', '.') }}</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-blue-600 dark:text-blue-400 text-right font-medium">{{ number_format($hppItem->total_price, 0, ',', '.') }}</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 text-center">-</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 dark:text-green-400 text-right font-medium">{{ number_format($hppItem->total_price, 0, ',', '.') }}</td>
+                                            </tr>
+                                        @endforeach
+                                        
+                                        <!-- Sub Total -->
+                                        <tr class="bg-green-50 dark:bg-green-900/20 font-semibold">
+                                            <td colspan="7" class="px-6 py-4 text-center text-sm font-bold text-green-900 dark:text-green-100">SUB TOTAL</td>
+                                            <td class="px-6 py-4 text-right text-sm font-bold text-green-900 dark:text-green-100">{{ number_format($hppItems2->sum('total_price'), 0, ',', '.') }}</td>
+                                            <td class="px-6 py-4 text-right text-sm font-bold text-green-900 dark:text-green-100">{{ number_format($hppItems2->sum('total_price'), 0, ',', '.') }}</td>
+                                            <td class="px-6 py-4 text-center text-sm font-bold text-green-900 dark:text-green-100">-</td>
+                                            <td class="px-6 py-4 text-right text-sm font-bold text-green-900 dark:text-green-100">{{ number_format($hppItems2->sum('total_price'), 0, ',', '.') }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     @else
-                        <div class="text-center py-8">
-                            <div class="text-gray-500 dark:text-gray-400">
-                                <svg class="w-16 h-16 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                </svg>
-                                <p class="text-lg font-medium">Tidak ada data HPP dengan TKDN Classification 3.2</p>
-                                <p class="text-sm">Data akan muncul setelah generate form TKDN</p>
+                        <div class="text-center py-12">
+                            <div class="max-w-md mx-auto">
+                                <div class="w-24 h-24 mx-auto mb-6 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
+                                    <svg class="w-12 h-12 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Belum Ada Data HPP</h3>
+                                <p class="text-gray-600 dark:text-gray-400 mb-4">Tidak ada data HPP dengan TKDN Classification 3.2 yang ditemukan untuk project ini.</p>
+                                <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 rounded-lg p-4">
+                                    <p class="text-sm text-green-800 dark:text-green-200">
+                                        <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                        Data akan muncul setelah generate form TKDN dari HPP yang tersedia.
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     @endif
@@ -871,28 +902,54 @@
                     </div>
                 </div>
                 <div class="p-6">
-                <div class="card-body">
                     <!-- Header Information -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Penyedia Barang / Jasa</label>
-                            <p class="text-gray-900 dark:text-white">{{ $service->provider_name ?: 'PT Konstruksi Maju' }}</p>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Alamat</label>
-                            <p class="text-gray-900 dark:text-white">{{ $service->provider_address ?: 'Jl. Sudirman No. 123, Jakarta Pusat' }}</p>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nama Jasa</label>
-                            <p class="text-gray-900 dark:text-white">{{ $service->service_name }}</p>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Pengguna Barang/Jasa</label>
-                            <p class="text-gray-900 dark:text-white">{{ $service->user_name ?: 'PT Pembangunan Indonesia' }}</p>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">No. Dokumen Jasa</label>
-                            <p class="text-gray-900 dark:text-white">{{ $service->document_number ?: 'DOC-2024-001' }}</p>
+                    <div class="bg-purple-50 dark:bg-purple-900/20 rounded-xl p-6 mb-8 border border-purple-200 dark:border-purple-700">
+                        <h4 class="text-lg font-semibold text-purple-900 dark:text-purple-100 mb-4 flex items-center">
+                            <svg class="w-5 h-5 mr-2 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            Informasi Umum - Form 3.3
+                        </h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-4">
+                                <div class="flex items-start space-x-3">
+                                    <div class="flex-shrink-0 w-2 h-2 bg-purple-500 rounded-full mt-2"></div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-purple-700 dark:text-purple-300 mb-1">Penyedia Barang / Jasa</label>
+                                        <p class="text-base font-semibold text-purple-900 dark:text-purple-100">{{ $service->provider_name ?: 'PT Konstruksi Maju' }}</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <div class="flex-shrink-0 w-2 h-2 bg-purple-500 rounded-full mt-2"></div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-purple-700 dark:text-purple-300 mb-1">Alamat</label>
+                                        <p class="text-base font-semibold text-purple-900 dark:text-purple-100">{{ $service->provider_address ?: 'Jl. Sudirman No. 123, Jakarta Pusat' }}</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <div class="flex-shrink-0 w-2 h-2 bg-purple-500 rounded-full mt-2"></div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-purple-700 dark:text-purple-300 mb-1">Nama Jasa</label>
+                                        <p class="text-base font-semibold text-purple-900 dark:text-purple-100">{{ $service->service_name }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="space-y-4">
+                                <div class="flex items-start space-x-3">
+                                    <div class="flex-shrink-0 w-2 h-2 bg-violet-500 rounded-full mt-2"></div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-violet-700 dark:text-violet-300 mb-1">Pengguna Barang/Jasa</label>
+                                        <p class="text-base font-semibold text-violet-900 dark:text-violet-100">{{ $service->user_name ?: 'PT Pembangunan Indonesia' }}</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <div class="flex-shrink-0 w-2 h-2 bg-violet-500 rounded-full mt-2"></div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-violet-700 dark:text-violet-300 mb-1">No. Dokumen Jasa</label>
+                                        <p class="text-base font-semibold text-violet-900 dark:text-violet-100">{{ $service->document_number ?: 'DOC-2024-001' }}</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -907,63 +964,87 @@
                     @endphp
 
                     @if($hppItems3->count() > 0)
-                        <div class="overflow-x-auto">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th class="text-center">No.</th>
-                                        <th>Uraian</th>
-                                        <th>Kualifikasi</th>
-                                        <th>WN</th>
-                                        <th class="text-center">TKDN (%)</th>
-                                        <th class="text-center">Jumlah</th>
-                                        <th class="text-center">Durasi</th>
-                                        <th class="text-center">Upah (Rupiah)</th>
-                                        <th class="text-center" colspan="3">BIAYA (Rupiah)</th>
-                                    </tr>
-                                    <tr>
-                                        <th colspan="8"></th>
-                                        <th class="text-center">KDN</th>
-                                        <th class="text-center">KLN</th>
-                                        <th class="text-center">TOTAL</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($hppItems3 as $index => $hppItem)
-                                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
-                                            <td class="text-center">{{ $index + 1 }}</td>
-                                            <td>{{ $hppItem->description }}</td>
-                                            <td>-</td>
-                                            <td>WNI</td>
-                                            <td class="text-center">100%</td>
-                                            <td class="text-center">{{ $hppItem->volume }}</td>
-                                            <td class="text-center">{{ $hppItem->duration }} {{ $hppItem->duration_unit }}</td>
-                                            <td class="text-right">{{ number_format($hppItem->total_price, 0, ',', '.') }}</td>
-                                            <td class="text-right">{{ number_format($hppItem->total_price, 0, ',', '.') }}</td>
-                                            <td class="text-center">-</td>
-                                            <td class="text-right">{{ number_format($hppItem->total_price, 0, ',', '.') }}</td>
+                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+                            <div class="px-6 py-4 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 border-b border-gray-200 dark:border-gray-600">
+                                <h5 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+                                    <svg class="w-5 h-5 mr-2 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                    </svg>
+                                    Data HPP - TKDN Classification 3.3
+                                </h5>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                    <thead class="bg-gray-50 dark:bg-gray-700">
+                                        <tr>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">No.</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Uraian</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Kualifikasi</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">WN</th>
+                                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">TKDN (%)</th>
+                                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Jumlah</th>
+                                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Durasi</th>
+                                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Upah (Rupiah)</th>
+                                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider" colspan="3">BIAYA (Rupiah)</th>
                                         </tr>
-                                    @endforeach
-                                    
-                                    <!-- Sub Total -->
-                                    <tr class="bg-gray-50 dark:bg-gray-700 font-semibold">
-                                        <td colspan="7" class="text-center">SUB TOTAL</td>
-                                        <td class="text-right">{{ number_format($hppItems3->sum('total_price'), 0, ',', '.') }}</td>
-                                        <td class="text-right">{{ number_format($hppItems3->sum('total_price'), 0, ',', '.') }}</td>
-                                        <td class="text-center">-</td>
-                                        <td class="text-right">{{ number_format($hppItems3->sum('total_price'), 0, ',', '.') }}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                                        <tr>
+                                            <th colspan="8" class="px-6 py-2"></th>
+                                            <th class="px-6 py-2 text-center text-xs font-medium text-blue-600 dark:text-blue-400 uppercase tracking-wider">KDN</th>
+                                            <th class="px-6 py-2 text-center text-xs font-medium text-red-600 dark:text-red-400 uppercase tracking-wider">KLN</th>
+                                            <th class="px-6 py-2 text-center text-xs font-medium text-green-600 dark:text-green-400 uppercase tracking-wider">TOTAL</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                                        @foreach($hppItems3 as $index => $hppItem)
+                                            <tr class="hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors duration-200">
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white text-center">{{ $index + 1 }}</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ $hppItem->description }}</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">-</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">WNI</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-center">
+                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                                                        100%
+                                                    </span>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white text-center">{{ $hppItem->volume }}</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white text-center">{{ $hppItem->duration }} {{ $hppItem->duration_unit }}</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white text-right font-medium">{{ number_format($hppItem->total_price, 0, ',', '.') }}</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-blue-600 dark:text-blue-400 text-right font-medium">{{ number_format($hppItem->total_price, 0, ',', '.') }}</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 text-center">-</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 dark:text-green-400 text-right font-medium">{{ number_format($hppItem->total_price, 0, ',', '.') }}</td>
+                                            </tr>
+                                        @endforeach
+                                        
+                                        <!-- Sub Total -->
+                                        <tr class="bg-purple-50 dark:bg-purple-900/20 font-semibold">
+                                            <td colspan="7" class="px-6 py-4 text-center text-sm font-bold text-purple-900 dark:text-purple-100">SUB TOTAL</td>
+                                            <td class="px-6 py-4 text-right text-sm font-bold text-purple-900 dark:text-purple-100">{{ number_format($hppItems3->sum('total_price'), 0, ',', '.') }}</td>
+                                            <td class="px-6 py-4 text-right text-sm font-bold text-purple-900 dark:text-purple-100">{{ number_format($hppItems3->sum('total_price'), 0, ',', '.') }}</td>
+                                            <td class="px-6 py-4 text-center text-sm font-bold text-purple-900 dark:text-purple-100">-</td>
+                                            <td class="px-6 py-4 text-right text-sm font-bold text-purple-900 dark:text-purple-100">{{ number_format($hppItems3->sum('total_price'), 0, ',', '.') }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     @else
-                        <div class="text-center py-8">
-                            <div class="text-gray-500 dark:text-gray-400">
-                                <svg class="w-16 h-16 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                </svg>
-                                <p class="text-lg font-medium">Tidak ada data HPP dengan TKDN Classification 3.3</p>
-                                <p class="text-sm">Data akan muncul setelah generate form TKDN</p>
+                        <div class="text-center py-12">
+                            <div class="max-w-md mx-auto">
+                                <div class="w-24 h-24 mx-auto mb-6 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center">
+                                    <svg class="w-12 h-12 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Belum Ada Data HPP</h3>
+                                <p class="text-gray-600 dark:text-gray-400 mb-4">Tidak ada data HPP dengan TKDN Classification 3.3 yang ditemukan untuk project ini.</p>
+                                <div class="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-700 rounded-lg p-4">
+                                    <p class="text-sm text-purple-800 dark:text-purple-200">
+                                        <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                        Data akan muncul setelah generate form TKDN dari HPP yang tersedia.
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     @endif
@@ -996,99 +1077,189 @@
                     </div>
                 </div>
                 <div class="p-6">
-                <div class="card-body">
                     <!-- Header Information -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Penyedia Barang / Jasa</label>
-                            <p class="text-gray-900 dark:text-white">{{ $service->provider_name ?: 'PT Konstruksi Maju' }}</p>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Alamat</label>
-                            <p class="text-gray-900 dark:text-white">{{ $service->provider_address ?: 'Jl. Sudirman No. 123, Jakarta Pusat' }}</p>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nama Jasa</label>
-                            <p class="text-gray-900 dark:text-white">{{ $service->service_name }}</p>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Pengguna Barang/Jasa</label>
-                            <p class="text-gray-900 dark:text-white">{{ $service->user_name ?: 'PT Pembangunan Indonesia' }}</p>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">No. Dokumen Jasa</label>
-                            <p class="text-gray-900 dark:text-white">{{ $service->document_number ?: 'DOC-2024-001' }}</p>
+                    <div class="bg-orange-50 dark:bg-orange-900/20 rounded-xl p-6 mb-8 border border-orange-200 dark:border-orange-700">
+                        <h4 class="text-lg font-semibold text-orange-900 dark:text-orange-100 mb-4 flex items-center">
+                            <svg class="w-5 h-5 mr-2 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            Informasi Umum - Form 3.4
+                        </h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-4">
+                                <div class="flex items-start space-x-3">
+                                    <div class="flex-shrink-0 w-2 h-2 bg-orange-500 rounded-full mt-2"></div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-orange-700 dark:text-orange-300 mb-1">Penyedia Barang / Jasa</label>
+                                        <p class="text-base font-semibold text-orange-900 dark:text-orange-100">{{ $service->provider_name ?: 'PT Konstruksi Maju' }}</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <div class="flex-shrink-0 w-2 h-2 bg-orange-500 rounded-full mt-2"></div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-orange-700 dark:text-orange-300 mb-1">Alamat</label>
+                                        <p class="text-base font-semibold text-orange-900 dark:text-orange-100">{{ $service->provider_address ?: 'Jl. Sudirman No. 123, Jakarta Pusat' }}</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <div class="flex-shrink-0 w-2 h-2 bg-orange-500 rounded-full mt-2"></div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-orange-700 dark:text-orange-300 mb-1">Nama Jasa</label>
+                                        <p class="text-base font-semibold text-orange-900 dark:text-orange-100">{{ $service->service_name }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="space-y-4">
+                                <div class="flex items-start space-x-3">
+                                    <div class="flex-shrink-0 w-2 h-2 bg-amber-500 rounded-full mt-2"></div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-amber-700 dark:text-amber-300 mb-1">Pengguna Barang/Jasa</label>
+                                        <p class="text-base font-semibold text-amber-900 dark:text-amber-100">{{ $service->user_name ?: 'PT Pembangunan Indonesia' }}</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <div class="flex-shrink-0 w-2 h-2 bg-amber-500 rounded-full mt-2"></div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-amber-700 dark:text-amber-300 mb-1">No. Dokumen Jasa</label>
+                                        <p class="text-base font-semibold text-amber-900 dark:text-amber-100">{{ $service->document_number ?: 'DOC-2024-001' }}</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- HPP Data Table -->
+                    <!-- Data Table -->
                     @php
+                        // Coba ambil data dari HPP items terlebih dahulu
                         $hppItems4 = \App\Models\HppItem::whereHas('hpp', function ($query) use ($service) {
                             $query->where('project_id', $service->project_id);
                         })
                         ->where('tkdn_classification', '3.4')
                         ->with(['hpp', 'estimation'])
                         ->get();
+
+                        // Jika tidak ada data HPP, ambil dari Service Items
+                        $serviceItems4 = collect();
+                        if ($hppItems4->count() === 0) {
+                            $serviceItems4 = $service->items()->where('tkdn_classification', '3.4')->get();
+                        }
                     @endphp
 
-                    @if($hppItems4->count() > 0)
-                        <div class="overflow-x-auto">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th class="text-center">No.</th>
-                                        <th>Uraian</th>
-                                        <th>Kualifikasi</th>
-                                        <th>WN</th>
-                                        <th class="text-center">TKDN (%)</th>
-                                        <th class="text-center">Jumlah</th>
-                                        <th class="text-center">Durasi</th>
-                                        <th class="text-center">Upah (Rupiah)</th>
-                                        <th class="text-center" colspan="3">BIAYA (Rupiah)</th>
-                                    </tr>
-                                    <tr>
-                                        <th colspan="8"></th>
-                                        <th class="text-center">KDN</th>
-                                        <th class="text-center">KLN</th>
-                                        <th class="text-center">TOTAL</th>
+                    @if($hppItems4->count() > 0 || $serviceItems4->count() > 0)
+                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+                            <div class="px-6 py-4 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 border-b border-gray-200 dark:border-gray-600">
+                                <h5 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+                                    <svg class="w-5 h-5 mr-2 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                    </svg>
+                                    @if($hppItems4->count() > 0)
+                                        Data HPP - TKDN Classification 3.4
+                                    @else
+                                        Data Service - TKDN Classification 3.4
+                                    @endif
+                                </h5>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                    <thead class="bg-gray-50 dark:bg-gray-700">
+                                        <tr>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">No.</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Uraian</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Kualifikasi</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">WN</th>
+                                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">TKDN (%)</th>
+                                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Jumlah</th>
+                                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Durasi</th>
+                                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Upah (Rupiah)</th>
+                                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider" colspan="3">BIAYA (Rupiah)</th>
                                         </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($hppItems4 as $index => $hppItem)
-                                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
-                                            <td class="text-center">{{ $index + 1 }}</td>
-                                            <td>{{ $hppItem->description }}</td>
-                                            <td>-</td>
-                                            <td>WNI</td>
-                                            <td class="text-center">100%</td>
-                                            <td class="text-center">{{ $hppItem->volume }}</td>
-                                            <td class="text-center">{{ $hppItem->duration }} {{ $hppItem->duration_unit }}</td>
-                                            <td class="text-right">{{ number_format($hppItem->total_price, 0, ',', '.') }}</td>
-                                            <td class="text-right">{{ number_format($hppItem->total_price, 0, ',', '.') }}</td>
-                                            <td class="text-center">-</td>
-                                            <td class="text-right">{{ number_format($hppItem->total_price, 0, ',', '.') }}</td>
+                                        <tr>
+                                            <th colspan="8" class="px-6 py-2"></th>
+                                            <th class="px-6 py-2 text-center text-xs font-medium text-blue-600 dark:text-blue-400 uppercase tracking-wider">KDN</th>
+                                            <th class="px-6 py-2 text-center text-xs font-medium text-red-600 dark:text-red-400 uppercase tracking-wider">KLN</th>
+                                            <th class="px-6 py-2 text-center text-xs font-medium text-green-600 dark:text-green-400 uppercase tracking-wider">TOTAL</th>
                                         </tr>
-                                    @endforeach
-                                    
-                                    <!-- Sub Total -->
-                                    <tr class="bg-gray-50 dark:bg-gray-700 font-semibold">
-                                        <td colspan="7" class="text-center">SUB TOTAL</td>
-                                        <td class="text-right">{{ number_format($hppItems4->sum('total_price'), 0, ',', '.') }}</td>
-                                        <td class="text-right">{{ number_format($hppItems4->sum('total_price'), 0, ',', '.') }}</td>
-                                        <td class="text-center">-</td>
-                                        <td class="text-right">{{ number_format($hppItems4->sum('total_price'), 0, ',', '.') }}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                                        @if($hppItems4->count() > 0)
+                                            @foreach($hppItems4 as $index => $hppItem)
+                                                <tr class="hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors duration-200">
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white text-center">{{ $index + 1 }}</td>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ $hppItem->description }}</td>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">-</td>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">WNI</td>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-center">
+                                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                                                            100%
+                                                        </span>
+                                                    </td>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white text-center">{{ $hppItem->volume }}</td>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white text-center">{{ $hppItem->duration }} {{ $hppItem->duration_unit }}</td>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white text-right font-medium">{{ number_format($hppItem->total_price, 0, ',', '.') }}</td>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-blue-600 dark:text-blue-400 text-right font-medium">{{ number_format($hppItem->total_price, 0, ',', '.') }}</td>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 text-center">-</td>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 dark:text-green-400 text-right font-medium">{{ number_format($hppItem->total_price, 0, ',', '.') }}</td>
+                                                </tr>
+                                            @endforeach
+                                        @else
+                                            @foreach($serviceItems4 as $index => $serviceItem)
+                                                <tr class="hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors duration-200">
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white text-center">{{ $serviceItem->item_number }}</td>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ $serviceItem->description }}</td>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ $serviceItem->qualification ?? '-' }}</td>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ $serviceItem->nationality }}</td>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-center">
+                                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                                                            {{ number_format($serviceItem->tkdn_percentage, 1) }}%
+                                                        </span>
+                                                    </td>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white text-center">{{ $serviceItem->quantity }}</td>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white text-center">{{ $serviceItem->duration }} {{ $serviceItem->duration_unit }}</td>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white text-right font-medium">{{ number_format($serviceItem->wage, 0, ',', '.') }}</td>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-blue-600 dark:text-blue-400 text-right font-medium">{{ number_format($serviceItem->domestic_cost, 0, ',', '.') }}</td>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 dark:text-red-400 text-right font-medium">{{ number_format($serviceItem->foreign_cost, 0, ',', '.') }}</td>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 dark:text-green-400 text-right font-medium">{{ number_format($serviceItem->total_cost, 0, ',', '.') }}</td>
+                                                </tr>
+                                            @endforeach
+                                        @endif
+                                        
+                                        <!-- Sub Total -->
+                                        <tr class="bg-orange-50 dark:bg-orange-900/20 font-semibold">
+                                            <td colspan="7" class="px-6 py-4 text-center text-sm font-bold text-orange-900 dark:text-orange-100">SUB TOTAL</td>
+                                            @if($hppItems4->count() > 0)
+                                                <td class="px-6 py-4 text-right text-sm font-bold text-orange-900 dark:text-orange-100">{{ number_format($hppItems4->sum('total_price'), 0, ',', '.') }}</td>
+                                                <td class="px-6 py-4 text-right text-sm font-bold text-orange-900 dark:text-orange-100">{{ number_format($hppItems4->sum('total_price'), 0, ',', '.') }}</td>
+                                                <td class="px-6 py-4 text-center text-sm font-bold text-orange-900 dark:text-orange-100">-</td>
+                                                <td class="px-6 py-4 text-right text-sm font-bold text-orange-900 dark:text-orange-100">{{ number_format($hppItems4->sum('total_price'), 0, ',', '.') }}</td>
+                                            @else
+                                                <td class="px-6 py-4 text-right text-sm font-bold text-orange-900 dark:text-orange-100">{{ number_format($serviceItems4->sum('wage'), 0, ',', '.') }}</td>
+                                                <td class="px-6 py-4 text-right text-sm font-bold text-orange-900 dark:text-orange-100">{{ number_format($serviceItems4->sum('domestic_cost'), 0, ',', '.') }}</td>
+                                                <td class="px-6 py-4 text-right text-sm font-bold text-orange-900 dark:text-orange-100">{{ number_format($serviceItems4->sum('foreign_cost'), 0, ',', '.') }}</td>
+                                                <td class="px-6 py-4 text-right text-sm font-bold text-orange-900 dark:text-orange-100">{{ number_format($serviceItems4->sum('total_cost'), 0, ',', '.') }}</td>
+                                            @endif
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     @else
-                        <div class="text-center py-8">
-                            <div class="text-gray-500 dark:text-gray-400">
-                                <svg class="w-16 h-16 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                </svg>
-                                <p class="text-lg font-medium">Tidak ada data HPP dengan TKDN Classification 3.4</p>
-                                <p class="text-sm">Data akan muncul setelah generate form TKDN</p>
+                        <div class="text-center py-12">
+                            <div class="max-w-md mx-auto">
+                                <div class="w-24 h-24 mx-auto mb-6 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center">
+                                    <svg class="w-12 h-12 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Belum Ada Data HPP</h3>
+                                <p class="text-gray-600 dark:text-gray-400 mb-4">Tidak ada data HPP dengan TKDN Classification 3.4 yang ditemukan untuk project ini.</p>
+                                <div class="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-700 rounded-lg p-4">
+                                    <p class="text-sm text-orange-800 dark:text-orange-200">
+                                        <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                        Data akan muncul setelah generate form TKDN dari HPP yang tersedia.
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     @endif
@@ -1121,164 +1292,229 @@
                     </div>
                 </div>
                 <div class="p-6">
-                <div class="card-body">
-                    <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-4 mb-6">
+                    <!-- Summary Info Box -->
+                    <div class="bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 border border-purple-200 dark:border-purple-700 rounded-xl p-6 mb-8">
                         <div class="flex items-start">
-                            <svg class="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                            <div>
-                                <h4 class="text-sm font-medium text-blue-800 dark:text-blue-200 mb-1">Informasi Form 3.5</h4>
-                                <p class="text-sm text-blue-700 dark:text-blue-300">Formulir ini berisi rangkuman dari semua klasifikasi TKDN (Form 3.1, 3.2, 3.3, dan 3.4) yang telah dibuat sebelumnya.</p>
+                            <div class="flex-shrink-0 w-12 h-12 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-lg flex items-center justify-center">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                </svg>
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="text-lg font-semibold text-purple-900 dark:text-purple-100 mb-2">Rangkuman TKDN Jasa</h4>
+                                <p class="text-sm text-purple-700 dark:text-purple-300 mb-3">Formulir ini berisi rangkuman dari semua klasifikasi TKDN (Form 3.1, 3.2, 3.3, dan 3.4) yang telah dibuat sebelumnya.</p>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                                        Form 3.1: Manajemen Proyek
+                                    </span>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                                        Form 3.2: Alat Kerja
+                                    </span>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200">
+                                        Form 3.3: Konstruksi
+                                    </span>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200">
+                                        Form 3.4: Konsultasi
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <!-- Header Information -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Penyedia Barang / Jasa</label>
-                            <p class="text-gray-900 dark:text-white">{{ $service->provider_name ?: 'PT Konstruksi Maju' }}</p>
+
+                    <!-- Summary Statistics Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <!-- Form 3.1 Card -->
+                        <div class="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-xl p-6 border border-blue-200 dark:border-blue-700">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium text-blue-600 dark:text-blue-400">Form 3.1</p>
+                                    <p class="text-xs text-blue-500 dark:text-blue-500">Manajemen Proyek</p>
+                                </div>
+                                <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <p class="text-2xl font-bold text-blue-900 dark:text-blue-100" id="form31-total">Rp 0</p>
+                                <p class="text-xs text-blue-600 dark:text-blue-400">Total Biaya</p>
+                            </div>
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Alamat</label>
-                            <p class="text-gray-900 dark:text-white">{{ $service->provider_address ?: 'Jl. Sudirman No. 123, Jakarta Pusat' }}</p>
+
+                        <!-- Form 3.2 Card -->
+                        <div class="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-xl p-6 border border-green-200 dark:border-green-700">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium text-green-600 dark:text-green-400">Form 3.2</p>
+                                    <p class="text-xs text-green-500 dark:text-green-500">Alat Kerja</p>
+                                </div>
+                                <div class="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <p class="text-2xl font-bold text-green-900 dark:text-green-100" id="form32-total">Rp 0</p>
+                                <p class="text-xs text-green-600 dark:text-green-400">Total Biaya</p>
+                            </div>
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nama Jasa</label>
-                            <p class="text-gray-900 dark:text-white">{{ $service->service_name }}</p>
+
+                        <!-- Form 3.3 Card -->
+                        <div class="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-xl p-6 border border-purple-200 dark:border-purple-700">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium text-purple-600 dark:text-purple-400">Form 3.3</p>
+                                    <p class="text-xs text-purple-500 dark:text-purple-500">Konstruksi</p>
+                                </div>
+                                <div class="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <p class="text-2xl font-bold text-purple-900 dark:text-purple-100" id="form33-total">Rp 0</p>
+                                <p class="text-xs text-purple-600 dark:text-purple-400">Total Biaya</p>
+                            </div>
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Pengguna Barang/Jasa</label>
-                            <p class="text-gray-900 dark:text-white">{{ $service->user_name ?: 'PT Pembangunan Indonesia' }}</p>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">No. Dokumen Jasa</label>
-                            <p class="text-gray-900 dark:text-white">{{ $service->document_number ?: 'DOC-2024-001' }}</p>
+
+                        <!-- Form 3.4 Card -->
+                        <div class="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20 rounded-xl p-6 border border-orange-200 dark:border-orange-700">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium text-orange-600 dark:text-orange-400">Form 3.4</p>
+                                    <p class="text-xs text-orange-500 dark:text-orange-500">Konsultasi</p>
+                                </div>
+                                <div class="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <p class="text-2xl font-bold text-orange-900 dark:text-orange-100" id="form34-total">Rp 0</p>
+                                <p class="text-xs text-orange-600 dark:text-orange-400">Total Biaya</p>
+                            </div>
                         </div>
                     </div>
 
                     <!-- Rangkuman TKDN Table -->
-                    <div class="overflow-x-auto">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th class="text-center">(1)</th>
-                                    <th class="text-center" colspan="3">BIAYA *) (Rupiah)</th>
-                                    <th class="text-center">(5)</th>
-                                </tr>
-                                <tr>
-                                    <th>URAIAN PEKERJAAN</th>
-                                    <th class="text-center">KDN</th>
-                                    <th class="text-center">KLN</th>
-                                    <th class="text-center">TOTAL</th>
-                                    <th class="text-center">TKDN Jasa (%)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @php
-                                    // Ambil data untuk setiap klasifikasi TKDN
-                                    $hppItems31 = \App\Models\HppItem::whereHas('hpp', function ($query) use ($service) {
-                                        $query->where('project_id', $service->project_id);
-                                    })
-                                    ->where('tkdn_classification', '3.1')
-                                    ->sum('total_price');
+                    @php
+                        // Ambil data dari Service Items untuk Form 3.5 (rangkuman)
+                        $summaryItems = $service->items()->where('tkdn_classification', '3.5')->get();
+                        
+                        // Hitung total dari semua form
+                        $totalKdn = $summaryItems->sum('domestic_cost');
+                        $totalKln = $summaryItems->sum('foreign_cost');
+                        $totalBiaya = $summaryItems->sum('total_cost');
+                        
+                        // Hitung TKDN percentage keseluruhan
+                        $tkdnPercentage = $totalBiaya > 0 ? ($totalKdn / $totalBiaya) * 100 : 0;
+                    @endphp
 
-                                    $hppItems32 = \App\Models\HppItem::whereHas('hpp', function ($query) use ($service) {
-                                        $query->where('project_id', $service->project_id);
-                                    })
-                                    ->where('tkdn_classification', '3.2')
-                                    ->sum('total_price');
+                    @if($summaryItems->count() > 0)
+                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+                            <div class="px-6 py-4 bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 border-b border-purple-200 dark:border-purple-600">
+                                <h5 class="text-lg font-semibold text-purple-900 dark:text-purple-100 flex items-center">
+                                    <svg class="w-5 h-5 mr-2 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                    </svg>
+                                    Rangkuman TKDN Jasa
+                                </h5>
+                            </div>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                <thead class="bg-gray-50 dark:bg-gray-700">
+                                    <tr>
+                                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">(1)</th>
+                                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider" colspan="3">BIAYA *) (Rupiah)</th>
+                                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">(5)</th>
+                                    </tr>
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">URAIAN PEKERJAAN</th>
+                                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">KDN</th>
+                                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">KLN</th>
+                                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">TOTAL</th>
+                                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">TKDN Jasa (%)</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                                    @foreach($summaryItems as $item)
+                                        @if($item->description !== 'Total Jasa')
+                                            <tr class="hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors duration-200">
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">{{ $item->description }}</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-blue-600 dark:text-blue-400 text-right font-medium">{{ number_format($item->domestic_cost, 0, ',', '.') }}</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 dark:text-red-400 text-right font-medium">{{ number_format($item->foreign_cost, 0, ',', '.') }}</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 dark:text-green-400 text-right font-medium">{{ number_format($item->total_cost, 0, ',', '.') }}</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-center">
+                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200">
+                                                        {{ number_format($item->tkdn_percentage, 2) }}%
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        @endif
+                                    @endforeach
 
-                                    $hppItems33 = \App\Models\HppItem::whereHas('hpp', function ($query) use ($service) {
-                                        $query->where('project_id', $service->project_id);
-                                    })
-                                    ->where('tkdn_classification', '3.3')
-                                    ->sum('total_price');
 
-                                    $hppItems34 = \App\Models\HppItem::whereHas('hpp', function ($query) use ($service) {
-                                        $query->where('project_id', $service->project_id);
-                                    })
-                                    ->where('tkdn_classification', '3.4')
-                                    ->sum('total_price');
 
-                                    // Hitung total KDN dan KLN
-                                    // Untuk sementara semua dianggap KDN, bisa diubah sesuai kebutuhan
-                                    $totalKdn = $hppItems31 + $hppItems32 + $hppItems33 + $hppItems34;
-                                    $totalKln = 0; // Bisa diubah sesuai kebutuhan
-                                    $totalBiaya = $totalKdn + $totalKln;
-                                    
-                                    // Hitung TKDN percentage
-                                    $tkdnPercentage = $totalBiaya > 0 ? ($totalKdn / $totalBiaya) * 100 : 0;
-                                    
-                                    // Hitung persentase untuk setiap kategori
-                                    $tkdnPercentage31 = $totalBiaya > 0 ? ($hppItems31 / $totalBiaya) * 100 : 0;
-                                    $tkdnPercentage32 = $totalBiaya > 0 ? ($hppItems32 / $totalBiaya) * 100 : 0;
-                                    $tkdnPercentage33 = $totalBiaya > 0 ? ($hppItems33 / $totalBiaya) * 100 : 0;
-                                    $tkdnPercentage34 = $totalBiaya > 0 ? ($hppItems34 / $totalBiaya) * 100 : 0;
-                                @endphp
-
-                                <!-- I. Manajemen Proyek dan Perekayasaan -->
-                                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
-                                    <td class="font-medium">I. Manajemen Proyek dan Perekayasaan</td>
-                                    <td class="text-right">{{ number_format($hppItems31, 0, ',', '.') }}</td>
-                                    <td class="text-center">-</td>
-                                    <td class="text-right">{{ number_format($hppItems31, 0, ',', '.') }}</td>
-                                    <td class="text-center">{{ number_format($tkdnPercentage31, 2) }}</td>
-                                </tr>
-
-                                <!-- II. Alat Kerja/Fasilitas Kerja -->
-                                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
-                                    <td class="font-medium">II. Alat Kerja/Fasilitas Kerja</td>
-                                    <td class="text-right">{{ number_format($hppItems32, 0, ',', '.') }}</td>
-                                    <td class="text-center">-</td>
-                                    <td class="text-right">{{ number_format($hppItems32, 0, ',', '.') }}</td>
-                                    <td class="text-center">{{ number_format($tkdnPercentage32, 2) }}</td>
-                                </tr>
-
-                                <!-- III. Konstruksi dan Fabrikasi -->
-                                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
-                                    <td class="font-medium">III. Konstruksi dan Fabrikasi</td>
-                                    <td class="text-right">{{ number_format($hppItems33, 0, ',', '.') }}</td>
-                                    <td class="text-center">-</td>
-                                    <td class="text-right">{{ number_format($hppItems33, 0, ',', '.') }}</td>
-                                    <td class="text-center">{{ number_format($tkdnPercentage33, 2) }}</td>
-                                </tr>
-
-                                <!-- IV. Jasa Umum -->
-                                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
-                                    <td class="font-medium">IV. Jasa Umum</td>
-                                    <td class="text-right">{{ number_format($hppItems34, 0, ',', '.') }}</td>
-                                    <td class="text-center">-</td>
-                                    <td class="text-right">{{ number_format($hppItems34, 0, ',', '.') }}</td>
-                                    <td class="text-center">{{ number_format($tkdnPercentage34, 2) }}</td>
-                                </tr>
-
-                                <!-- Total Jasa -->
-                                <tr class="bg-blue-50 dark:bg-blue-900/20 font-bold border-t-2 border-blue-200 dark:border-blue-700">
-                                    <td class="font-bold">Total Jasa</td>
-                                    <td class="text-right font-bold text-blue-600 dark:text-blue-400">{{ number_format($totalKdn, 0, ',', '.') }}</td>
-                                    <td class="text-center font-bold text-blue-600 dark:text-blue-400">{{ $totalKln > 0 ? number_format($totalKln, 0, ',', '.') : '-' }}</td>
-                                    <td class="text-right font-bold text-blue-600 dark:text-blue-400">{{ number_format($totalBiaya, 0, ',', '.') }}</td>
-                                    <td class="text-center font-bold text-blue-600 dark:text-blue-400">{{ number_format($tkdnPercentage, 2) }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                                    <!-- Total Jasa -->
+                                    <tr class="bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 font-bold border-t-2 border-purple-200 dark:border-purple-700">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-purple-900 dark:text-purple-100">Total Jasa</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-purple-900 dark:text-purple-100 text-right">{{ number_format($totalKdn, 0, ',', '.') }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-purple-900 dark:text-purple-100 text-right">{{ number_format($totalKln, 0, ',', '.') }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-purple-900 dark:text-purple-100 text-right bg-purple-100 dark:bg-purple-800">{{ number_format($totalBiaya, 0, ',', '.') }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-center">
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-gradient-to-r from-purple-600 to-indigo-600 text-white">
+                                                {{ number_format($tkdnPercentage, 2) }}%
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
+                    @else
+                        <div class="text-center py-12">
+                            <div class="max-w-md mx-auto">
+                                <div class="w-24 h-24 mx-auto mb-6 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center">
+                                    <svg class="w-12 h-12 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Belum Ada Data Rangkuman</h3>
+                                <p class="text-gray-600 dark:text-gray-400 mb-4">Form 3.5 akan menampilkan rangkuman setelah form individual (3.1, 3.2, 3.3, 3.4) di-generate.</p>
+                                <div class="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-700 rounded-lg p-4">
+                                    <p class="text-sm text-purple-800 dark:text-purple-200">
+                                        <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                        Generate form TKDN terlebih dahulu untuk melihat rangkuman.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
 
                     <!-- Footnotes -->
-                    <div class="mt-6 text-sm text-gray-600 dark:text-gray-400 space-y-2">
-                        <p>*) Nilai Jasa dapat diambil dari nilai job order, lelang, atau kontrak.</p>
-                        <p>Capaian nilai TKDN diatas dinyatakan sendiri oleh {{ $service->provider_name ?: 'PT Konstruksi Maju' }}</p>
+                    <div class="mt-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                        <div class="text-sm text-gray-600 dark:text-gray-400 space-y-2">
+                            <p><span class="font-medium">*)</span> Nilai Jasa dapat diambil dari nilai job order, lelang, atau kontrak.</p>
+                            <p>Capaian nilai TKDN diatas dinyatakan sendiri oleh <span class="font-medium">{{ $service->provider_name ?: 'PT Konstruksi Maju' }}</span></p>
+                        </div>
                     </div>
 
                     <!-- Signature Section -->
-                    <div class="mt-8 text-right">
-                        <p class="text-gray-600 dark:text-gray-400 mb-2">Jakarta, {{ now()->format('d F Y') }}</p>
-                        <p class="text-gray-600 dark:text-gray-400 mb-1">Dinyatakan Oleh,</p>
-                        <p class="font-bold text-gray-900 dark:text-white mb-4">{{ $service->provider_name ?: 'PT Konstruksi Maju' }}</p>
-                        <div class="mt-16">
-                            <p class="font-bold text-gray-900 dark:text-white">_________________________</p>
-                            <p class="text-sm text-gray-600 dark:text-gray-400">Verifikator TKDN</p>
+                    <div class="mt-8 p-6 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 rounded-xl border border-indigo-200 dark:border-indigo-700">
+                        <div class="text-right">
+                            <p class="text-gray-600 dark:text-gray-400 mb-2">Jakarta, {{ now()->format('d F Y') }}</p>
+                            <p class="text-gray-600 dark:text-gray-400 mb-1">Dinyatakan Oleh,</p>
+                            <p class="font-bold text-gray-900 dark:text-white mb-8">{{ $service->provider_name ?: 'PT Konstruksi Maju' }}</p>
+                            <div class="mt-16">
+                                <p class="font-bold text-gray-900 dark:text-white text-lg">_________________________</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Verifikator TKDN</p>
+                            </div>
                         </div>
                     </div>
                 </div>
