@@ -173,31 +173,22 @@ class ServiceController extends Controller
             'project_id' => $service->project_id,
         ]);
 
-        // Generate form sesuai service type
-        switch ($service->service_type) {
-            case 'project':
-                // Form 3.1 - Jasa Manajemen Proyek dan Perekayasaan
-                $this->createTkdnFormFromHpp($service, $hpp, '3.1', 'Jasa Manajemen Proyek dan Perekayasaan');
-                break;
+        // Generate form individual terlebih dahulu (3.1, 3.2, 3.3, 3.4)
+        $individualForms = [
+            '3.1' => 'Jasa Manajemen Proyek dan Perekayasaan',
+            '3.2' => 'Jasa Alat Kerja dan Peralatan',
+            '3.3' => 'Jasa Konstruksi dan Pembangunan',
+            '3.4' => 'Jasa Konsultasi dan Pengawasan',
+        ];
 
-            case 'equipment':
-                // Form 3.2 - Jasa Alat Kerja dan Peralatan
-                $this->createTkdnFormFromHpp($service, $hpp, '3.2', 'Jasa Alat Kerja dan Peralatan');
-                break;
-
-            case 'construction':
-                // Form 3.3 - Jasa Konstruksi dan Pembangunan
-                $this->createTkdnFormFromHpp($service, $hpp, '3.3', 'Jasa Konstruksi dan Pembangunan');
-                break;
+        foreach ($individualForms as $formCode => $formName) {
+            Log::info("Generating Form {$formCode} - {$formName} from HPP");
+            $this->createTkdnFormFromHpp($service, $hpp, $formCode, $formName);
         }
 
-        // Generate Form 3.4 - Jasa Konsultasi dan Pengawasan (selalu ada)
-        Log::info('Generating Form 3.4 - Jasa Konsultasi dan Pengawasan from HPP');
-        $this->createTkdnFormFromHpp($service, $hpp, '3.4', 'Jasa Konsultasi dan Pengawasan');
-
-        // Generate Form 3.5 - Rangkuman TKDN Jasa
-        Log::info('Generating Form 3.5 - Rangkuman TKDN Jasa from HPP');
-        $this->createTkdnFormFromHpp($service, $hpp, '3.5', 'Rangkuman TKDN Jasa');
+        // Generate Form 3.5 sebagai rangkuman dari form lainnya
+        Log::info('Generating Form 3.5 - Rangkuman TKDN Jasa as summary from other forms');
+        $this->createTkdnForm35Summary($service);
 
         // Verifikasi semua form telah di-generate
         $generatedForms = $service->items()->distinct('tkdn_classification')->pluck('tkdn_classification')->toArray();
@@ -1053,6 +1044,189 @@ class ServiceController extends Controller
             'service_id' => $service->id,
             'form_number' => $formNumber,
             'service_items_count' => $service->items()->where('tkdn_classification', $formNumber)->count(),
+        ]);
+    }
+
+    /**
+     * Create Form 3.5 sebagai rangkuman dari form 3.1, 3.2, 3.3, dan 3.4
+     */
+    private function createTkdnForm35Summary(Service $service)
+    {
+        Log::info('Creating Form 3.5 summary from other forms', [
+            'service_id' => $service->id,
+        ]);
+
+        // Hapus service items lama untuk form 3.5 jika ada
+        $service->items()->where('tkdn_classification', '3.5')->delete();
+
+        // Ambil data dari form 3.1, 3.2, 3.3, dan 3.4
+        $form31Items = $service->items()->where('tkdn_classification', '3.1')->get();
+        $form32Items = $service->items()->where('tkdn_classification', '3.2')->get();
+        $form33Items = $service->items()->where('tkdn_classification', '3.3')->get();
+        $form34Items = $service->items()->where('tkdn_classification', '3.4')->get();
+
+        // Hitung total untuk setiap form
+        $form31Total = $form31Items->sum('total_cost');
+        $form31Domestic = $form31Items->sum('domestic_cost');
+        $form31Foreign = $form31Items->sum('foreign_cost');
+
+        $form32Total = $form32Items->sum('total_cost');
+        $form32Domestic = $form32Items->sum('domestic_cost');
+        $form32Foreign = $form32Items->sum('foreign_cost');
+
+        $form33Total = $form33Items->sum('total_cost');
+        $form33Domestic = $form33Items->sum('domestic_cost');
+        $form33Foreign = $form33Items->sum('foreign_cost');
+
+        $form34Total = $form34Items->sum('total_cost');
+        $form34Domestic = $form34Items->sum('domestic_cost');
+        $form34Foreign = $form34Items->sum('foreign_cost');
+
+        // Hitung total keseluruhan
+        $totalDomestic = $form31Domestic + $form32Domestic + $form33Domestic + $form34Domestic;
+        $totalForeign = $form31Foreign + $form32Foreign + $form33Foreign + $form34Foreign;
+        $totalCost = $totalDomestic + $totalForeign;
+
+        // Hitung TKDN percentage keseluruhan
+        $overallTkdnPercentage = $totalCost > 0 ? ($totalDomestic / $totalCost) * 100 : 0;
+
+        Log::info('Form 3.5 summary calculations', [
+            'service_id' => $service->id,
+            'form31_total' => $form31Total,
+            'form31_domestic' => $form31Domestic,
+            'form31_foreign' => $form31Foreign,
+            'form32_total' => $form32Total,
+            'form32_domestic' => $form32Domestic,
+            'form32_foreign' => $form32Foreign,
+            'form33_total' => $form33Total,
+            'form33_domestic' => $form33Domestic,
+            'form33_foreign' => $form33Foreign,
+            'form34_total' => $form34Total,
+            'form34_domestic' => $form34Domestic,
+            'form34_foreign' => $form34Foreign,
+            'total_domestic' => $totalDomestic,
+            'total_foreign' => $totalForeign,
+            'total_cost' => $totalCost,
+            'overall_tkdn_percentage' => $overallTkdnPercentage,
+        ]);
+
+        // Buat service items untuk Form 3.5 berdasarkan rangkuman
+        $itemNumber = 1;
+
+        // I. Manajemen Proyek dan Perekayasaan
+        if ($form31Total > 0) {
+            $form31TkdnPercentage = $totalCost > 0 ? ($form31Domestic / $totalCost) * 100 : 0;
+            ServiceItem::create([
+                'service_id' => $service->id,
+                'tkdn_classification' => '3.5',
+                'item_number' => $itemNumber++,
+                'description' => 'I. Manajemen Proyek dan Perekayasaan',
+                'qualification' => 'Rangkuman',
+                'nationality' => 'WNI',
+                'tkdn_percentage' => $form31TkdnPercentage,
+                'quantity' => 1,
+                'duration' => 1,
+                'duration_unit' => 'ls',
+                'wage' => $form31Total,
+                'domestic_cost' => $form31Domestic,
+                'foreign_cost' => $form31Foreign,
+                'total_cost' => $form31Total,
+            ]);
+        }
+
+        // II. Alat Kerja/Fasilitas Kerja
+        if ($form32Total > 0) {
+            $form32TkdnPercentage = $totalCost > 0 ? ($form32Domestic / $totalCost) * 100 : 0;
+            ServiceItem::create([
+                'service_id' => $service->id,
+                'tkdn_classification' => '3.5',
+                'item_number' => $itemNumber++,
+                'description' => 'II. Alat Kerja/Fasilitas Kerja',
+                'qualification' => 'Rangkuman',
+                'nationality' => 'WNI',
+                'tkdn_percentage' => $form32TkdnPercentage,
+                'quantity' => 1,
+                'duration' => 1,
+                'duration_unit' => 'ls',
+                'wage' => $form32Total,
+                'domestic_cost' => $form32Domestic,
+                'foreign_cost' => $form32Foreign,
+                'total_cost' => $form32Total,
+            ]);
+        }
+
+        // III. Konstruksi dan Fabrikasi
+        if ($form33Total > 0) {
+            $form33TkdnPercentage = $totalCost > 0 ? ($form33Domestic / $totalCost) * 100 : 0;
+            ServiceItem::create([
+                'service_id' => $service->id,
+                'tkdn_classification' => '3.5',
+                'item_number' => $itemNumber++,
+                'description' => 'III. Konstruksi dan Fabrikasi',
+                'qualification' => 'Rangkuman',
+                'nationality' => 'WNI',
+                'tkdn_percentage' => $form33TkdnPercentage,
+                'quantity' => 1,
+                'duration' => 1,
+                'duration_unit' => 'ls',
+                'wage' => $form33Total,
+                'domestic_cost' => $form33Domestic,
+                'foreign_cost' => $form33Foreign,
+                'total_cost' => $form33Total,
+            ]);
+        }
+
+        // IV. Jasa Umum
+        if ($form34Total > 0) {
+            $form34TkdnPercentage = $totalCost > 0 ? ($form34Domestic / $totalCost) * 100 : 0;
+            ServiceItem::create([
+                'service_id' => $service->id,
+                'tkdn_classification' => '3.5',
+                'item_number' => $itemNumber++,
+                'description' => 'IV. Jasa Umum',
+                'qualification' => 'Rangkuman',
+                'nationality' => 'WNI',
+                'tkdn_percentage' => $form34TkdnPercentage,
+                'quantity' => 1,
+                'duration' => 1,
+                'duration_unit' => 'ls',
+                'wage' => $form34Total,
+                'domestic_cost' => $form34Domestic,
+                'foreign_cost' => $form34Foreign,
+                'total_cost' => $form34Total,
+            ]);
+        }
+
+        // Total Jasa
+        if ($totalCost > 0) {
+            ServiceItem::create([
+                'service_id' => $service->id,
+                'tkdn_classification' => '3.5',
+                'item_number' => $itemNumber++,
+                'description' => 'Total Jasa',
+                'qualification' => 'Total',
+                'nationality' => 'WNI',
+                'tkdn_percentage' => $overallTkdnPercentage,
+                'quantity' => 1,
+                'duration' => 1,
+                'duration_unit' => 'ls',
+                'wage' => $totalCost,
+                'domestic_cost' => $totalDomestic,
+                'foreign_cost' => $totalForeign,
+                'total_cost' => $totalCost,
+            ]);
+        }
+
+        // Recalculate totals
+        $service->calculateTotals();
+
+        Log::info('Form 3.5 summary created successfully', [
+            'service_id' => $service->id,
+            'service_items_count' => $service->items()->where('tkdn_classification', '3.5')->count(),
+            'total_domestic' => $totalDomestic,
+            'total_foreign' => $totalForeign,
+            'total_cost' => $totalCost,
+            'overall_tkdn_percentage' => $overallTkdnPercentage,
         ]);
     }
 
