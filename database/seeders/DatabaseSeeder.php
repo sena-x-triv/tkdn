@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             EstimationSeeder::class,
             EstimationItemSeeder::class,
             ServiceSeeder::class,
+            ServiceItemTkdnSeeder::class,
             HppSeeder::class,
         ]);
     }

@@ -173,12 +173,19 @@ class ServiceController extends Controller
             'project_id' => $service->project_id,
         ]);
 
-        // Generate form individual terlebih dahulu (3.1, 3.2, 3.3, 3.4)
+        // Generate form individual terlebih dahulu (3.1, 3.2, 3.3, 3.4, 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7)
         $individualForms = [
             '3.1' => 'Jasa Manajemen Proyek dan Perekayasaan',
             '3.2' => 'Jasa Alat Kerja dan Peralatan',
             '3.3' => 'Jasa Konstruksi dan Pembangunan',
             '3.4' => 'Jasa Konsultasi dan Pengawasan',
+            '4.1' => 'Jasa Teknik dan Rekayasa',
+            '4.2' => 'Jasa Pengadaan dan Logistik',
+            '4.3' => 'Jasa Operasi dan Pemeliharaan',
+            '4.4' => 'Jasa Pelatihan dan Sertifikasi',
+            '4.5' => 'Jasa Teknologi Informasi',
+            '4.6' => 'Jasa Lingkungan dan Keamanan',
+            '4.7' => 'Jasa Lainnya',
         ];
 
         foreach ($individualForms as $formCode => $formName) {
@@ -444,6 +451,41 @@ class ServiceController extends Controller
             return 100.0;
         }
 
+        // Form 4.1: Jasa Teknik dan Rekayasa - Default 100% TKDN (WNI)
+        if ($formNumber === '4.1') {
+            return 100.0;
+        }
+
+        // Form 4.2: Jasa Pengadaan dan Logistik - Default 80% TKDN
+        if ($formNumber === '4.2') {
+            return 80.0;
+        }
+
+        // Form 4.3: Jasa Operasi dan Pemeliharaan - Default 100% TKDN (WNI)
+        if ($formNumber === '4.3') {
+            return 100.0;
+        }
+
+        // Form 4.4: Jasa Pelatihan dan Sertifikasi - Default 100% TKDN (WNI)
+        if ($formNumber === '4.4') {
+            return 100.0;
+        }
+
+        // Form 4.5: Jasa Teknologi Informasi - Default 70% TKDN
+        if ($formNumber === '4.5') {
+            return 70.0;
+        }
+
+        // Form 4.6: Jasa Lingkungan dan Keamanan - Default 100% TKDN (WNI)
+        if ($formNumber === '4.6') {
+            return 100.0;
+        }
+
+        // Form 4.7: Jasa Lainnya - Default 60% TKDN
+        if ($formNumber === '4.7') {
+            return 60.0;
+        }
+
         // Default berdasarkan kategori
         return match ($category) {
             'worker' => 100.0,    // Pekerja WNI
@@ -688,7 +730,7 @@ class ServiceController extends Controller
     {
         try {
             // Validate form number
-            $validForms = ['3.1', '3.2', '3.3', '3.4', '3.5'];
+            $validForms = ['3.1', '3.2', '3.3', '3.4', '4.1', '4.2', '4.3', '4.4', '4.5', '4.6', '4.7', '3.5'];
             if (! in_array($formNumber, $validForms)) {
                 return back()->with('error', 'Nomor form TKDN tidak valid.');
             }
@@ -732,6 +774,34 @@ class ServiceController extends Controller
         Log::info('Generating Form 3.4 - Jasa Konsultasi dan Pengawasan');
         $this->createTkdnForm($service, '3.4', 'Jasa Konsultasi dan Pengawasan');
 
+        // Generate Form 4.1 - Jasa Teknik dan Rekayasa (selalu ada)
+        Log::info('Generating Form 4.1 - Jasa Teknik dan Rekayasa');
+        $this->createTkdnForm($service, '4.1', 'Jasa Teknik dan Rekayasa');
+
+        // Generate Form 4.2 - Jasa Pengadaan dan Logistik (selalu ada)
+        Log::info('Generating Form 4.2 - Jasa Pengadaan dan Logistik');
+        $this->createTkdnForm($service, '4.2', 'Jasa Pengadaan dan Logistik');
+
+        // Generate Form 4.3 - Jasa Operasi dan Pemeliharaan (selalu ada)
+        Log::info('Generating Form 4.3 - Jasa Operasi dan Pemeliharaan');
+        $this->createTkdnForm($service, '4.3', 'Jasa Operasi dan Pemeliharaan');
+
+        // Generate Form 4.4 - Jasa Pelatihan dan Sertifikasi (selalu ada)
+        Log::info('Generating Form 4.4 - Jasa Pelatihan dan Sertifikasi');
+        $this->createTkdnForm($service, '4.4', 'Jasa Pelatihan dan Sertifikasi');
+
+        // Generate Form 4.5 - Jasa Teknologi Informasi (selalu ada)
+        Log::info('Generating Form 4.5 - Jasa Teknologi Informasi');
+        $this->createTkdnForm($service, '4.5', 'Jasa Teknologi Informasi');
+
+        // Generate Form 4.6 - Jasa Lingkungan dan Keamanan (selalu ada)
+        Log::info('Generating Form 4.6 - Jasa Lingkungan dan Keamanan');
+        $this->createTkdnForm($service, '4.6', 'Jasa Lingkungan dan Keamanan');
+
+        // Generate Form 4.7 - Jasa Lainnya (selalu ada)
+        Log::info('Generating Form 4.7 - Jasa Lainnya');
+        $this->createTkdnForm($service, '4.7', 'Jasa Lainnya');
+
         // Generate Form 3.5 - Rangkuman TKDN Jasa (selalu ada)
         Log::info('Generating Form 3.5 - Rangkuman TKDN Jasa');
         $this->createTkdnForm($service, '3.5', 'Rangkuman TKDN Jasa');
@@ -741,7 +811,7 @@ class ServiceController extends Controller
         Log::info('Generated forms verification', [
             'service_id' => $service->id,
             'generated_forms' => $generatedForms,
-            'expected_forms' => ['3.1', '3.2', '3.3', '3.4', '3.5'],
+            'expected_forms' => ['3.1', '3.2', '3.3', '3.4', '4.1', '4.2', '4.3', '4.4', '4.5', '4.6', '4.7', '3.5'],
             'total_service_items' => $service->items()->count(),
             'forms_generated' => count($generatedForms),
         ]);
@@ -1241,6 +1311,13 @@ class ServiceController extends Controller
             '3.3' => 0.0,   // Jasa Konstruksi - 0% TKDN
             '3.4' => 100.0, // Jasa Konsultasi - 100% TKDN (WNI)
             '3.5' => 100.0, // Rangkuman - 100% TKDN
+            '4.1' => 100.0, // Jasa Teknik dan Rekayasa - 100% TKDN (WNI)
+            '4.2' => 80.0,  // Jasa Pengadaan dan Logistik - 80% TKDN
+            '4.3' => 100.0, // Jasa Operasi dan Pemeliharaan - 100% TKDN (WNI)
+            '4.4' => 100.0, // Jasa Pelatihan dan Sertifikasi - 100% TKDN (WNI)
+            '4.5' => 70.0,  // Jasa Teknologi Informasi - 70% TKDN
+            '4.6' => 100.0, // Jasa Lingkungan dan Keamanan - 100% TKDN (WNI)
+            '4.7' => 60.0,  // Jasa Lainnya - 60% TKDN
             default => 50.0,
         };
     }
