@@ -44,6 +44,21 @@
                     </div>
 
                     <div>
+                        <label class="form-label">Kategori Form TKDN</label>
+                        <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-4">
+                            <div class="flex items-center">
+                                <svg class="w-5 h-5 text-blue-600 dark:text-blue-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <div>
+                                    <p class="text-sm font-medium text-blue-800 dark:text-blue-200">Otomatis Ditentukan</p>
+                                    <p class="text-xs text-blue-600 dark:text-blue-300">Kategori form akan ditentukan otomatis berdasarkan jenis form yang tersedia di HPP yang dipilih</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
                         <label for="service_type" class="form-label">Jenis Service <span class="text-red-500">*</span></label>
                         <select name="service_type" id="service_type" class="form-select @error('service_type') border-red-500 @enderror" required onchange="updateServiceTypePreview()">
                             <option value="">Pilih Jenis Service</option>
@@ -268,6 +283,7 @@ function showHppPreview(hppData) {
     servicePreview.innerHTML = servicePreviewHtml;
     hppPreview.classList.remove('hidden');
 }
+
 
 function updateServiceTypePreview() {
     const serviceType = document.getElementById('service_type').value;

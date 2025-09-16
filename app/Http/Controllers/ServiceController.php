@@ -173,29 +173,19 @@ class ServiceController extends Controller
             'project_id' => $service->project_id,
         ]);
 
-        // Generate form individual terlebih dahulu (3.1, 3.2, 3.3, 3.4, 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7)
-        $individualForms = [
-            '3.1' => 'Jasa Manajemen Proyek dan Perekayasaan',
-            '3.2' => 'Jasa Alat Kerja dan Peralatan',
-            '3.3' => 'Jasa Konstruksi dan Pembangunan',
-            '3.4' => 'Jasa Konsultasi dan Pengawasan',
-            '4.1' => 'Jasa Teknik dan Rekayasa',
-            '4.2' => 'Jasa Pengadaan dan Logistik',
-            '4.3' => 'Jasa Operasi dan Pemeliharaan',
-            '4.4' => 'Jasa Pelatihan dan Sertifikasi',
-            '4.5' => 'Jasa Teknologi Informasi',
-            '4.6' => 'Jasa Lingkungan dan Keamanan',
-            '4.7' => 'Jasa Lainnya',
-        ];
+        // Generate form berdasarkan kategori yang dipilih
+        $availableForms = $service->getAvailableForms();
 
-        foreach ($individualForms as $formCode => $formName) {
+        foreach ($availableForms as $formCode => $formName) {
             Log::info("Generating Form {$formCode} - {$formName} from HPP");
             $this->createTkdnFormFromHpp($service, $hpp, $formCode, $formName);
         }
 
-        // Generate Form 3.5 sebagai rangkuman dari form lainnya
-        Log::info('Generating Form 3.5 - Rangkuman TKDN Jasa as summary from other forms');
-        $this->createTkdnForm35Summary($service);
+        // Generate Form 3.5 sebagai rangkuman dari form lainnya (hanya untuk kategori TKDN Jasa)
+        if ($service->form_category === Service::CATEGORY_TKDN_JASA) {
+            Log::info('Generating Form 3.5 - Rangkuman TKDN Jasa as summary from other forms');
+            $this->createTkdnForm35Summary($service);
+        }
 
         // Verifikasi semua form telah di-generate
         $generatedForms = $service->items()->distinct('tkdn_classification')->pluck('tkdn_classification')->toArray();
@@ -496,6 +486,67 @@ class ServiceController extends Controller
     }
 
     /**
+     * Tentukan form_category otomatis berdasarkan form yang tersedia di HPP
+     */
+    private function determineFormCategoryFromHpp(Hpp $hpp): string
+    {
+        // Ambil semua tkdn_classification yang ada di HPP items
+        $availableClassifications = $hpp->items()
+            ->distinct('tkdn_classification')
+            ->pluck('tkdn_classification')
+            ->toArray();
+
+        Log::info('Determining form category from HPP', [
+            'hpp_id' => $hpp->id,
+            'available_classifications' => $availableClassifications,
+        ]);
+
+        // Cek apakah ada form 4.x (TKDN Barang & Jasa)
+        $hasForm4 = collect($availableClassifications)->filter(function ($classification) {
+            return str_starts_with($classification, '4.');
+        })->isNotEmpty();
+
+        // Cek apakah ada form 3.x (TKDN Jasa)
+        $hasForm3 = collect($availableClassifications)->filter(function ($classification) {
+            return str_starts_with($classification, '3.');
+        })->isNotEmpty();
+
+        // Prioritas: Jika ada form 4.x, gunakan TKDN Barang & Jasa
+        if ($hasForm4) {
+            Log::info('Form category determined: TKDN Barang & Jasa (found form 4.x)', [
+                'hpp_id' => $hpp->id,
+                'form4_classifications' => collect($availableClassifications)
+                    ->filter(fn ($c) => str_starts_with($c, '4.'))
+                    ->values()
+                    ->toArray(),
+            ]);
+
+            return Service::CATEGORY_TKDN_BARANG_JASA;
+        }
+
+        // Jika hanya ada form 3.x atau tidak ada form sama sekali, gunakan TKDN Jasa
+        if ($hasForm3 || empty($availableClassifications)) {
+            Log::info('Form category determined: TKDN Jasa (found form 3.x or no forms)', [
+                'hpp_id' => $hpp->id,
+                'form3_classifications' => collect($availableClassifications)
+                    ->filter(fn ($c) => str_starts_with($c, '3.'))
+                    ->values()
+                    ->toArray(),
+            ]);
+
+            return Service::CATEGORY_TKDN_JASA;
+        }
+
+        // Default fallback ke TKDN Jasa
+        Log::info('Form category determined: TKDN Jasa (default fallback)', [
+            'hpp_id' => $hpp->id,
+            'available_classifications' => $availableClassifications,
+        ]);
+
+        return Service::CATEGORY_TKDN_JASA;
+    }
+
+    /**
      * Generate description untuk AHS item
      */
     private function getAhsItemDescription(EstimationItem $ahsItem): string
@@ -555,12 +606,16 @@ class ServiceController extends Controller
                 // Ambil data HPP dengan project
                 $hpp = Hpp::with(['items', 'project'])->findOrFail($validated['hpp_id']);
 
+                // Tentukan form_category otomatis berdasarkan form yang tersedia di HPP
+                $formCategory = $this->determineFormCategoryFromHpp($hpp);
+
                 // Auto-generate service name dari HPP code
                 $serviceName = 'Service TKDN - '.$hpp->code;
 
                 $service = Service::create([
                     'project_id' => $hpp->project_id,
                     'service_name' => $serviceName,
+                    'form_category' => $formCategory,
                     'service_type' => $validated['service_type'], // Gunakan service_type dari form
                     'provider_name' => $hpp->project->company ?? 'PT Konstruksi Maju',
                     'provider_address' => $hpp->project->address ?? 'Jl. Sudirman No. 123, Jakarta Pusat',

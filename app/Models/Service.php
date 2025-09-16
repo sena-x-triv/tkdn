@@ -14,6 +14,7 @@ class Service extends Model
         'project_id',
         'service_name',
         'service_type',
+        'form_category',
         'tkdn_classification',
         'provider_name',
         'provider_address',
@@ -40,12 +41,25 @@ class Service extends Model
 
     const TYPE_CONSTRUCTION = 'construction';
 
+    // Form categories
+    const CATEGORY_TKDN_JASA = 'tkdn_jasa';
+
+    const CATEGORY_TKDN_BARANG_JASA = 'tkdn_barang_jasa';
+
     public static function getServiceTypes()
     {
         return [
             self::TYPE_PROJECT => 'Jasa Proyek',
             self::TYPE_EQUIPMENT => 'Jasa Alat Kerja',
             self::TYPE_CONSTRUCTION => 'Jasa Konstruksi',
+        ];
+    }
+
+    public static function getFormCategories()
+    {
+        return [
+            self::CATEGORY_TKDN_JASA => 'TKDN Jasa (Form 3.1 - 3.5)',
+            self::CATEGORY_TKDN_BARANG_JASA => 'TKDN Barang & Jasa (Form 4.1 - 4.7)',
         ];
     }
 
@@ -98,6 +112,34 @@ class Service extends Model
             self::TYPE_EQUIPMENT => 'Formulir 3.2: TKDN Jasa untuk Alat Kerja dan Peralatan',
             self::TYPE_CONSTRUCTION => 'Formulir 3.3: TKDN Jasa untuk Konstruksi dan Pembangunan',
             default => 'Formulir TKDN Jasa',
+        };
+    }
+
+    public function getFormCategoryLabel()
+    {
+        return self::getFormCategories()[$this->form_category] ?? 'Unknown';
+    }
+
+    public function getAvailableForms()
+    {
+        return match ($this->form_category) {
+            self::CATEGORY_TKDN_JASA => [
+                '3.1' => 'Jasa Manajemen Proyek dan Perekayasaan',
+                '3.2' => 'Jasa Alat Kerja dan Peralatan',
+                '3.3' => 'Jasa Konstruksi dan Pembangunan',
+                '3.4' => 'Jasa Konsultasi dan Pengawasan',
+                '3.5' => 'Rangkuman TKDN Jasa',
+            ],
+            self::CATEGORY_TKDN_BARANG_JASA => [
+                '4.1' => 'Jasa Teknik dan Rekayasa',
+                '4.2' => 'Jasa Pengadaan dan Logistik',
+                '4.3' => 'Jasa Operasi dan Pemeliharaan',
+                '4.4' => 'Jasa Pelatihan dan Sertifikasi',
+                '4.5' => 'Jasa Teknologi Informasi',
+                '4.6' => 'Jasa Lingkungan dan Keamanan',
+                '4.7' => 'Jasa Lainnya',
+            ],
+            default => [],
         };
     }
 }

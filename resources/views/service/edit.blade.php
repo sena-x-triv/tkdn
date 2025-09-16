@@ -45,6 +45,21 @@
                     </div>
 
                     <div>
+                        <label class="form-label">Kategori Form TKDN</label>
+                        <div class="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+                            <div class="flex items-center">
+                                <svg class="w-5 h-5 text-gray-600 dark:text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $service->getFormCategoryLabel() }}</p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">Ditentukan otomatis berdasarkan form yang tersedia di HPP</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
                         <label for="service_type" class="form-label">Jenis Service <span class="text-red-500">*</span></label>
                         <select name="service_type" id="service_type" class="form-select @error('service_type') border-red-500 @enderror" required>
                             <option value="">Pilih Jenis Service</option>
