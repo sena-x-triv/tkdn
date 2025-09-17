@@ -20,8 +20,8 @@ class ServiceTest extends TestCase
     {
         parent::setUp();
 
-        // Create a user for authentication
-        $this->user = User::factory()->create();
+        // Create a user for authentication with admin role
+        $this->user = User::factory()->create(['role' => 'admin']);
         $this->actingAs($this->user);
     }
 
@@ -30,6 +30,7 @@ class ServiceTest extends TestCase
         // Create a project
         $project = Project::create([
             'name' => 'Test Project',
+            'project_type' => 'tkdn_jasa',
             'status' => 'on_progress',
             'company' => 'Test Company',
             'location' => 'Test Location',
@@ -90,6 +91,7 @@ class ServiceTest extends TestCase
         // Create a project
         $project = Project::create([
             'name' => 'Test Project',
+            'project_type' => 'tkdn_jasa',
             'status' => 'on_progress',
             'company' => 'Test Company',
             'location' => 'Test Location',
@@ -126,6 +128,7 @@ class ServiceTest extends TestCase
         // Create a project
         $project = Project::create([
             'name' => 'Test Project',
+            'project_type' => 'tkdn_jasa',
             'status' => 'on_progress',
             'company' => 'Test Company',
             'location' => 'Test Location',

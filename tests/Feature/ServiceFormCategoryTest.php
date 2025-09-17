@@ -32,7 +32,7 @@ class ServiceFormCategoryTest extends TestCase
 
     public function test_service_can_have_tkdn_jasa_category(): void
     {
-        $project = Project::factory()->create();
+        $project = Project::factory()->create(['project_type' => 'tkdn_jasa']);
 
         $service = Service::create([
             'project_id' => $project->id,
@@ -48,7 +48,7 @@ class ServiceFormCategoryTest extends TestCase
 
     public function test_service_can_have_tkdn_barang_jasa_category(): void
     {
-        $project = Project::factory()->create();
+        $project = Project::factory()->create(['project_type' => 'tkdn_barang_jasa']);
 
         $service = Service::create([
             'project_id' => $project->id,
@@ -136,7 +136,9 @@ class ServiceFormCategoryTest extends TestCase
 
     public function test_service_show_page_displays_form_category_badge(): void
     {
-        $project = Project::factory()->create();
+        $project = Project::factory()->create([
+            'project_type' => 'tkdn_jasa',
+        ]);
         $service = Service::factory()->create([
             'project_id' => $project->id,
             'form_category' => Service::CATEGORY_TKDN_JASA,
@@ -163,15 +165,47 @@ class ServiceFormCategoryTest extends TestCase
         $response->assertSee('Detail Service'); // Breadcrumb
         $response->assertSee($service->service_name); // Service name
         $response->assertSee($service->getFormTitle()); // Form title
-        $response->assertSee('Project'); // Info card
-        $response->assertSee('Total Cost'); // Info card
-        $response->assertSee('TKDN %'); // Info card
-        $response->assertSee('Items'); // Info card
+        $response->assertSee('Informasi Project Type'); // Project type info section
+    }
+
+    public function test_service_info_cards_display_correctly(): void
+    {
+        $project = Project::factory()->create([
+            'name' => 'Test Project',
+            'project_type' => 'tkdn_jasa',
+        ]);
+        $service = Service::factory()->create([
+            'project_id' => $project->id,
+            'form_category' => Service::CATEGORY_TKDN_JASA,
+            'total_cost' => 15000000,
+            'tkdn_percentage' => 75.5,
+        ]);
+
+        // Create some service items
+        \App\Models\ServiceItem::factory()->count(3)->create([
+            'service_id' => $service->id,
+        ]);
+
+        $response = $this->get(route('service.show', $service));
+
+        $response->assertStatus(200);
+
+        // Check project name is displayed
+        $response->assertSee('Test Project');
+
+        // Check form tabs for TKDN Jasa are displayed
+        $response->assertSee('Form 3.1');
+        $response->assertSee('Form 3.2');
+        $response->assertSee('Form 3.3');
+        $response->assertSee('Form 3.4');
+        $response->assertSee('Form 3.5');
+        $response->assertSee('rounded-xl'); // Rounded corners
+        $response->assertSee('border-white/30'); // Border styling
     }
 
     public function test_form_category_determined_automatically_from_hpp_with_form3(): void
     {
-        $project = Project::factory()->create();
+        $project = Project::factory()->create(['project_type' => 'tkdn_jasa']);
         $hpp = \App\Models\Hpp::factory()->create([
             'project_id' => $project->id,
         ]);
@@ -188,7 +222,6 @@ class ServiceFormCategoryTest extends TestCase
 
         $response = $this->post(route('service.store'), [
             'hpp_id' => $hpp->id,
-            'service_type' => 'project',
         ]);
 
         $response->assertRedirect();
@@ -199,7 +232,7 @@ class ServiceFormCategoryTest extends TestCase
 
     public function test_form_category_determined_automatically_from_hpp_with_form4(): void
     {
-        $project = Project::factory()->create();
+        $project = Project::factory()->create(['project_type' => 'tkdn_barang_jasa']);
         $hpp = \App\Models\Hpp::factory()->create([
             'project_id' => $project->id,
         ]);
@@ -216,7 +249,6 @@ class ServiceFormCategoryTest extends TestCase
 
         $response = $this->post(route('service.store'), [
             'hpp_id' => $hpp->id,
-            'service_type' => 'project',
         ]);
 
         $response->assertRedirect();
@@ -227,7 +259,7 @@ class ServiceFormCategoryTest extends TestCase
 
     public function test_form_category_prioritizes_form4_over_form3(): void
     {
-        $project = Project::factory()->create();
+        $project = Project::factory()->create(['project_type' => 'tkdn_barang_jasa']);
         $hpp = \App\Models\Hpp::factory()->create([
             'project_id' => $project->id,
         ]);
@@ -244,7 +276,6 @@ class ServiceFormCategoryTest extends TestCase
 
         $response = $this->post(route('service.store'), [
             'hpp_id' => $hpp->id,
-            'service_type' => 'project',
         ]);
 
         $response->assertRedirect();

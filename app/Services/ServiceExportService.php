@@ -237,14 +237,11 @@ class ServiceExportService
         $worksheet = $this->spreadsheet->getActiveSheet();
         $row = $this->getCurrentRow();
 
-        // Get data based on classification
+        // Get data using optimized service items
         if ($this->classification === 'all') {
-            $items = $this->service->items()->orderBy('tkdn_classification')->orderBy('item_number')->get();
+            $items = $this->service->getOptimizedServiceItems();
         } else {
-            $items = $this->service->items()
-                ->where('tkdn_classification', $this->classification)
-                ->orderBy('item_number')
-                ->get();
+            $items = $this->service->getServiceItemsByClassification($this->classification);
         }
 
         if ($items->isEmpty()) {

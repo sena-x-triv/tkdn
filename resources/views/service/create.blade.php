@@ -58,20 +58,6 @@
                         </div>
                     </div>
 
-                    <div>
-                        <label for="service_type" class="form-label">Jenis Service <span class="text-red-500">*</span></label>
-                        <select name="service_type" id="service_type" class="form-select @error('service_type') border-red-500 @enderror" required onchange="updateServiceTypePreview()">
-                            <option value="">Pilih Jenis Service</option>
-                            @foreach($serviceTypes as $key => $label)
-                                <option value="{{ $key }}" {{ old('service_type') == $key ? 'selected' : '' }}>
-                                    {{ $label }}
-                                </option>
-                            @endforeach
-                        </select>
-                        @error('service_type')
-                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
 
                     <div id="hpp-selection" class="hidden">
                         <label for="hpp_id" class="form-label">Pilih HPP <span class="text-red-500">*</span></label>
@@ -229,35 +215,40 @@ function showHppPreview(hppData) {
         </div>
         
         <div class="mt-4">
-            <h5 class="font-medium text-blue-800 dark:text-blue-200 mb-2">Breakdown TKDN:</h5>
+            <h5 class="font-medium text-blue-800 dark:text-blue-200 mb-2">Breakdown TKDN (${hppData.project_type === 'tkdn_jasa' ? 'Form 3.1-3.5' : 'Form 4.1-4.7'}):</h5>
             <div class="space-y-2">
     `;
     
-    Object.entries(hppData.tkdn_breakdown).forEach(([classification, data]) => {
+    if (Object.keys(hppData.tkdn_breakdown).length === 0) {
         hppDetailsHtml += `
-            <div class="flex justify-between text-sm">
-                <span>Form ${classification}:</span>
-                <span>${data.count} items - Rp ${formatNumber(data.total_cost)}</span>
+            <div class="text-sm text-gray-500 dark:text-gray-400 italic">
+                Tidak ada items HPP yang sesuai dengan jenis project ini
             </div>
         `;
-    });
+    } else {
+        Object.entries(hppData.tkdn_breakdown).forEach(([classification, data]) => {
+            hppDetailsHtml += `
+                <div class="flex justify-between text-sm">
+                    <span>Form ${classification}:</span>
+                    <span>${data.count} items - Rp ${formatNumber(data.total_cost)}</span>
+                </div>
+            `;
+        });
+    }
     
     hppDetailsHtml += `
             </div>
         </div>
     `;
     
-    // Service Preview dengan service type yang dipilih
-    const serviceType = document.getElementById('service_type').value;
-    const serviceTypeLabel = document.getElementById('service_type').selectedOptions[0]?.text || 'Belum dipilih';
-    
+    // Service Preview - service type akan ditentukan otomatis berdasarkan project type
     let servicePreviewHtml = `
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
                 <span class="font-medium">Nama Service:</span> Service TKDN - ${hppData.code}
             </div>
             <div>
-                <span class="font-medium">Jenis Service:</span> ${serviceTypeLabel}
+                <span class="font-medium">Jenis Project:</span> ${hppData.project_type === 'tkdn_jasa' ? 'TKDN Jasa' : 'TKDN Barang & Jasa'}
             </div>
             <div>
                 <span class="font-medium">Penyedia:</span> ${hppData.project_name}
@@ -273,8 +264,9 @@ function showHppPreview(hppData) {
                 <div>✅ Service dengan nama otomatis</div>
                 <div>✅ Provider dan user dari data proyek</div>
                 <div>✅ Dokumen number otomatis</div>
-                <div>✅ Form TKDN sesuai jenis service: ${getTkdnFormDescription(serviceType)}</div>
-                <div>✅ Service items dari HPP items</div>
+                <div>✅ Form TKDN sesuai jenis project: ${getTkdnFormDescription(hppData.project_type)}</div>
+                <div>✅ Service items dari HPP items yang sesuai (${Object.keys(hppData.tkdn_breakdown).length} form tersedia)</div>
+                ${Object.keys(hppData.tkdn_breakdown).length === 0 ? '<div class="text-yellow-600 dark:text-yellow-400">⚠️ Tidak ada HPP items yang sesuai dengan jenis project ini</div>' : ''}
             </div>
         </div>
     `;
@@ -285,28 +277,13 @@ function showHppPreview(hppData) {
 }
 
 
-function updateServiceTypePreview() {
-    const serviceType = document.getElementById('service_type').value;
-    const hppPreview = document.getElementById('hpp-preview');
-    
-    // Update preview jika sudah ada
-    if (!hppPreview.classList.contains('hidden')) {
-        const hppSelect = document.getElementById('hpp_id');
-        if (hppSelect.value) {
-            const hppData = JSON.parse(hppSelect.selectedOptions[0].dataset.hppData);
-            showHppPreview(hppData);
-        }
-    }
-}
-
-function getTkdnFormDescription(serviceType) {
+function getTkdnFormDescription(projectType) {
     const descriptions = {
-        'project': 'Form 3.1 (Manajemen Proyek) + Form 3.5 (Rangkuman)',
-        'equipment': 'Form 3.2 (Alat Kerja) + Form 3.5 (Rangkuman)',
-        'construction': 'Form 3.3 (Konstruksi) + Form 3.5 (Rangkuman)'
+        'tkdn_jasa': 'Form 3.1 - 3.5 (TKDN Jasa)',
+        'tkdn_barang_jasa': 'Form 4.1 - 4.7 (TKDN Barang & Jasa)'
     };
     
-    return descriptions[serviceType] || 'Semua form TKDN (3.1, 3.2, 3.3, 3.4, 3.5)';
+    return descriptions[projectType] || 'Form TKDN sesuai jenis project';
 }
 
 function formatNumber(num) {

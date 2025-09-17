@@ -32,9 +32,8 @@ class ServiceController extends Controller
     public function create()
     {
         $projects = Project::where('status', '!=', 'completed')->get();
-        $serviceTypes = Service::getServiceTypes();
 
-        return view('service.create', compact('projects', 'serviceTypes'));
+        return view('service.create', compact('projects'));
     }
 
     /**
@@ -70,9 +69,14 @@ class ServiceController extends Controller
 
             // Ambil semua HPP untuk project ini dengan error handling
             $hpps = Hpp::where('project_id', $projectId)
-                ->with(['items' => function ($query) {
-                    $query->orderBy('tkdn_classification')
-                        ->orderBy('id');
+                ->with(['items' => function ($query) use ($project) {
+                    // Filter items berdasarkan project_type
+                    if ($project->project_type === 'tkdn_jasa') {
+                        $query->whereIn('tkdn_classification', ['3.1', '3.2', '3.3', '3.4', '3.5']);
+                    } elseif ($project->project_type === 'tkdn_barang_jasa') {
+                        $query->whereIn('tkdn_classification', ['4.1', '4.2', '4.3', '4.4', '4.5', '4.6', '4.7']);
+                    }
+                    $query->orderBy('tkdn_classification')->orderBy('id');
                 }, 'project'])
                 ->get();
 
@@ -108,12 +112,22 @@ class ServiceController extends Controller
                         'items_count' => $hpp->items ? $hpp->items->count() : 0,
                         'project_name' => $hpp->project ? $hpp->project->name : 'N/A',
                         'project_code' => $hpp->project ? $hpp->project->code : 'N/A',
+                        'project_type' => $hpp->project ? $hpp->project->project_type : 'tkdn_jasa',
                         'tkdn_breakdown' => $hpp->items ? $hpp->items->groupBy('tkdn_classification')->map(function ($items, $classification) {
                             return [
                                 'classification' => $classification,
                                 'count' => $items->count(),
                                 'total_cost' => $items->sum('total_price'),
                             ];
+                        })->filter(function ($data, $classification) use ($hpp) {
+                            // Filter berdasarkan project_type
+                            if ($hpp->project->project_type === 'tkdn_jasa') {
+                                return in_array($classification, ['3.1', '3.2', '3.3', '3.4', '3.5']);
+                            } elseif ($hpp->project->project_type === 'tkdn_barang_jasa') {
+                                return in_array($classification, ['4.1', '4.2', '4.3', '4.4', '4.5', '4.6', '4.7']);
+                            }
+
+                            return true;
                         }) : [],
                     ];
                 } catch (\Exception $itemError) {
@@ -171,36 +185,47 @@ class ServiceController extends Controller
             'hpp_id' => $hpp->id,
             'service_type' => $service->service_type,
             'project_id' => $service->project_id,
+            'form_category' => $service->form_category,
         ]);
 
         // Generate form berdasarkan kategori yang dipilih
         $availableForms = $service->getAvailableForms();
+        $generatedForms = [];
 
         foreach ($availableForms as $formCode => $formName) {
-            Log::info("Generating Form {$formCode} - {$formName} from HPP");
-            $this->createTkdnFormFromHpp($service, $hpp, $formCode, $formName);
+            // Cek apakah ada HPP items untuk form ini
+            $hppItemsCount = $hpp->items()->where('tkdn_classification', $formCode)->count();
+
+            if ($hppItemsCount > 0) {
+                Log::info("Generating Form {$formCode} - {$formName} from HPP (found {$hppItemsCount} items)");
+                $this->createTkdnFormFromHpp($service, $hpp, $formCode, $formName);
+                $generatedForms[] = $formCode;
+            } else {
+                Log::info("Skipping Form {$formCode} - {$formName} (no HPP items found)");
+            }
         }
 
         // Generate Form 3.5 sebagai rangkuman dari form lainnya (hanya untuk kategori TKDN Jasa)
         if ($service->form_category === Service::CATEGORY_TKDN_JASA) {
             Log::info('Generating Form 3.5 - Rangkuman TKDN Jasa as summary from other forms');
             $this->createTkdnForm35Summary($service);
+            $generatedForms[] = '3.5';
         }
 
         // Verifikasi semua form telah di-generate
-        $generatedForms = $service->items()->distinct('tkdn_classification')->pluck('tkdn_classification')->toArray();
+        $actualGeneratedForms = $service->items()->distinct('tkdn_classification')->pluck('tkdn_classification')->toArray();
         Log::info('Generated forms verification from HPP', [
             'service_id' => $service->id,
-            'generated_forms' => $generatedForms,
-            'expected_forms' => ['3.1', '3.2', '3.3', '3.4', '3.5'],
+            'generated_forms' => $actualGeneratedForms,
+            'expected_forms' => $generatedForms,
             'total_service_items' => $service->items()->count(),
-            'forms_generated' => count($generatedForms),
+            'forms_generated' => count($actualGeneratedForms),
         ]);
 
         Log::info('TKDN forms generation from HPP completed', [
             'service_id' => $service->id,
             'total_service_items' => $service->items()->count(),
-            'forms_generated' => count($generatedForms),
+            'forms_generated' => count($actualGeneratedForms),
         ]);
     }
 
@@ -592,11 +617,19 @@ class ServiceController extends Controller
         }
     }
 
+    private function determineServiceTypeFromProjectType(string $projectType): string
+    {
+        return match ($projectType) {
+            'tkdn_jasa' => 'project', // Default untuk TKDN Jasa
+            'tkdn_barang_jasa' => 'project', // Default untuk TKDN Barang & Jasa
+            default => 'project',
+        };
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
             'hpp_id' => 'required|exists:hpps,id',
-            'service_type' => 'required|in:project,equipment,construction',
         ]);
 
         try {
@@ -606,8 +639,11 @@ class ServiceController extends Controller
                 // Ambil data HPP dengan project
                 $hpp = Hpp::with(['items', 'project'])->findOrFail($validated['hpp_id']);
 
-                // Tentukan form_category otomatis berdasarkan form yang tersedia di HPP
-                $formCategory = $this->determineFormCategoryFromHpp($hpp);
+                // Tentukan form_category otomatis berdasarkan project_type
+                $formCategory = $hpp->project->project_type === 'tkdn_jasa' ? 'tkdn_jasa' : 'tkdn_barang_jasa';
+
+                // Tentukan service_type berdasarkan project_type
+                $serviceType = $this->determineServiceTypeFromProjectType($hpp->project->project_type);
 
                 // Auto-generate service name dari HPP code
                 $serviceName = 'Service TKDN - '.$hpp->code;
@@ -616,7 +652,7 @@ class ServiceController extends Controller
                     'project_id' => $hpp->project_id,
                     'service_name' => $serviceName,
                     'form_category' => $formCategory,
-                    'service_type' => $validated['service_type'], // Gunakan service_type dari form
+                    'service_type' => $serviceType,
                     'provider_name' => $hpp->project->company ?? 'PT Konstruksi Maju',
                     'provider_address' => $hpp->project->address ?? 'Jl. Sudirman No. 123, Jakarta Pusat',
                     'user_name' => $hpp->project->client ?? 'PT Pembangunan Indonesia',
@@ -631,6 +667,7 @@ class ServiceController extends Controller
                     'service_id' => $service->id,
                     'hpp_id' => $hpp->id,
                     'service_type' => $service->service_type,
+                    'project_type' => $hpp->project->project_type,
                     'total_service_items' => $service->items()->count(),
                 ]);
             });
@@ -645,18 +682,44 @@ class ServiceController extends Controller
 
     public function show(Service $service)
     {
-        $service->load(['project', 'items']);
+        $service->load(['project']);
 
-        return view('service.show', compact('service'));
+        // Get project type
+        $projectType = $service->project->project_type;
+
+        // Use optimized service items with lazy loading and caching
+        $optimizedItems = $service->getOptimizedServiceItems($projectType);
+
+        // Group items berdasarkan tkdn_classification
+        $groupedItems = $optimizedItems->groupBy('tkdn_classification');
+
+        // Ambil HPP items yang sesuai dengan project_type
+        $hppItems = collect();
+        if ($service->project_id) {
+            $hppItems = \App\Models\HppItem::whereHas('hpp', function ($query) use ($service) {
+                $query->where('project_id', $service->project_id);
+            })
+                ->where(function ($query) use ($projectType) {
+                    if ($projectType === 'tkdn_jasa') {
+                        $query->whereIn('tkdn_classification', ['3.1', '3.2', '3.3', '3.4', '3.5']);
+                    } elseif ($projectType === 'tkdn_barang_jasa') {
+                        $query->whereIn('tkdn_classification', ['4.1', '4.2', '4.3', '4.4', '4.5', '4.6', '4.7']);
+                    }
+                })
+                ->with(['hpp', 'estimation'])
+                ->get()
+                ->groupBy('tkdn_classification');
+        }
+
+        return view('service.show', compact('service', 'groupedItems', 'hppItems', 'projectType'));
     }
 
     public function edit(Service $service)
     {
         $projects = Project::where('status', '!=', 'completed')->get();
-        $serviceTypes = Service::getServiceTypes();
         $service->load(['project', 'items']);
 
-        return view('service.edit', compact('service', 'projects', 'serviceTypes'));
+        return view('service.edit', compact('service', 'projects'));
     }
 
     public function update(Request $request, Service $service)
@@ -664,7 +727,6 @@ class ServiceController extends Controller
         $validated = $request->validate([
             'project_id' => 'required|exists:projects,id',
             'service_name' => 'required|string|max:255',
-            'service_type' => 'required|in:project,equipment,construction',
             'provider_name' => 'nullable|string|max:255',
             'provider_address' => 'nullable|string',
             'user_name' => 'nullable|string|max:255',
@@ -685,7 +747,6 @@ class ServiceController extends Controller
                 $service->update([
                     'project_id' => $validated['project_id'],
                     'service_name' => $validated['service_name'],
-                    'service_type' => $validated['service_type'],
                     'provider_name' => $validated['provider_name'],
                     'provider_address' => $validated['provider_address'],
                     'user_name' => $validated['user_name'],
@@ -956,6 +1017,14 @@ class ServiceController extends Controller
             'tkdn_classification' => $tkdnClassification,
         ]);
 
+        // Ambil project untuk mendapatkan project_type
+        $project = Project::find($projectId);
+        if (! $project) {
+            Log::warning('Project not found for HPP items query', ['project_id' => $projectId]);
+
+            return collect();
+        }
+
         // Ambil HPP items berdasarkan project_id dan tkdn_classification
         $hppItems = HppItem::whereHas('hpp', function ($query) use ($projectId) {
             $query->where('project_id', $projectId);
@@ -963,6 +1032,17 @@ class ServiceController extends Controller
             ->where('tkdn_classification', $tkdnClassification)
             ->with(['hpp', 'estimationItem.estimation.items'])
             ->get();
+
+        // Filter berdasarkan project_type
+        if ($project->project_type === 'tkdn_jasa') {
+            $hppItems = $hppItems->filter(function ($item) {
+                return in_array($item->tkdn_classification, ['3.1', '3.2', '3.3', '3.4', '3.5']);
+            });
+        } elseif ($project->project_type === 'tkdn_barang_jasa') {
+            $hppItems = $hppItems->filter(function ($item) {
+                return in_array($item->tkdn_classification, ['4.1', '4.2', '4.3', '4.4', '4.5', '4.6', '4.7']);
+            });
+        }
 
         Log::info('HPP items query result', [
             'project_id' => $projectId,

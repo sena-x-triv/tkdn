@@ -45,6 +45,20 @@
                             @enderror
                         </div>
                         <div>
+                            <label for="project_type" class="form-label">Jenis Project <span class="text-red-500">*</span></label>
+                            <select name="project_type" id="project_type" class="form-input @error('project_type') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror" required>
+                                <option value="">Pilih Jenis Project</option>
+                                @foreach($projectTypes as $key => $label)
+                                    <option value="{{ $key }}" {{ old('project_type', $project->project_type) == $key ? 'selected' : '' }}>
+                                        {{ $label }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('project_type')
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div>
                             <label for="status" class="form-label">Status <span class="text-red-500">*</span></label>
                             <select name="status" id="status" class="form-input @error('status') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror" required>
                                 <option value="draft" {{ old('status', $project->status) == 'draft' ? 'selected' : '' }}>Draft</option>

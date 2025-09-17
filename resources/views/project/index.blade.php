@@ -72,6 +72,7 @@
                 <tr>
                             <th>No</th>
                             <th>Name</th>
+                            <th>Project Type</th>
                             <th>Company</th>
                             <th>Location</th>
                             <th>Status</th>
@@ -98,6 +99,11 @@
                                         @endif
                                     </div>
                                 </div>
+                            </td>
+                            <td>
+                                <span class="badge {{ $project->project_type == 'tkdn_jasa' ? 'badge-info' : 'badge-warning' }}">
+                                    {{ $project->project_type == 'tkdn_jasa' ? 'TKDN Jasa' : 'TKDN Barang & Jasa' }}
+                                </span>
                             </td>
                             <td>
                                 <span class="text-xs text-gray-700 dark:text-gray-200">{{ $project->company ?: '-' }}</span>

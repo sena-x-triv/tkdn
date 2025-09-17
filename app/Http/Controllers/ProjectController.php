@@ -25,13 +25,16 @@ class ProjectController extends Controller
 
     public function create()
     {
-        return view('project.create');
+        $projectTypes = Project::getProjectTypes();
+
+        return view('project.create', compact('projectTypes'));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'project_type' => 'required|in:tkdn_jasa,tkdn_barang_jasa',
             'status' => 'required|in:draft,on_progress,completed',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
@@ -51,13 +54,16 @@ class ProjectController extends Controller
 
     public function edit(Project $project)
     {
-        return view('project.edit', compact('project'));
+        $projectTypes = Project::getProjectTypes();
+
+        return view('project.edit', compact('project', 'projectTypes'));
     }
 
     public function update(Request $request, Project $project)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'project_type' => 'required|in:tkdn_jasa,tkdn_barang_jasa',
             'status' => 'required|in:draft,on_progress,completed',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
@@ -86,22 +92,22 @@ class ProjectController extends Controller
         $sheet = $spreadsheet->getActiveSheet();
 
         // Set headers
-        $headers = ['Name', 'Status', 'Start Date', 'End Date', 'Description', 'Company', 'Location'];
+        $headers = ['Name', 'Project Type', 'Status', 'Start Date', 'End Date', 'Description', 'Company', 'Location'];
         $sheet->fromArray($headers, null, 'A1');
 
         // Set example data
         $exampleData = [
-            ['Project A', 'draft', '2024-01-01', '2024-12-31', 'Sample project description', 'Company A', 'Jakarta'],
-            ['Project B', 'on_progress', '2024-06-01', '2024-11-30', 'Another project', 'Company B', 'Bandung'],
+            ['Project A', 'tkdn_jasa', 'draft', '2024-01-01', '2024-12-31', 'Sample project description', 'Company A', 'Jakarta'],
+            ['Project B', 'tkdn_barang_jasa', 'on_progress', '2024-06-01', '2024-11-30', 'Another project', 'Company B', 'Bandung'],
         ];
         $sheet->fromArray($exampleData, null, 'A2');
 
         // Style headers
-        $sheet->getStyle('A1:G1')->getFont()->setBold(true);
-        $sheet->getStyle('A1:G1')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('E5E7EB');
+        $sheet->getStyle('A1:H1')->getFont()->setBold(true);
+        $sheet->getStyle('A1:H1')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('E5E7EB');
 
         // Auto size columns
-        foreach (range('A', 'G') as $col) {
+        foreach (range('A', 'H') as $col) {
             $sheet->getColumnDimension($col)->setAutoSize(true);
         }
 
@@ -149,15 +155,23 @@ class ProjectController extends Controller
                 }
 
                 // Validate required fields
-                if (empty($row[0]) || empty($row[1]) || empty($row[2]) || empty($row[3])) {
-                    $errors[] = "Row {$rowNumber}: Missing required fields (Name, Status, Start Date, or End Date)";
+                if (empty($row[0]) || empty($row[1]) || empty($row[2]) || empty($row[3]) || empty($row[4])) {
+                    $errors[] = "Row {$rowNumber}: Missing required fields (Name, Project Type, Status, Start Date, or End Date)";
+                    $rowNumber++;
+
+                    continue;
+                }
+
+                // Validate project type
+                if (! in_array($row[1], ['tkdn_jasa', 'tkdn_barang_jasa'])) {
+                    $errors[] = "Row {$rowNumber}: Project Type must be tkdn_jasa or tkdn_barang_jasa";
                     $rowNumber++;
 
                     continue;
                 }
 
                 // Validate status
-                if (! in_array($row[1], ['draft', 'on_progress', 'completed'])) {
+                if (! in_array($row[2], ['draft', 'on_progress', 'completed'])) {
                     $errors[] = "Row {$rowNumber}: Status must be draft, on_progress, or completed";
                     $rowNumber++;
 
@@ -165,7 +179,7 @@ class ProjectController extends Controller
                 }
 
                 // Validate dates
-                if (! strtotime($row[2]) || ! strtotime($row[3])) {
+                if (! strtotime($row[3]) || ! strtotime($row[4])) {
                     $errors[] = "Row {$rowNumber}: Invalid date format (use YYYY-MM-DD)";
                     $rowNumber++;
 
@@ -173,7 +187,7 @@ class ProjectController extends Controller
                 }
 
                 // Validate end_date >= start_date
-                if (strtotime($row[3]) < strtotime($row[2])) {
+                if (strtotime($row[4]) < strtotime($row[3])) {
                     $errors[] = "Row {$rowNumber}: End date must be after or equal to start date";
                     $rowNumber++;
 
@@ -184,12 +198,13 @@ class ProjectController extends Controller
                     // Create project
                     Project::create([
                         'name' => trim($row[0]),
-                        'status' => trim($row[1]),
-                        'start_date' => $row[2],
-                        'end_date' => $row[3],
-                        'description' => ! empty($row[4]) ? trim($row[4]) : null,
-                        'company' => ! empty($row[5]) ? trim($row[5]) : null,
-                        'location' => ! empty($row[6]) ? trim($row[6]) : null,
+                        'project_type' => trim($row[1]),
+                        'status' => trim($row[2]),
+                        'start_date' => $row[3],
+                        'end_date' => $row[4],
+                        'description' => ! empty($row[5]) ? trim($row[5]) : null,
+                        'company' => ! empty($row[6]) ? trim($row[6]) : null,
+                        'location' => ! empty($row[7]) ? trim($row[7]) : null,
                     ]);
 
                     $imported++;
@@ -218,4 +233,4 @@ class ProjectController extends Controller
                 ->with('error', 'Import failed: '.$e->getMessage());
         }
     }
-} 
+}

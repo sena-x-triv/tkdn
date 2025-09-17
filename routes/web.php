@@ -44,15 +44,15 @@ Route::prefix('master')->name('master.')->group(function () {
 
 // Service Routes - Specific routes must come BEFORE resource route
 Route::get('service/get-hpp-data', [App\Http\Controllers\ServiceController::class, 'getHppData'])->name('service.get-hpp-data');
-Route::resource('service', App\Http\Controllers\ServiceController::class);
-Route::post('service/{service}/submit', [App\Http\Controllers\ServiceController::class, 'submit'])->name('service.submit');
-Route::post('service/{service}/approve', [App\Http\Controllers\ServiceController::class, 'approve'])->name('service.approve');
-Route::post('service/{service}/reject', [App\Http\Controllers\ServiceController::class, 'reject'])->name('service.reject');
-Route::post('service/{service}/generate', [App\Http\Controllers\ServiceController::class, 'generate'])->name('service.generate');
-Route::post('service/{service}/generate-form/{formNumber}', [App\Http\Controllers\ServiceController::class, 'generateForm'])->name('service.generate-form');
+Route::resource('service', App\Http\Controllers\ServiceController::class)->middleware('service.cache');
+Route::post('service/{service}/submit', [App\Http\Controllers\ServiceController::class, 'submit'])->name('service.submit')->middleware('service.cache');
+Route::post('service/{service}/approve', [App\Http\Controllers\ServiceController::class, 'approve'])->name('service.approve')->middleware('service.cache');
+Route::post('service/{service}/reject', [App\Http\Controllers\ServiceController::class, 'reject'])->name('service.reject')->middleware('service.cache');
+Route::post('service/{service}/generate', [App\Http\Controllers\ServiceController::class, 'generate'])->name('service.generate')->middleware('service.cache');
+Route::post('service/{service}/generate-form/{formNumber}', [App\Http\Controllers\ServiceController::class, 'generateForm'])->name('service.generate-form')->middleware('service.cache');
 Route::get('service/{service}/export/excel/{classification}', [App\Http\Controllers\ServiceController::class, 'exportExcel'])->name('service.export.excel');
 Route::get('service/{service}/debug-hpp-items', [App\Http\Controllers\ServiceController::class, 'debugHppItems'])->name('service.debug-hpp-items');
-Route::post('service/{service}/regenerate-form-34', [App\Http\Controllers\ServiceController::class, 'regenerateForm34'])->name('service.regenerate-form-34');
+Route::post('service/{service}/regenerate-form-34', [App\Http\Controllers\ServiceController::class, 'regenerateForm34'])->name('service.regenerate-form-34')->middleware('service.cache');
 
 // HPP Routes - Specific routes must come BEFORE resource route
 Route::get('hpp/get-ahs-data', [App\Http\Controllers\HppController::class, 'getAhsDataAjax'])->name('hpp.get-ahs-data');

@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\OptimizedServiceItems;
 use App\Traits\UsesUlid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Service extends Model
 {
-    use HasFactory, UsesUlid;
+    use HasFactory, OptimizedServiceItems, UsesUlid;
 
     protected $fillable = [
         'project_id',
