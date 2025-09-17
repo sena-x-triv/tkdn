@@ -71,6 +71,11 @@ class Service extends Model
 
     public function items()
     {
+        return $this->hasMany(ServiceItem::class);
+    }
+
+    public function itemsOrdered()
+    {
         return $this->hasMany(ServiceItem::class)->orderBy('item_number');
     }
 

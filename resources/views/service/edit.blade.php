@@ -132,7 +132,7 @@
             </div>
             <div class="card-body">
                 <div id="items-container">
-                    @foreach($service->items as $index => $item)
+                    @foreach($service->itemsOrdered as $index => $item)
                     <div class="item-row border border-gray-200 dark:border-gray-600 rounded-lg p-4 mb-4">
                         <div class="flex items-center justify-between mb-4">
                             <h4 class="text-md font-medium text-gray-900 dark:text-white">Item {{ $index + 1 }}</h4>
@@ -266,7 +266,7 @@
 </template>
 
 <script>
-let itemIndex = {{ count($service->items) }};
+let itemIndex = {{ count($service->itemsOrdered) }};
 
 function addItem() {
     const container = document.getElementById('items-container');

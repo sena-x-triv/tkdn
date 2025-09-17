@@ -1786,9 +1786,8 @@
                     <tbody id="tkdnItemsTable">
                         @php
                             // Ambil semua service items untuk service ini
-                            $serviceItems = $service->items()
+                            $serviceItems = $service->itemsOrdered()
                                 ->with(['estimationItem'])
-                                ->orderBy('item_number')
                                 ->get();
                         @endphp
 

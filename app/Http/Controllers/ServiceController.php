@@ -213,7 +213,7 @@ class ServiceController extends Controller
         }
 
         // Verifikasi semua form telah di-generate
-        $actualGeneratedForms = $service->items()->distinct('tkdn_classification')->pluck('tkdn_classification')->toArray();
+        $actualGeneratedForms = $service->items()->select('tkdn_classification')->distinct()->pluck('tkdn_classification')->toArray();
         Log::info('Generated forms verification from HPP', [
             'service_id' => $service->id,
             'generated_forms' => $actualGeneratedForms,
@@ -517,7 +517,8 @@ class ServiceController extends Controller
     {
         // Ambil semua tkdn_classification yang ada di HPP items
         $availableClassifications = $hpp->items()
-            ->distinct('tkdn_classification')
+            ->select('tkdn_classification')
+            ->distinct()
             ->pluck('tkdn_classification')
             ->toArray();
 
@@ -923,7 +924,7 @@ class ServiceController extends Controller
         $this->createTkdnForm($service, '3.5', 'Rangkuman TKDN Jasa');
 
         // Verifikasi semua form telah di-generate
-        $generatedForms = $service->items()->distinct('tkdn_classification')->pluck('tkdn_classification')->toArray();
+        $generatedForms = $service->items()->select('tkdn_classification')->distinct()->pluck('tkdn_classification')->toArray();
         Log::info('Generated forms verification', [
             'service_id' => $service->id,
             'generated_forms' => $generatedForms,
