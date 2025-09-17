@@ -175,6 +175,20 @@ class WorkerController extends Controller
                     continue;
                 }
 
+                // Find category by name if provided
+                $categoryId = null;
+                if (! empty($row[2])) {
+                    $category = Category::where('name', 'LIKE', '%'.trim($row[2]).'%')->first();
+                    if ($category) {
+                        $categoryId = $category->id;
+                    } else {
+                        $errors[] = "Row {$rowNumber}: Kategori \"".trim($row[2]).'" tidak ditemukan';
+                        $rowNumber++;
+
+                        continue;
+                    }
+                }
+
                 // Validate TKDN range
                 if (! is_numeric($row[4]) || $row[4] < 0 || $row[4] > 100) {
                     $errors[] = "Row {$rowNumber}: TKDN must be a number between 0-100";
@@ -192,14 +206,6 @@ class WorkerController extends Controller
                 }
 
                 try {
-                    // Find category by name if provided
-                    $categoryId = null;
-                    if (! empty($row[2])) {
-                        $category = Category::where('name', 'LIKE', '%'.trim($row[2]).'%')->first();
-                        if ($category) {
-                            $categoryId = $category->id;
-                        }
-                    }
 
                     // Generate code
                     $code = $this->codeGenerationService->generateCode('worker');

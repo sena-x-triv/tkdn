@@ -2,29 +2,30 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
-use App\Models\User;
 use App\Models\Category;
 use App\Models\Material;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
+use Tests\TestCase;
 
 class MaterialImportTest extends TestCase
 {
     use RefreshDatabase;
 
     protected User $user;
+
     protected Category $category1;
+
     protected Category $category2;
 
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         // Create test user
         $this->user = User::factory()->create();
-        
+
         // Create test categories
         $this->category1 = Category::factory()->create(['name' => 'Category 1']);
         $this->category2 = Category::factory()->create(['name' => 'Category 2']);
@@ -53,7 +54,7 @@ class MaterialImportTest extends TestCase
 
         $response = $this->actingAs($this->user)
             ->post('/master/material/import', [
-                'excel_file' => $file
+                'excel_file' => $file,
             ]);
 
         $response->assertRedirect('/master/material');
@@ -65,7 +66,7 @@ class MaterialImportTest extends TestCase
             'description' => 'Description A',
             'unit' => 'kg',
             'price' => 10000,
-            'stock' => 100
+            'stock' => 100,
         ]);
 
         $this->assertDatabaseHas('material', [
@@ -73,13 +74,13 @@ class MaterialImportTest extends TestCase
             'description' => 'Description B',
             'unit' => 'pcs',
             'price' => 5000,
-            'stock' => 50
+            'stock' => 50,
         ]);
 
         // Verify category relationships
         $materialA = Material::where('name', 'Material A')->first();
         $materialB = Material::where('name', 'Material B')->first();
-        
+
         $this->assertEquals($this->category1->id, $materialA->category_id);
         $this->assertEquals($this->category2->id, $materialB->category_id);
 
@@ -102,12 +103,12 @@ class MaterialImportTest extends TestCase
 
         $response = $this->actingAs($this->user)
             ->post('/master/material/import', [
-                'excel_file' => $file
+                'excel_file' => $file,
             ]);
 
         $response->assertRedirect('/master/material');
         $response->assertSessionHas('import_errors');
-        
+
         $errors = session('import_errors');
         $this->assertCount(2, $errors);
         $this->assertStringContainsString('Nama material wajib diisi', $errors[1]);
@@ -117,23 +118,23 @@ class MaterialImportTest extends TestCase
     public function test_import_validates_category_exists(): void
     {
         $data = [
-            ['name', 'description', 'unit', 'price', 'stock', 'category_name'],
-            ['Material A', 'Description A', 'kg', '10000', '100', 'Non Existent Category'],
+            ['name', 'category', 'brand', 'specification', 'tkdn', 'price', 'unit', 'link', 'price_inflasi', 'description', 'location'],
+            ['Material A', 'Non Existent Category', 'Brand A', 'Spec A', '50', '100000', 'unit', 'http://example.com', '110000', 'Description A', 'Location A'],
         ];
 
         $file = $this->createExcelFile($data, 'materials.xlsx');
 
         $response = $this->actingAs($this->user)
             ->post('/master/material/import', [
-                'excel_file' => $file
+                'excel_file' => $file,
             ]);
 
         $response->assertRedirect('/master/material');
         $response->assertSessionHas('import_errors');
-        
+
         $errors = session('import_errors');
         $this->assertCount(1, $errors);
-        $this->assertStringContainsString('Kategori "Non Existent Category" tidak ditemukan', $errors[1]);
+        $this->assertStringContainsString('Kategori "Non Existent Category" tidak ditemukan', $errors[0]);
     }
 
     public function test_import_validates_price_format(): void
@@ -147,12 +148,12 @@ class MaterialImportTest extends TestCase
 
         $response = $this->actingAs($this->user)
             ->post('/master/material/import', [
-                'excel_file' => $file
+                'excel_file' => $file,
             ]);
 
         $response->assertRedirect('/master/material');
         $response->assertSessionHas('import_errors');
-        
+
         $errors = session('import_errors');
         $this->assertCount(1, $errors);
         $this->assertStringContainsString('Harga harus berupa angka', $errors[1]);
@@ -169,12 +170,12 @@ class MaterialImportTest extends TestCase
 
         $response = $this->actingAs($this->user)
             ->post('/master/material/import', [
-                'excel_file' => $file
+                'excel_file' => $file,
             ]);
 
         $response->assertRedirect('/master/material');
         $response->assertSessionHas('import_errors');
-        
+
         $errors = session('import_errors');
         $this->assertCount(1, $errors);
         $this->assertStringContainsString('Stok harus berupa angka', $errors[1]);
@@ -195,7 +196,7 @@ class MaterialImportTest extends TestCase
 
         $response = $this->actingAs($this->user)
             ->post('/master/material/import', [
-                'excel_file' => $file
+                'excel_file' => $file,
             ]);
 
         $response->assertRedirect('/master/material');
@@ -204,19 +205,19 @@ class MaterialImportTest extends TestCase
 
     private function createExcelFile(array $data, string $filename): UploadedFile
     {
-        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet;
         $sheet = $spreadsheet->getActiveSheet();
-        
+
         foreach ($data as $rowIndex => $row) {
             foreach ($row as $colIndex => $value) {
-                $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($colIndex) . ($rowIndex + 1), $value);
+                $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($colIndex + 1).($rowIndex + 1), $value);
             }
         }
-        
+
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
         $tempFile = tempnam(sys_get_temp_dir(), 'test_excel_');
         $writer->save($tempFile);
-        
+
         return new UploadedFile(
             $tempFile,
             $filename,

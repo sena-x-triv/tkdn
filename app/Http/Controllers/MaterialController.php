@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Material;
-use App\Models\Category;
 use App\Contracts\CodeGenerationServiceInterface;
+use App\Models\Category;
+use App\Models\Material;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -207,6 +207,20 @@ class MaterialController extends Controller
                     continue;
                 }
 
+                // Find category by name if provided
+                $categoryId = null;
+                if (! empty($row[1])) {
+                    $category = Category::where('name', 'LIKE', '%'.trim($row[1]).'%')->first();
+                    if ($category) {
+                        $categoryId = $category->id;
+                    } else {
+                        $errors[] = "Row {$rowNumber}: Kategori \"".trim($row[1]).'" tidak ditemukan';
+                        $rowNumber++;
+
+                        continue;
+                    }
+                }
+
                 // Validate TKDN range
                 if (! empty($row[4]) && (! is_numeric($row[4]) || $row[4] < 0 || $row[4] > 100)) {
                     $errors[] = "Row {$rowNumber}: TKDN must be a number between 0-100";
@@ -232,14 +246,6 @@ class MaterialController extends Controller
                 }
 
                 try {
-                    // Find category by name if provided
-                    $categoryId = null;
-                    if (! empty($row[1])) {
-                        $category = Category::where('name', 'LIKE', '%'.trim($row[1]).'%')->first();
-                        if ($category) {
-                            $categoryId = $category->id;
-                        }
-                    }
 
                     // Generate code
                     $code = $this->codeGenerationService->generateCode('material');
@@ -286,4 +292,4 @@ class MaterialController extends Controller
                 ->with('error', 'Import failed: '.$e->getMessage());
         }
     }
-} 
+}

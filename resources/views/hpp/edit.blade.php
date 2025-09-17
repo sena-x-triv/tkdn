@@ -99,16 +99,32 @@
                     <div class="md:col-span-2">
                         <div id="project-info" class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                             <h4 class="font-medium text-gray-900 dark:text-white mb-2">Informasi Project</h4>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nama Project</label>
                                     <p id="project-name" class="text-gray-900 dark:text-white">{{ $hpp->project->name ?? '' }}</p>
                                 </div>
                                 <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Jenis Project</label>
+                                    <p id="project-type" class="text-gray-900 dark:text-white">
+                                        @if($hpp->project)
+                                            @if($hpp->project->project_type === 'tkdn_jasa')
+                                                TKDN Jasa (Form 3.1 - 3.5)
+                                            @elseif($hpp->project->project_type === 'tkdn_barang_jasa')
+                                                TKDN Barang & Jasa (Form 4.1 - 4.7)
+                                            @else
+                                                {{ $hpp->project->project_type }}
+                                            @endif
+                                        @else
+                                            -
+                                        @endif
+                                    </p>
+                                </div>
+                                <div>
                                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Perusahaan</label>
                                     <p id="project-company" class="text-gray-900 dark:text-white">{{ $hpp->project->company ?? '-' }}</p>
                                 </div>
-                                <div class="md:col-span-2">
+                                <div class="md:col-span-3">
                                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Deskripsi</label>
                                     <p id="project-description" class="text-gray-900 dark:text-white">{{ $hpp->project->description ?? '-' }}</p>
                                 </div>
@@ -758,11 +774,24 @@ document.getElementById('project_id').addEventListener('change', function() {
         const project = projects.find(function(p) { return p.id === projectId; });
         if (project) {
             document.getElementById('project-name').textContent = project.name;
+            document.getElementById('project-type').textContent = getProjectTypeLabel(project.project_type);
             document.getElementById('project-company').textContent = project.company || '-';
             document.getElementById('project-description').textContent = project.description || '-';
         }
     }
 });
+
+// Helper function to get project type label
+function getProjectTypeLabel(projectType) {
+    switch(projectType) {
+        case 'tkdn_jasa':
+            return 'TKDN Jasa (Form 3.1 - 3.5)';
+        case 'tkdn_barang_jasa':
+            return 'TKDN Barang & Jasa (Form 4.1 - 4.7)';
+        default:
+            return projectType || '-';
+    }
+}
 
 // Search functionality
 document.getElementById('ahsSearch').addEventListener('input', function(e) {

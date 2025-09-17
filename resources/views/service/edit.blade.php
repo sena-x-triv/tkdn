@@ -266,7 +266,7 @@
 </template>
 
 <script>
-let itemIndex = {{ count($service->itemsOrdered) }};
+let itemIndex = parseInt('{{ $service->itemsOrdered ? count($service->itemsOrdered) : 0 }}') || 0;
 
 function addItem() {
     const container = document.getElementById('items-container');

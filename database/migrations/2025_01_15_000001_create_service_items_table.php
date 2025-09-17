@@ -16,6 +16,7 @@ return new class extends Migration
             $table->ulid('service_id');
             $table->ulid('estimation_item_id')->nullable();
             $table->integer('item_number'); // No. urut
+            $table->string('tkdn_classification')->nullable();
             $table->string('description'); // Uraian
             $table->string('qualification')->nullable(); // Kualifikasi
             $table->enum('nationality', ['WNI', 'WNA'])->default('WNI'); // Kewarganegaraan

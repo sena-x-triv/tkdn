@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Equipment;
-use App\Models\Category;
 use App\Contracts\CodeGenerationServiceInterface;
+use App\Models\Category;
+use App\Models\Equipment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -240,6 +240,20 @@ class EquipmentController extends Controller
                     continue;
                 }
 
+                // Find category by name if provided
+                $categoryId = null;
+                if (! empty($row[1])) {
+                    $category = Category::where('name', 'LIKE', '%'.trim($row[1]).'%')->first();
+                    if ($category) {
+                        $categoryId = $category->id;
+                    } else {
+                        $errors[] = "Row {$rowNumber}: Kategori \"".trim($row[1]).'" tidak ditemukan';
+                        $rowNumber++;
+
+                        continue;
+                    }
+                }
+
                 // Validate equipment type
                 if (! in_array($row[3], ['disposable', 'reusable'])) {
                     $errors[] = "Row {$rowNumber}: Equipment Type must be 'disposable' or 'reusable'";
@@ -288,14 +302,6 @@ class EquipmentController extends Controller
                 }
 
                 try {
-                    // Find category by name if provided
-                    $categoryId = null;
-                    if (! empty($row[1])) {
-                        $category = Category::where('name', 'LIKE', '%'.trim($row[1]).'%')->first();
-                        if ($category) {
-                            $categoryId = $category->id;
-                        }
-                    }
 
                     // Generate code
                     $code = $this->codeGenerationService->generateCode('equipment');
@@ -339,4 +345,3 @@ class EquipmentController extends Controller
         }
     }
 }
- 

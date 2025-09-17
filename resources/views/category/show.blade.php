@@ -53,6 +53,14 @@
                     <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">{{ $category->code }}</div>
                 </div>
                 <div>
+                    <label class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Jenis TKDN</label>
+                    <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $category->tkdn_type === 'tkdn_jasa' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-200' : 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200' }}">
+                            {{ $category->tkdn_type_label }}
+                        </span>
+                    </div>
+                </div>
+                <div>
                     <label class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Dibuat</label>
                     <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">{{ $category->created_at->format('d M Y, H:i') }}</div>
                 </div>

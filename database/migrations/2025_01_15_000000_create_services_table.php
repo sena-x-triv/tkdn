@@ -23,8 +23,10 @@ return new class extends Migration
             $table->decimal('total_foreign_cost', 15, 2)->default(0); // Total biaya KLN
             $table->decimal('total_cost', 15, 2)->default(0); // Total biaya
             $table->decimal('tkdn_percentage', 5, 2)->default(0); // Persentase TKDN
-            $table->enum('status', ['draft', 'submitted', 'approved', 'rejected'])->default('draft');
+            $table->enum('status', ['draft', 'submitted', 'approved', 'rejected', 'generated'])->default('draft');
             $table->enum('service_type', ['project', 'equipment', 'construction'])->default('project');
+            $table->string('tkdn_classification')->nullable();
+            $table->enum('form_category', ['tkdn_jasa', 'tkdn_barang_jasa'])->default('tkdn_jasa');
             $table->timestamps();
 
             $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');
@@ -35,4 +37,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('services');
     }
-}; 
+};

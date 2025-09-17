@@ -58,10 +58,27 @@
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Informasi Umum</h3>
         </div>
         <div class="card-body">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nama Project</label>
                     <p class="text-gray-900 dark:text-white">{{ $hpp->project->name ?? 'N/A' }}</p>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Jenis Project</label>
+                    <p class="text-gray-900 dark:text-white">
+                        @if($hpp->project)
+                            @if($hpp->project->project_type === 'tkdn_jasa')
+                                TKDN Jasa (Form 3.1 - 3.5)
+                            @elseif($hpp->project->project_type === 'tkdn_barang_jasa')
+                                TKDN Barang & Jasa (Form 4.1 - 4.7)
+                            @else
+                                {{ $hpp->project->project_type }}
+                            @endif
+                        @else
+                            N/A
+                        @endif
+                    </p>
                 </div>
                 
                 <div>
@@ -69,7 +86,7 @@
                     <p class="text-gray-900 dark:text-white">{{ $hpp->project->company ?? 'N/A' }}</p>
                 </div>
                 
-                <div class="md:col-span-2">
+                <div class="md:col-span-3">
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Deskripsi Project</label>
                     <p class="text-gray-900 dark:text-white">{{ $hpp->project->description ?? 'N/A' }}</p>
                 </div>
@@ -82,6 +99,11 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Status Project</label>
                     <p class="text-gray-900 dark:text-white">{{ ucfirst(str_replace('_', ' ', $hpp->project->status ?? 'N/A')) }}</p>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tanggal Mulai</label>
+                    <p class="text-gray-900 dark:text-white">{{ $hpp->project->start_date ? \Carbon\Carbon::parse($hpp->project->start_date)->format('d/m/Y') : 'N/A' }}</p>
                 </div>
             </div>
         </div>

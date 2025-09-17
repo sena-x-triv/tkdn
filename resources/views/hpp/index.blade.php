@@ -67,6 +67,7 @@
                             <th>No</th>
                             <th>Kode HPP</th>
                             <th>Project</th>
+                            <th>Jenis Project</th>
                             <th>Perusahaan</th>
                             <th>Sub Total HPP</th>
                             <th>Grand Total</th>
@@ -96,6 +97,21 @@
                                     <div class="font-medium text-gray-900 dark:text-white">{{ $hpp->project->name ?? 'N/A' }}</div>
                                     <div class="text-sm text-gray-500 dark:text-gray-400">{{ \App\Helpers\StringHelper::safeLimit($hpp->project->description ?? '', 20) }}</div>
                                 </div>
+                            </td>
+                            <td>
+                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium {{ $hpp->project && $hpp->project->project_type === 'tkdn_jasa' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-200' : 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200' }}">
+                                    @if($hpp->project)
+                                        @if($hpp->project->project_type === 'tkdn_jasa')
+                                            TKDN Jasa
+                                        @elseif($hpp->project->project_type === 'tkdn_barang_jasa')
+                                            TKDN Barang & Jasa
+                                        @else
+                                            {{ $hpp->project->project_type }}
+                                        @endif
+                                    @else
+                                        N/A
+                                    @endif
+                                </span>
                             </td>
                             <td>
                                 <span class="text-sm text-gray-700 dark:text-gray-200">{{ $hpp->project->company ?? 'N/A' }}</span>
@@ -179,12 +195,14 @@
                                     </div>
                                     <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Tidak ada HPP ditemukan</h3>
                                     <p class="text-gray-500 dark:text-gray-400 mb-4">Mulai dengan menambah HPP baru</p>
+                                    @can('manage-hpp')
                                     <a href="{{ route('hpp.create') }}" class="btn btn-primary">
                                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                                         </svg>
                                         Tambah HPP
                                     </a>
+                                    @endcan
                                 </div>
                             </td>
                         </tr>
