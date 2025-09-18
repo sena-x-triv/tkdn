@@ -114,10 +114,7 @@
                                 <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                             @enderror
                         </div>
-                    </div>
 
-                    <!-- Technical Information -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label for="tkdn" class="form-label">TKDN (%)</label>
                             <div class="relative">
@@ -132,7 +129,10 @@
                                 <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                             @enderror
                         </div>
-                        
+                    </div>
+
+                    <!-- Technical Information -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- Equipment Type Selection -->
                         <div class="col-span-2">
                             <label class="form-label">Jenis Barang <span class="text-red-500">*</span></label>
