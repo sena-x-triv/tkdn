@@ -92,7 +92,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
                                     </svg>
                                 </div>
-                                <select name="category_id" id="category_id" required class="form-input pl-10 @error('category_id') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror">
+                                <select name="category_id" id="category_id" required class="form-input select2 pl-10 @error('category_id') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror">
                                     <option value="">Pilih kategori</option>
                                     @foreach($categories as $category)
                                         <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
@@ -106,6 +106,30 @@
                             @enderror
                         </div>
                         
+                        <div>
+                            <label for="classification_tkdn" class="form-label">Klasifikasi TKDN <span class="text-red-500">*</span></label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                    </svg>
+                                </div>
+                                <select name="classification_tkdn" id="classification_tkdn" required class="form-input pl-10 select2 @error('classification_tkdn') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror">
+                                    <option value="">Pilih Klasifikasi TKDN...</option>
+                                    @foreach(\App\Models\Material::getClassificationOptions() as $key => $value)
+                                        <option value="{{ $key }}" {{ old('classification_tkdn') == $key ? 'selected' : '' }}>
+                                            {{ $value }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            @error('classification_tkdn')
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label for="brand" class="form-label">Merk</label>
                             <div class="relative">

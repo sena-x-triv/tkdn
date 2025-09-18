@@ -75,7 +75,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
                                     </svg>
                                 </div>
-                                <select name="category_id" id="category_id" class="form-input pl-10 w-full @error('category_id') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror">
+                                <select name="category_id" id="category_id" class="form-input select2 pl-10 w-full @error('category_id') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror">
                                     <option value="">Pilih kategori</option>
                                     @foreach($categories as $category)
                                         <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
@@ -85,6 +85,31 @@
                                 </select>
                             </div>
                             @error('category_id')
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <!-- Classification TKDN -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="classification_tkdn" class="form-label">Klasifikasi TKDN <span class="text-red-500">*</span></label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                    </svg>
+                                </div>
+                                <select name="classification_tkdn" id="classification_tkdn" required class="form-input pl-10 w-full select2 @error('classification_tkdn') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror">
+                                    <option value="">Pilih Klasifikasi TKDN...</option>
+                                    @foreach(\App\Models\Equipment::getClassificationOptions() as $key => $value)
+                                        <option value="{{ $key }}" {{ old('classification_tkdn') == $key ? 'selected' : '' }}>
+                                            {{ $value }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            @error('classification_tkdn')
                                 <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                             @enderror
                         </div>

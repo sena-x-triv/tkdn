@@ -352,6 +352,40 @@
         });
     </script>
 
+    <!-- Initialize Select2 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Wait for dependencies to be loaded
+            if (window.dependenciesReady) {
+                initializeSelect2();
+            } else {
+                window.addEventListener('dependenciesLoaded', initializeSelect2);
+            }
+        });
+
+        function initializeSelect2() {
+            // Initialize all select2 elements
+            if (typeof $ !== 'undefined' && $.fn.select2) {
+                $('.select2').select2({
+                    placeholder: 'Pilih opsi...',
+                    allowClear: true,
+                    width: '100%',
+                    language: {
+                        noResults: function() {
+                            return "Tidak ada hasil ditemukan";
+                        },
+                        searching: function() {
+                            return "Mencari...";
+                        }
+                    }
+                });
+                console.log('✅ Select2 initialized successfully');
+            } else {
+                console.error('❌ Select2 not available');
+            }
+        }
+    </script>
+
     @stack('scripts') <!-- Stack untuk JS tambahan -->
 </body>
 </html>
