@@ -170,19 +170,7 @@
                 <input type="hidden" name="items[INDEX][ahs_type]" class="ahs-type-input">
             </div>
             
-            <div>
-                <label class="form-label">Klasifikasi TKDN <span class="text-red-500">*</span></label>
-                <select name="items[INDEX][tkdn_classification]" class="form-select tkdn-classification-input" required>
-                    <option value="">Pilih Klasifikasi TKDN</option>
-                    <option value="3.1">3.1</option>
-                    <option value="3.2">3.2</option>
-                    <option value="3.3">3.3</option>
-                    <option value="3.4">3.4</option>
-                    <option value="3.5">3.5</option>
-                    <option value="3.6">3.6</option>
-                    <option value="3.7">3.7</option>
-                </select>
-            </div>
+            <!-- Klasifikasi TKDN akan diambil otomatis dari master data -->
             
             <div>
                 <label class="form-label">Volume <span class="text-red-500">*</span></label>
@@ -227,7 +215,10 @@
     <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-2/3 shadow-lg rounded-md bg-white dark:bg-gray-800">
         <div class="mt-3">
             <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Pilih Data AHS</h3>
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Pilih AHS</h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Pilih AHS untuk menambahkan item pekerjaan</p>
+                </div>
                 <button type="button" onclick="closeAhsModal()" class="text-gray-400 hover:text-gray-600">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -235,73 +226,34 @@
                 </button>
             </div>
             
-            <!-- Step 1: Pilih AHS -->
-            <div id="step1" class="step-content">
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Pilih Jenis Data</label>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <button type="button" onclick="filterByType('ahs')" class="filter-btn active" data-type="ahs">
-                            <div class="text-center p-4 border-2 border-blue-200 rounded-lg hover:border-blue-400 transition-colors">
-                                <div class="text-2xl mb-2">📋</div>
-                                <div class="font-medium text-blue-600">AHS</div>
-                                <div class="text-sm text-gray-500">Analisis Harga Satuan</div>
+            <!-- Info Box -->
+            <div class="mb-4">
+                <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0">
+                            <svg class="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div class="ml-3">
+                            <h3 class="text-sm font-medium text-blue-800 dark:text-blue-200">
+                                AHS Tersedia untuk Proyek
+                            </h3>
+                            <div class="mt-2 text-sm text-blue-700 dark:text-blue-300">
+                                <p>Menampilkan AHS yang sesuai dengan jenis proyek: <span id="projectTypeInfo" class="font-semibold"></span></p>
+                                <p class="mt-1">Klik AHS untuk menambahkan semua item pekerjaan secara otomatis.</p>
                             </div>
-                        </button>
-                        <button type="button" onclick="filterByType('worker')" class="filter-btn" data-type="worker">
-                            <div class="text-center p-4 border-2 border-gray-200 rounded-lg hover:border-gray-400 transition-colors">
-                                <div class="text-2xl mb-2">👷</div>
-                                <div class="font-medium text-gray-600">Pekerja</div>
-                                <div class="text-sm text-gray-500">Tenaga Kerja</div>
-                            </div>
-                        </button>
-                        <button type="button" onclick="filterByType('material')" class="filter-btn" data-type="material">
-                            <div class="text-center p-4 border-2 border-gray-200 rounded-lg hover:border-gray-400 transition-colors">
-                                <div class="text-2xl mb-2">🧱</div>
-                                <div class="font-medium text-gray-600">Material</div>
-                                <div class="text-sm text-gray-500">Bahan Baku</div>
-                            </div>
-                        </button>
-                        <button type="button" onclick="filterByType('equipment')" class="filter-btn" data-type="equipment">
-                            <div class="text-center p-4 border-2 border-gray-200 rounded-lg hover:border-gray-400 transition-colors">
-                                <div class="text-2xl mb-2">🔧</div>
-                                <div class="font-medium text-gray-600">Peralatan</div>
-                                <div class="text-sm text-gray-500">Alat Kerja</div>
-                            </div>
-                        </button>
+                        </div>
                     </div>
                 </div>
+            </div>
                 
                 <div class="mb-4">
                     <input type="text" id="ahsSearch" placeholder="Cari data AHS..." class="form-input w-full">
                 </div>
                 
-                <div class="max-h-96 overflow-y-auto">
-                    <div id="ahsList" class="space-y-2">
-                        <!-- AHS data will be loaded here -->
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Step 2: Pilih Item dari AHS -->
-            <div id="step2" class="step-content hidden">
-                <div class="mb-4">
-                    <button type="button" onclick="backToStep1()" class="btn btn-outline mb-4">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                        </svg>
-                        Kembali ke Pilihan AHS
-                    </button>
-                    
-                    <div id="selectedAhsInfo" class="p-4 bg-blue-50 dark:bg-blue-900 rounded-lg mb-4">
-                        <!-- Selected AHS info will be shown here -->
-                    </div>
-                </div>
-                
-                <div class="max-h-96 overflow-y-auto">
-                    <div id="ahsItemsList" class="space-y-2">
-                        <!-- AHS items will be loaded here -->
-                    </div>
-                </div>
+            <div id="ahsList" class="space-y-3 max-h-96 overflow-y-auto">
+                <!-- AHS data will be loaded here -->
             </div>
         </div>
     </div>
@@ -313,13 +265,8 @@ let itemIndex = parseInt(containerEl.dataset.count || '0', 10);
 let ahsData = [];
 let currentItemRow = null;
 let projects = [];
-let currentFilterType = 'ahs';
+let currentProjectType = '';
 
-try {
-    ahsData = JSON.parse(containerEl.dataset.ahs || '[]');
-} catch (e) {
-    ahsData = [];
-}
 try {
     projects = JSON.parse(containerEl.dataset.projects || '[]');
 } catch (e) {
@@ -367,105 +314,87 @@ function calculateTotal(row) {
 }
 
 function openAhsModal(button) {
-    currentItemRow = button.closest('.item-row');
+    if (!currentProjectType) {
+        alert('Pilih proyek terlebih dahulu');
+        return;
+    }
+    
     document.getElementById('ahsModal').classList.remove('hidden');
-    showStep1();
     loadAhsData();
 }
 
 function closeAhsModal() {
     document.getElementById('ahsModal').classList.add('hidden');
-    currentItemRow = null;
-    currentFilterType = 'ahs';
 }
 
-function showStep1() {
-    document.getElementById('step1').classList.remove('hidden');
-    document.getElementById('step2').classList.add('hidden');
-    document.getElementById('ahsSearch').value = '';
-    loadAhsData();
-}
-
-function showStep2() {
-    document.getElementById('step1').classList.add('hidden');
-    document.getElementById('step2').classList.remove('hidden');
-}
-
-function backToStep1() {
-    showStep1();
-}
-
-function filterByType(type) {
-    currentFilterType = type;
+// Update project type when project selection changes
+function updateProjectType() {
+    const projectSelect = document.getElementById('project_id');
+    const selectedProject = projects.find(p => p.id == projectSelect.value);
+    currentProjectType = selectedProject ? selectedProject.project_type : '';
     
-    // Update active button
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.classList.remove('active');
-        btn.querySelector('div').classList.remove('border-blue-400', 'border-blue-200');
-        btn.querySelector('div').classList.add('border-gray-200');
-        btn.querySelector('.font-medium').classList.remove('text-blue-600');
-        btn.querySelector('.font-medium').classList.add('text-gray-600');
-    });
-    
-    const activeBtn = document.querySelector(`[data-type="${type}"]`);
-    activeBtn.classList.add('active');
-    activeBtn.querySelector('div').classList.remove('border-gray-200');
-    activeBtn.querySelector('div').classList.add('border-blue-200');
-    activeBtn.querySelector('.font-medium').classList.remove('text-gray-600');
-    activeBtn.querySelector('.font-medium').classList.add('text-blue-600');
-    
-    loadAhsData();
+    // Update project type info
+    const projectTypeInfo = document.getElementById('projectTypeInfo');
+    if (projectTypeInfo) {
+        projectTypeInfo.textContent = currentProjectType === 'tkdn_jasa' ? 'TKDN Jasa' : 'TKDN Barang Jasa';
+    }
 }
 
 function loadAhsData() {
+    if (!currentProjectType) {
+        alert('Pilih proyek terlebih dahulu');
+        return;
+    }
+    
+    const ahsList = document.getElementById('ahsList');
+    ahsList.innerHTML = '<div class="text-center py-4"><div class="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div><p class="mt-2 text-gray-500">Memuat data AHS...</p></div>';
+    
+    // Load AHS data based on project type
+    fetch(`/hpp/get-ahs-data-only/${currentProjectType}`)
+        .then(response => response.json())
+        .then(data => {
+            ahsData = data;
+            displayAhsData();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            ahsList.innerHTML = '<div class="text-center py-4 text-red-500">Gagal memuat data AHS</div>';
+        });
+}
+
+function displayAhsData() {
     const ahsList = document.getElementById('ahsList');
     ahsList.innerHTML = '';
     
-    const filteredData = ahsData.filter(item => item.type === currentFilterType);
+    if (ahsData.length === 0) {
+        ahsList.innerHTML = '<div class="text-center py-8 text-gray-500">Tidak ada AHS yang sesuai dengan jenis proyek ini</div>';
+        return;
+    }
     
-    filteredData.forEach(function(item) {
+    ahsData.forEach(function(item) {
         const div = document.createElement('div');
         div.className = 'p-4 border border-gray-200 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors';
-        
-        if (item.type === 'ahs') {
-            div.onclick = function() { selectAhsForItems(item); };
-            div.innerHTML = `
-                <div class="flex justify-between items-start">
-                    <div class="flex-1">
-                        <div class="font-medium text-gray-900 dark:text-white text-lg">${item.description}</div>
-                        <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">Kode: ${item.code}</div>
-                        <div class="text-sm text-gray-500 dark:text-gray-400">Jumlah Item: ${item.item_count}</div>
-                    </div>
-                    <div class="text-right ml-4">
-                        <div class="text-xs text-gray-500 dark:text-gray-400">AHS</div>
-                        <div class="text-sm text-blue-600 dark:text-blue-400 font-medium">Klik untuk lihat item</div>
-                    </div>
+        div.onclick = function() { selectAhsForItems(item); };
+        div.innerHTML = `
+            <div class="flex justify-between items-start">
+                <div class="flex-1">
+                    <div class="font-medium text-gray-900 dark:text-white text-lg">${item.description}</div>
+                    <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">Kode: ${item.code}</div>
+                    <div class="text-sm text-gray-500 dark:text-gray-400">Jumlah Item: ${item.item_count}</div>
                 </div>
-            `;
-        } else {
-            div.onclick = function() { selectAhsItem(item); };
-            div.innerHTML = `
-                <div class="flex justify-between items-start">
-                    <div class="flex-1">
-                        <div class="font-medium text-gray-900 dark:text-white text-lg">${item.description}</div>
-                        <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">Kode: ${item.code}</div>
-                        <div class="text-sm text-gray-500 dark:text-gray-400">Kategori: ${item.category}</div>
-                    </div>
-                    <div class="text-right ml-4">
-                        <div class="font-medium text-gray-900 dark:text-white">Rp ${numberFormat(item.unit_price)}</div>
-                        <div class="text-xs text-gray-500 dark:text-gray-400">${item.unit || 'Unit'}</div>
-                    </div>
+                <div class="text-right ml-4">
+                    <div class="text-xs text-gray-500 dark:text-gray-400">AHS</div>
+                    <div class="text-sm text-blue-600 dark:text-blue-400 font-medium">Klik untuk tambahkan item</div>
                 </div>
-            `;
-        }
-        
+            </div>
+        `;
         ahsList.appendChild(div);
     });
 }
 
 function selectAhsForItems(ahs) {
     // Load AHS items
-    fetch(`{{ route('hpp.get-ahs-items') }}?estimation_id=${ahs.id}`)
+    fetch(`/hpp/get-ahs-items/${ahs.id}/${currentProjectType}`)
         .then(response => response.json())
         .then(data => {
             if (data.error) {
@@ -473,47 +402,16 @@ function selectAhsForItems(ahs) {
                 return;
             }
             
-            // Show selected AHS info
-            document.getElementById('selectedAhsInfo').innerHTML = `
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h4 class="font-medium text-gray-900 dark:text-white">${data.estimation.code} - ${data.estimation.title}</h4>
-                        <p class="text-sm text-gray-600 dark:text-gray-400">Pilih item dari AHS ini</p>
-                    </div>
-                    <div class="text-right">
-                        <div class="text-sm text-gray-500 dark:text-gray-400">Total Item: ${data.items.length}</div>
-                    </div>
-                </div>
-            `;
-            
-            // Load AHS items
-            const ahsItemsList = document.getElementById('ahsItemsList');
-            ahsItemsList.innerHTML = '';
-            
+            // Add all AHS items to HPP
             data.items.forEach(function(item) {
-                const div = document.createElement('div');
-                div.className = 'p-4 border border-gray-200 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors';
-                div.onclick = function() { selectAhsItemFromList(item, ahs); };
-                
-                div.innerHTML = `
-                    <div class="flex justify-between items-start">
-                        <div class="flex-1">
-                            <div class="font-medium text-gray-900 dark:text-white">${item.description}</div>
-                            <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">Kode: ${item.code}</div>
-                            <div class="text-sm text-gray-500 dark:text-gray-400">Kategori: ${item.category}</div>
-                            <div class="text-sm text-gray-500 dark:text-gray-400">TKDN: ${item.tkdn_classification || 'Belum diatur'}</div>
-                        </div>
-                        <div class="text-right ml-4">
-                            <div class="font-medium text-gray-900 dark:text-white">Rp ${numberFormat(item.unit_price)}</div>
-                            <div class="text-xs text-gray-500 dark:text-gray-400">${item.unit || 'Unit'}</div>
-                        </div>
-                    </div>
-                `;
-                
-                ahsItemsList.appendChild(div);
+                addAhsItem(item, ahs);
             });
             
-            showStep2();
+            // Close modal
+            closeAhsModal();
+            
+            // Show success message
+            showNotification(`Berhasil menambahkan ${data.items.length} item dari AHS ${ahs.code}`, 'success');
         })
         .catch(error => {
             console.error('Error:', error);
@@ -521,104 +419,77 @@ function selectAhsForItems(ahs) {
         });
 }
 
-function selectAhsItemFromList(item, ahs) {
-    if (!currentItemRow) return;
+function addAhsItem(item, ahs) {
+    const container = document.getElementById('items-container');
+    const template = document.getElementById('item-template');
+    const clone = template.content.cloneNode(true);
     
-    const descriptionInput = currentItemRow.querySelector('.description-input');
-    const estimationItemIdInput = currentItemRow.querySelector('.estimation-item-id-input');
-    const unitPriceInput = currentItemRow.querySelector('.unit-price-input');
-    const unitInput = currentItemRow.querySelector('.unit-input');
-    const tkdnClassificationInput = currentItemRow.querySelector('.tkdn-classification-input');
+    // Update index
+    const inputs = clone.querySelectorAll('input, select, textarea');
+    inputs.forEach(function(input) {
+        input.name = input.name.replace('INDEX', itemIndex);
+    });
+    
+    // Update item number
+    const itemNumber = clone.querySelector('.item-number');
+    itemNumber.textContent = itemIndex + 1;
+    
+    // Fill data
+    const descriptionInput = clone.querySelector('.description-input');
+    const estimationItemIdInput = clone.querySelector('.estimation-item-id-input');
+    const unitPriceInput = clone.querySelector('.unit-price-input');
+    const unitInput = clone.querySelector('.unit-input');
+    const volumeInput = clone.querySelector('.volume-input');
     
     descriptionInput.value = `${ahs.description} - ${item.description}`;
     estimationItemIdInput.value = item.id;
     unitPriceInput.value = item.unit_price;
     unitInput.value = item.unit || 'Unit';
+    volumeInput.value = item.coefficient || 1;
     
-    // Set TKDN classification
-    if (item.tkdn_classification) {
-        tkdnClassificationInput.value = item.tkdn_classification;
-    } else if (item.tkdn_value) {
-        // Auto-calculate TKDN classification based on value
-        const tkdnValue = parseFloat(item.tkdn_value);
-        if (tkdnValue <= 25) {
-            tkdnClassificationInput.value = '3.1';
-        } else if (tkdnValue <= 35) {
-            tkdnClassificationInput.value = '3.2';
-        } else if (tkdnValue <= 45) {
-            tkdnClassificationInput.value = '3.3';
-        } else if (tkdnValue <= 55) {
-            tkdnClassificationInput.value = '3.4';
-        } else if (tkdnValue <= 65) {
-            tkdnClassificationInput.value = '3.5';
-        } else if (tkdnValue <= 75) {
-            tkdnClassificationInput.value = '3.6';
-        } else {
-            tkdnClassificationInput.value = '3.7';
-        }
-    } else {
-        tkdnClassificationInput.value = '3.7'; // Default to highest TKDN
-    }
+    container.appendChild(clone);
     
-    // Recalculate total
-    calculateTotal(currentItemRow);
+    // Add event listeners for calculation
+    const volumeInputEl = container.lastElementChild.querySelector('.volume-input');
+    const unitPriceInputEl = container.lastElementChild.querySelector('.unit-price-input');
+    const totalPriceInputEl = container.lastElementChild.querySelector('.total-price-input');
     
-    closeAhsModal();
+    volumeInputEl.addEventListener('input', function() { calculateTotal(container.lastElementChild); });
+    unitPriceInputEl.addEventListener('input', function() { calculateTotal(container.lastElementChild); });
+    
+    // Calculate initial total
+    calculateTotal(container.lastElementChild);
+    
+    itemIndex++;
 }
 
-function selectAhsItem(item) {
-    if (!currentItemRow) return;
+function showNotification(message, type = 'info') {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg max-w-sm ${
+        type === 'success' ? 'bg-green-500 text-white' : 
+        type === 'error' ? 'bg-red-500 text-white' : 
+        'bg-blue-500 text-white'
+    }`;
+    notification.innerHTML = `
+        <div class="flex items-center">
+            <div class="flex-shrink-0">
+                ${type === 'success' ? '✓' : type === 'error' ? '✗' : 'ℹ'}
+            </div>
+            <div class="ml-3">
+                <p class="text-sm font-medium">${message}</p>
+            </div>
+        </div>
+    `;
     
-    const descriptionInput = currentItemRow.querySelector('.description-input');
-    const estimationItemIdInput = currentItemRow.querySelector('.estimation-item-id-input');
-    const unitPriceInput = currentItemRow.querySelector('.unit-price-input');
-    const unitInput = currentItemRow.querySelector('.unit-input');
-    const tkdnClassificationInput = currentItemRow.querySelector('.tkdn-classification-input');
+    document.body.appendChild(notification);
     
-    descriptionInput.value = item.description;
-    if (estimationItemIdInput) {
-        estimationItemIdInput.value = item.id;
-    }
-    unitPriceInput.value = item.unit_price;
-    
-    // Set unit based on item type
-    if (item.type === 'worker') {
-        unitInput.value = item.unit || 'OH';
-    } else if (item.type === 'material') {
-        unitInput.value = item.unit || 'Unit';
-    } else if (item.type === 'equipment') {
-        unitInput.value = 'Hari';
-    } else {
-        unitInput.value = 'Unit';
-    }
-    
-    // Set TKDN classification
-    if (item.tkdn) {
-        const tkdnValue = parseFloat(item.tkdn);
-        if (tkdnValue <= 25) {
-            tkdnClassificationInput.value = '3.1';
-        } else if (tkdnValue <= 35) {
-            tkdnClassificationInput.value = '3.2';
-        } else if (tkdnValue <= 45) {
-            tkdnClassificationInput.value = '3.3';
-        } else if (tkdnValue <= 55) {
-            tkdnClassificationInput.value = '3.4';
-        } else if (tkdnValue <= 65) {
-            tkdnClassificationInput.value = '3.5';
-        } else if (tkdnValue <= 75) {
-            tkdnClassificationInput.value = '3.6';
-        } else {
-            tkdnClassificationInput.value = '3.7';
-        }
-    } else {
-        tkdnClassificationInput.value = '3.7';
-    }
-    
-    // Recalculate total
-    calculateTotal(currentItemRow);
-    
-    closeAhsModal();
+    // Remove notification after 3 seconds
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
 }
+
 
 function numberFormat(number) {
     return new Intl.NumberFormat('id-ID').format(number);
@@ -674,6 +545,19 @@ document.getElementById('ahsSearch').addEventListener('input', function(e) {
 document.getElementById('ahsModal').addEventListener('click', function(e) {
     if (e.target === this) {
         closeAhsModal();
+    }
+});
+
+// Add event listener for project selection
+document.addEventListener('DOMContentLoaded', function() {
+    const projectSelect = document.getElementById('project_id');
+    if (projectSelect) {
+        projectSelect.addEventListener('change', function() {
+            updateProjectType();
+        });
+        
+        // Initialize project type on page load
+        updateProjectType();
     }
 });
 

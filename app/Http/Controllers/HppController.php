@@ -113,7 +113,6 @@ class HppController extends Controller
                 $hpp->items()->create([
                     'estimation_item_id' => $item['estimation_item_id'] ?? null,
                     'description' => $item['description'],
-                    'tkdn_classification' => $item['tkdn_classification'],
                     'volume' => $item['volume'],
                     'unit' => $item['unit'],
                     'duration' => $item['duration'],
@@ -232,7 +231,6 @@ class HppController extends Controller
                 $hpp->items()->create([
                     'estimation_item_id' => $item['estimation_item_id'] ?? null,
                     'description' => $item['description'],
-                    'tkdn_classification' => $item['tkdn_classification'],
                     'volume' => $item['volume'],
                     'unit' => $item['unit'],
                     'duration' => $item['duration'],
@@ -396,42 +394,6 @@ class HppController extends Controller
     }
 
     /**
-     * Get AHS items for AJAX request
-     */
-    public function getAhsItems(Request $request)
-    {
-        $estimationId = $request->estimation_id;
-        $estimation = Estimation::with('items')->find($estimationId);
-
-        if (! $estimation) {
-            return response()->json(['error' => 'Estimation tidak ditemukan'], 404);
-        }
-
-        $items = $estimation->items->map(function ($item) {
-            return [
-                'id' => $item->id,
-                'description' => $this->getItemName($item),
-                'code' => $item->code,
-                'category' => $item->category,
-                'unit_price' => $item->unit_price,
-                'coefficient' => $item->coefficient,
-                'tkdn_classification' => $item->tkdn_classification,
-                'tkdn_value' => $item->tkdn_value,
-                'unit' => $this->getItemUnit($item),
-            ];
-        });
-
-        return response()->json([
-            'estimation' => [
-                'id' => $estimation->id,
-                'code' => $estimation->code,
-                'title' => $estimation->title,
-            ],
-            'items' => $items,
-        ]);
-    }
-
-    /**
      * Approve HPP
      */
     public function approve(Hpp $hpp)
@@ -483,5 +445,159 @@ class HppController extends Controller
             return redirect()->route('hpp.index')
                 ->with('error', 'Terjadi kesalahan saat menolak HPP.');
         }
+    }
+
+    /**
+     * Get AHS data filtered by project type
+     */
+    public function getAhsDataByProjectType($projectType)
+    {
+        $ahsData = [];
+
+        // Get Estimations (AHS) filtered by project type
+        $estimations = Estimation::with(['items' => function ($query) use ($projectType) {
+            $query->forProjectType($projectType);
+        }])->get();
+
+        foreach ($estimations as $estimation) {
+            $ahsData[] = [
+                'type' => 'ahs',
+                'id' => $estimation->id,
+                'code' => $estimation->code,
+                'title' => $estimation->title,
+                'description' => $estimation->code.' - '.$estimation->title,
+                'category' => 'AHS',
+                'item_count' => $estimation->items->count(),
+            ];
+        }
+
+        // Get Workers filtered by project type
+        $workers = Worker::with('category')
+            ->whereIn('classification_tkdn', $this->getClassificationsForProjectType($projectType))
+            ->get();
+        foreach ($workers as $worker) {
+            $ahsData[] = [
+                'type' => 'worker',
+                'id' => $worker->id,
+                'code' => $worker->code,
+                'title' => $worker->name,
+                'description' => $worker->code.' - '.$worker->name,
+                'unit_price' => $worker->price,
+                'category' => 'Pekerja',
+                'unit' => $worker->unit,
+                'tkdn' => $worker->tkdn,
+                'classification_tkdn' => $worker->classification_tkdn,
+            ];
+        }
+
+        // Get Materials filtered by project type
+        $materials = Material::with('category')
+            ->whereIn('classification_tkdn', $this->getClassificationsForProjectType($projectType))
+            ->get();
+        foreach ($materials as $material) {
+            $ahsData[] = [
+                'type' => 'material',
+                'id' => $material->id,
+                'code' => $material->code,
+                'title' => $material->name,
+                'description' => $material->code.' - '.$material->name,
+                'unit_price' => $material->price,
+                'category' => 'Material',
+                'unit' => $material->unit,
+                'tkdn' => $material->tkdn,
+                'classification_tkdn' => $material->classification_tkdn,
+            ];
+        }
+
+        // Get Equipment filtered by project type
+        $equipment = Equipment::with('category')
+            ->whereIn('classification_tkdn', $this->getClassificationsForProjectType($projectType))
+            ->get();
+        foreach ($equipment as $eq) {
+            $ahsData[] = [
+                'type' => 'equipment',
+                'id' => $eq->id,
+                'code' => $eq->code,
+                'title' => $eq->name,
+                'description' => $eq->code.' - '.$eq->name,
+                'unit_price' => $eq->price,
+                'category' => 'Peralatan',
+                'period' => $eq->period,
+                'tkdn' => $eq->tkdn,
+                'classification_tkdn' => $eq->classification_tkdn,
+            ];
+        }
+
+        return $ahsData;
+    }
+
+    /**
+     * Get classifications for project type
+     */
+    private function getClassificationsForProjectType(string $projectType): array
+    {
+        return $projectType === 'tkdn_jasa'
+            ? ['3.1', '3.2', '3.3', '3.4', '3.5']
+            : ['4.1', '4.2', '4.3', '4.4', '4.5', '4.6', '4.7'];
+    }
+
+    /**
+     * Get AHS data only (filtered by project type)
+     */
+    public function getAhsDataOnly($projectType)
+    {
+        // Get Estimations (AHS) filtered by project type
+        $estimations = Estimation::with(['items' => function ($query) use ($projectType) {
+            $query->forProjectType($projectType);
+        }])->get();
+
+        $ahsData = [];
+        foreach ($estimations as $estimation) {
+            $ahsData[] = [
+                'type' => 'ahs',
+                'id' => $estimation->id,
+                'code' => $estimation->code,
+                'title' => $estimation->title,
+                'description' => $estimation->code.' - '.$estimation->title,
+                'category' => 'AHS',
+                'item_count' => $estimation->items->count(),
+            ];
+        }
+
+        return response()->json($ahsData);
+    }
+
+    /**
+     * Get AHS items with project type filtering
+     */
+    public function getAhsItems($estimationId, $projectType)
+    {
+        $estimation = Estimation::with(['items' => function ($query) use ($projectType) {
+            $query->forProjectType($projectType);
+        }])->findOrFail($estimationId);
+
+        $items = $estimation->items->map(function ($item) {
+            return [
+                'id' => $item->id,
+                'description' => $this->getItemName($item),
+                'code' => $item->code,
+                'category' => $item->category,
+                'unit_price' => $item->unit_price,
+                'coefficient' => $item->coefficient,
+                'tkdn_value' => $item->tkdn_value,
+                'unit' => $this->getItemUnit($item),
+                'classification_tkdn' => $item->classification_tkdn,
+            ];
+        });
+
+        return response()->json([
+            'estimation' => [
+                'id' => $estimation->id,
+                'code' => $estimation->code,
+                'title' => $estimation->title,
+                'description' => $estimation->code.' - '.$estimation->title,
+            ],
+            'items' => $items,
+        ]);
     }
 }

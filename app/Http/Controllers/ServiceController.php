@@ -1026,24 +1026,23 @@ class ServiceController extends Controller
             return collect();
         }
 
-        // Ambil HPP items berdasarkan project_id dan tkdn_classification
+        // Ambil HPP items berdasarkan project_id dan filter dari master data
         $hppItems = HppItem::whereHas('hpp', function ($query) use ($projectId) {
             $query->where('project_id', $projectId);
         })
-            ->where('tkdn_classification', $tkdnClassification)
-            ->with(['hpp', 'estimationItem.estimation.items'])
+            ->whereHas('estimationItem', function ($query) use ($tkdnClassification) {
+                $query->where(function ($q) use ($tkdnClassification) {
+                    $q->whereHas('worker', function ($workerQuery) use ($tkdnClassification) {
+                        $workerQuery->where('classification_tkdn', $tkdnClassification);
+                    })->orWhereHas('material', function ($materialQuery) use ($tkdnClassification) {
+                        $materialQuery->where('classification_tkdn', $tkdnClassification);
+                    })->orWhereHas('equipment', function ($equipmentQuery) use ($tkdnClassification) {
+                        $equipmentQuery->where('classification_tkdn', $tkdnClassification);
+                    });
+                });
+            })
+            ->with(['hpp', 'estimationItem.worker', 'estimationItem.material', 'estimationItem.equipment'])
             ->get();
-
-        // Filter berdasarkan project_type
-        if ($project->project_type === 'tkdn_jasa') {
-            $hppItems = $hppItems->filter(function ($item) {
-                return in_array($item->tkdn_classification, ['3.1', '3.2', '3.3', '3.4', '3.5']);
-            });
-        } elseif ($project->project_type === 'tkdn_barang_jasa') {
-            $hppItems = $hppItems->filter(function ($item) {
-                return in_array($item->tkdn_classification, ['4.1', '4.2', '4.3', '4.4', '4.5', '4.6', '4.7']);
-            });
-        }
 
         Log::info('HPP items query result', [
             'project_id' => $projectId,
@@ -1729,5 +1728,29 @@ class ServiceController extends Controller
 
             return back()->with('error', 'Terjadi kesalahan saat export Excel: '.$e->getMessage());
         }
+    }
+
+    /**
+     * Get HPP items filtered by project type
+     */
+    private function getHppItemsByProjectType(string $projectId, string $projectType): \Illuminate\Database\Eloquent\Collection
+    {
+        $project = Project::find($projectId);
+        if (! $project) {
+            Log::warning('Project not found for HPP items query', ['project_id' => $projectId]);
+
+            return collect();
+        }
+
+        $hppItems = HppItem::whereHas('hpp', function ($query) use ($projectId) {
+            $query->where('project_id', $projectId);
+        })
+            ->whereHas('estimationItem', function ($query) use ($projectType) {
+                $query->forProjectType($projectType);
+            })
+            ->with(['hpp', 'estimationItem.worker', 'estimationItem.material', 'estimationItem.equipment'])
+            ->get();
+
+        return $hppItems;
     }
 }

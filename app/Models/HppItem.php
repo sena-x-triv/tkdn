@@ -17,7 +17,6 @@ class HppItem extends Model
         'estimation_item_id',
         'item_number',
         'description',
-        'tkdn_classification',
         'volume',
         'unit',
         'duration',

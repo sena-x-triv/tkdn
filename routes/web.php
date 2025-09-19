@@ -56,7 +56,8 @@ Route::post('service/{service}/regenerate-form-34', [App\Http\Controllers\Servic
 
 // HPP Routes - Specific routes must come BEFORE resource route
 Route::get('hpp/get-ahs-data', [App\Http\Controllers\HppController::class, 'getAhsDataAjax'])->name('hpp.get-ahs-data');
-Route::get('hpp/get-ahs-items', [App\Http\Controllers\HppController::class, 'getAhsItems'])->name('hpp.get-ahs-items');
+Route::get('hpp/get-ahs-data-only/{projectType}', [App\Http\Controllers\HppController::class, 'getAhsDataOnly'])->name('hpp.get-ahs-data-only');
+Route::get('hpp/get-ahs-items/{estimationId}/{projectType}', [App\Http\Controllers\HppController::class, 'getAhsItems'])->name('hpp.get-ahs-items');
 Route::get('hpp/{hpp}/get-estimation-items', [App\Http\Controllers\HppController::class, 'getEstimationItems'])->name('hpp.get-estimation-items');
 Route::resource('hpp', App\Http\Controllers\HppController::class);
 Route::patch('hpp/{hpp}/approve', [App\Http\Controllers\HppController::class, 'approve'])->name('hpp.approve');
