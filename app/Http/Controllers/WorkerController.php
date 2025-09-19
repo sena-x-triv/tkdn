@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Contracts\CodeGenerationServiceInterface;
 use App\Models\Category;
 use App\Models\Worker;
+use App\Services\ImportService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -15,15 +16,18 @@ class WorkerController extends Controller
 {
     protected $codeGenerationService;
 
+    protected $importService;
+
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(CodeGenerationServiceInterface $codeGenerationService)
+    public function __construct(CodeGenerationServiceInterface $codeGenerationService, ImportService $importService)
     {
         $this->middleware('auth');
         $this->codeGenerationService = $codeGenerationService;
+        $this->importService = $importService;
     }
 
     public function index()
@@ -160,6 +164,9 @@ class WorkerController extends Controller
             $errors = [];
             $rowNumber = 2; // Start from row 2 (after header)
 
+            // Clear cache untuk memastikan data fresh
+            $this->importService->clearCache();
+
             foreach ($rows as $row) {
                 if (empty(array_filter($row))) {
                     $rowNumber++;
@@ -167,46 +174,65 @@ class WorkerController extends Controller
                     continue; // Skip empty rows
                 }
 
-                // Validate required fields
-                if (empty($row[0]) || empty($row[1]) || empty($row[3]) || empty($row[4])) {
-                    $errors[] = "Row {$rowNumber}: Missing required fields (Name, Unit, Price, or TKDN)";
+                // Validasi field required
+                $requiredErrors = $this->importService->validateRequiredFields(
+                    $row,
+                    [0 => 'Name', 1 => 'Unit', 3 => 'Price', 4 => 'TKDN'],
+                    $rowNumber
+                );
+
+                if (! empty($requiredErrors)) {
+                    $errors = array_merge($errors, $requiredErrors);
                     $rowNumber++;
 
                     continue;
                 }
 
-                // Find category by name if provided
-                $categoryId = null;
-                if (! empty($row[2])) {
-                    $category = Category::where('name', 'LIKE', '%'.trim($row[2]).'%')->first();
-                    if ($category) {
-                        $categoryId = $category->id;
-                    } else {
-                        $errors[] = "Row {$rowNumber}: Kategori \"".trim($row[2]).'" tidak ditemukan';
-                        $rowNumber++;
+                // Validasi dan cari kategori berdasarkan nama
+                [$categoryId, $categoryErrors] = $this->importService->validateAndGetCategoryId(
+                    $row[2] ?? null,
+                    $rowNumber
+                );
 
-                        continue;
-                    }
-                }
-
-                // Validate TKDN range
-                if (! is_numeric($row[4]) || $row[4] < 0 || $row[4] > 100) {
-                    $errors[] = "Row {$rowNumber}: TKDN must be a number between 0-100";
+                if (! empty($categoryErrors)) {
+                    $errors = array_merge($errors, $categoryErrors);
                     $rowNumber++;
 
                     continue;
                 }
 
-                // Validate Price
-                if (! is_numeric($row[3]) || $row[3] < 0) {
-                    $errors[] = "Row {$rowNumber}: Price must be a positive number";
+                // Validasi TKDN range
+                $tkdnErrors = $this->importService->validateNumericRange(
+                    $row[4],
+                    'TKDN',
+                    $rowNumber,
+                    0,
+                    100
+                );
+
+                if (! empty($tkdnErrors)) {
+                    $errors = array_merge($errors, $tkdnErrors);
+                    $rowNumber++;
+
+                    continue;
+                }
+
+                // Validasi Price
+                $priceErrors = $this->importService->validateNumericRange(
+                    $row[3],
+                    'Price',
+                    $rowNumber,
+                    0
+                );
+
+                if (! empty($priceErrors)) {
+                    $errors = array_merge($errors, $priceErrors);
                     $rowNumber++;
 
                     continue;
                 }
 
                 try {
-
                     // Generate code
                     $code = $this->codeGenerationService->generateCode('worker');
 
@@ -230,6 +256,9 @@ class WorkerController extends Controller
             }
 
             DB::commit();
+
+            // Log progress
+            $this->importService->logImportProgress('worker', $imported, count($rows), $errors);
 
             if (empty($errors)) {
                 return redirect()->route('master.worker.index')

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Contracts\CodeGenerationServiceInterface;
 use App\Models\Category;
 use App\Models\Equipment;
+use App\Services\ImportService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -15,13 +16,16 @@ class EquipmentController extends Controller
 {
     protected $codeGenerationService;
 
+    protected $importService;
+
     /**
      * Create a new controller instance.
      */
-    public function __construct(CodeGenerationServiceInterface $codeGenerationService)
+    public function __construct(CodeGenerationServiceInterface $codeGenerationService, ImportService $importService)
     {
         $this->middleware('auth');
         $this->codeGenerationService = $codeGenerationService;
+        $this->importService = $importService;
     }
 
     /**
@@ -225,6 +229,9 @@ class EquipmentController extends Controller
             $errors = [];
             $rowNumber = 2; // Start from row 2 (after header)
 
+            // Clear cache untuk memastikan data fresh
+            $this->importService->clearCache();
+
             foreach ($rows as $row) {
                 if (empty(array_filter($row))) {
                     $rowNumber++;
@@ -232,53 +239,80 @@ class EquipmentController extends Controller
                     continue; // Skip empty rows
                 }
 
-                // Validate required fields
-                if (empty($row[0]) || empty($row[3]) || empty($row[4]) || empty($row[5])) {
-                    $errors[] = "Row {$rowNumber}: Missing required fields (Name, Equipment Type, Period, or Price)";
+                // Validasi field required
+                $requiredErrors = $this->importService->validateRequiredFields(
+                    $row,
+                    [0 => 'Name', 3 => 'Equipment Type', 4 => 'Period', 5 => 'Price'],
+                    $rowNumber
+                );
+
+                if (! empty($requiredErrors)) {
+                    $errors = array_merge($errors, $requiredErrors);
                     $rowNumber++;
 
                     continue;
                 }
 
-                // Find category by name if provided
-                $categoryId = null;
-                if (! empty($row[1])) {
-                    $category = Category::where('name', 'LIKE', '%'.trim($row[1]).'%')->first();
-                    if ($category) {
-                        $categoryId = $category->id;
-                    } else {
-                        $errors[] = "Row {$rowNumber}: Kategori \"".trim($row[1]).'" tidak ditemukan';
-                        $rowNumber++;
+                // Validasi dan cari kategori berdasarkan nama
+                [$categoryId, $categoryErrors] = $this->importService->validateAndGetCategoryId(
+                    $row[1] ?? null,
+                    $rowNumber
+                );
 
-                        continue;
-                    }
-                }
-
-                // Validate equipment type
-                if (! in_array($row[3], ['disposable', 'reusable'])) {
-                    $errors[] = "Row {$rowNumber}: Equipment Type must be 'disposable' or 'reusable'";
+                if (! empty($categoryErrors)) {
+                    $errors = array_merge($errors, $categoryErrors);
                     $rowNumber++;
 
                     continue;
                 }
 
-                // Validate TKDN range
-                if (! empty($row[2]) && (! is_numeric($row[2]) || $row[2] < 0 || $row[2] > 100)) {
-                    $errors[] = "Row {$rowNumber}: TKDN must be a number between 0-100";
+                // Validasi equipment type
+                $typeErrors = $this->importService->validateInArray(
+                    $row[3],
+                    'Equipment Type',
+                    $rowNumber,
+                    ['disposable', 'reusable']
+                );
+
+                if (! empty($typeErrors)) {
+                    $errors = array_merge($errors, $typeErrors);
                     $rowNumber++;
 
                     continue;
                 }
 
-                // Validate Period
-                if (! is_numeric($row[4]) || $row[4] < 0) {
-                    $errors[] = "Row {$rowNumber}: Period must be a positive number";
+                // Validasi TKDN range
+                $tkdnErrors = $this->importService->validateNumericRange(
+                    $row[2] ?? null,
+                    'TKDN',
+                    $rowNumber,
+                    0,
+                    100
+                );
+
+                if (! empty($tkdnErrors)) {
+                    $errors = array_merge($errors, $tkdnErrors);
                     $rowNumber++;
 
                     continue;
                 }
 
-                // Validate Period for equipment type
+                // Validasi Period
+                $periodErrors = $this->importService->validateNumericRange(
+                    $row[4],
+                    'Period',
+                    $rowNumber,
+                    0
+                );
+
+                if (! empty($periodErrors)) {
+                    $errors = array_merge($errors, $periodErrors);
+                    $rowNumber++;
+
+                    continue;
+                }
+
+                // Validasi Period berdasarkan equipment type
                 if ($row[3] === 'disposable' && $row[4] != 0) {
                     $errors[] = "Row {$rowNumber}: Period must be 0 for disposable equipment";
                     $rowNumber++;
@@ -293,16 +327,22 @@ class EquipmentController extends Controller
                     continue;
                 }
 
-                // Validate Price
-                if (! is_numeric($row[5]) || $row[5] < 0) {
-                    $errors[] = "Row {$rowNumber}: Price must be a positive number";
+                // Validasi Price
+                $priceErrors = $this->importService->validateNumericRange(
+                    $row[5],
+                    'Price',
+                    $rowNumber,
+                    0
+                );
+
+                if (! empty($priceErrors)) {
+                    $errors = array_merge($errors, $priceErrors);
                     $rowNumber++;
 
                     continue;
                 }
 
                 try {
-
                     // Generate code
                     $code = $this->codeGenerationService->generateCode('equipment');
 
@@ -327,6 +367,9 @@ class EquipmentController extends Controller
             }
 
             DB::commit();
+
+            // Log progress
+            $this->importService->logImportProgress('equipment', $imported, count($rows), $errors);
 
             if (empty($errors)) {
                 return redirect()->route('master.equipment.index')

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Contracts\CodeGenerationServiceInterface;
 use App\Models\Category;
 use App\Models\Material;
+use App\Services\ImportService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -15,15 +16,18 @@ class MaterialController extends Controller
 {
     protected $codeGenerationService;
 
+    protected $importService;
+
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(CodeGenerationServiceInterface $codeGenerationService)
+    public function __construct(CodeGenerationServiceInterface $codeGenerationService, ImportService $importService)
     {
         $this->middleware('auth');
         $this->codeGenerationService = $codeGenerationService;
+        $this->importService = $importService;
     }
 
     /**
@@ -192,6 +196,9 @@ class MaterialController extends Controller
             $errors = [];
             $rowNumber = 2; // Start from row 2 (after header)
 
+            // Clear cache untuk memastikan data fresh
+            $this->importService->clearCache();
+
             foreach ($rows as $row) {
                 if (empty(array_filter($row))) {
                     $rowNumber++;
@@ -199,54 +206,80 @@ class MaterialController extends Controller
                     continue; // Skip empty rows
                 }
 
-                // Validate required fields
-                if (empty($row[0]) || empty($row[5]) || empty($row[6])) {
-                    $errors[] = "Row {$rowNumber}: Missing required fields (Name, Price, or Unit)";
+                // Validasi field required
+                $requiredErrors = $this->importService->validateRequiredFields(
+                    $row,
+                    [0 => 'Name', 5 => 'Price', 6 => 'Unit'],
+                    $rowNumber
+                );
+
+                if (! empty($requiredErrors)) {
+                    $errors = array_merge($errors, $requiredErrors);
                     $rowNumber++;
 
                     continue;
                 }
 
-                // Find category by name if provided
-                $categoryId = null;
-                if (! empty($row[1])) {
-                    $category = Category::where('name', 'LIKE', '%'.trim($row[1]).'%')->first();
-                    if ($category) {
-                        $categoryId = $category->id;
-                    } else {
-                        $errors[] = "Row {$rowNumber}: Kategori \"".trim($row[1]).'" tidak ditemukan';
-                        $rowNumber++;
+                // Validasi dan cari kategori berdasarkan nama
+                [$categoryId, $categoryErrors] = $this->importService->validateAndGetCategoryId(
+                    $row[1] ?? null,
+                    $rowNumber
+                );
 
-                        continue;
-                    }
-                }
-
-                // Validate TKDN range
-                if (! empty($row[4]) && (! is_numeric($row[4]) || $row[4] < 0 || $row[4] > 100)) {
-                    $errors[] = "Row {$rowNumber}: TKDN must be a number between 0-100";
+                if (! empty($categoryErrors)) {
+                    $errors = array_merge($errors, $categoryErrors);
                     $rowNumber++;
 
                     continue;
                 }
 
-                // Validate Price
-                if (! is_numeric($row[5]) || $row[5] < 0) {
-                    $errors[] = "Row {$rowNumber}: Price must be a positive number";
+                // Validasi TKDN range
+                $tkdnErrors = $this->importService->validateNumericRange(
+                    $row[4] ?? null,
+                    'TKDN',
+                    $rowNumber,
+                    0,
+                    100
+                );
+
+                if (! empty($tkdnErrors)) {
+                    $errors = array_merge($errors, $tkdnErrors);
                     $rowNumber++;
 
                     continue;
                 }
 
-                // Validate Price Inflasi
-                if (! empty($row[8]) && (! is_numeric($row[8]) || $row[8] < 0)) {
-                    $errors[] = "Row {$rowNumber}: Price Inflasi must be a positive number";
+                // Validasi Price
+                $priceErrors = $this->importService->validateNumericRange(
+                    $row[5],
+                    'Price',
+                    $rowNumber,
+                    0
+                );
+
+                if (! empty($priceErrors)) {
+                    $errors = array_merge($errors, $priceErrors);
+                    $rowNumber++;
+
+                    continue;
+                }
+
+                // Validasi Price Inflasi
+                $priceInflasiErrors = $this->importService->validateNumericRange(
+                    $row[8] ?? null,
+                    'Price Inflasi',
+                    $rowNumber,
+                    0
+                );
+
+                if (! empty($priceInflasiErrors)) {
+                    $errors = array_merge($errors, $priceInflasiErrors);
                     $rowNumber++;
 
                     continue;
                 }
 
                 try {
-
                     // Generate code
                     $code = $this->codeGenerationService->generateCode('material');
 
@@ -275,6 +308,9 @@ class MaterialController extends Controller
             }
 
             DB::commit();
+
+            // Log progress
+            $this->importService->logImportProgress('material', $imported, count($rows), $errors);
 
             if (empty($errors)) {
                 return redirect()->route('master.material.index')
