@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Project;
+use App\Services\ImportService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -11,9 +12,12 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class ProjectController extends Controller
 {
-    public function __construct()
+    protected $importService;
+
+    public function __construct(ImportService $importService)
     {
         $this->middleware('auth');
+        $this->importService = $importService;
     }
 
     public function index()
@@ -147,6 +151,9 @@ class ProjectController extends Controller
             $errors = [];
             $rowNumber = 2; // Start from row 2 (after header)
 
+            // Clear cache untuk memastikan data fresh
+            $this->importService->clearCache();
+
             foreach ($rows as $row) {
                 if (empty(array_filter($row))) {
                     $rowNumber++;
@@ -154,41 +161,66 @@ class ProjectController extends Controller
                     continue; // Skip empty rows
                 }
 
-                // Validate required fields
-                if (empty($row[0]) || empty($row[1]) || empty($row[2]) || empty($row[3]) || empty($row[4])) {
-                    $errors[] = "Row {$rowNumber}: Missing required fields (Name, Project Type, Status, Start Date, or End Date)";
+                // Validasi field required
+                $requiredErrors = $this->importService->validateRequiredFields(
+                    $row,
+                    [0 => 'Name', 1 => 'Project Type', 2 => 'Status', 3 => 'Start Date', 4 => 'End Date'],
+                    $rowNumber
+                );
+
+                if (! empty($requiredErrors)) {
+                    $errors = array_merge($errors, $requiredErrors);
                     $rowNumber++;
 
                     continue;
                 }
 
-                // Validate project type
-                if (! in_array($row[1], ['tkdn_jasa', 'tkdn_barang_jasa'])) {
-                    $errors[] = "Row {$rowNumber}: Project Type must be tkdn_jasa or tkdn_barang_jasa";
+                // Validasi project type
+                $typeErrors = $this->importService->validateInArray(
+                    $row[1],
+                    'Project Type',
+                    $rowNumber,
+                    ['tkdn_jasa', 'tkdn_barang_jasa']
+                );
+
+                if (! empty($typeErrors)) {
+                    $errors = array_merge($errors, $typeErrors);
                     $rowNumber++;
 
                     continue;
                 }
 
-                // Validate status
-                if (! in_array($row[2], ['draft', 'on_progress', 'completed'])) {
-                    $errors[] = "Row {$rowNumber}: Status must be draft, on_progress, or completed";
+                // Validasi status
+                $statusErrors = $this->importService->validateInArray(
+                    $row[2],
+                    'Status',
+                    $rowNumber,
+                    ['draft', 'on_progress', 'completed']
+                );
+
+                if (! empty($statusErrors)) {
+                    $errors = array_merge($errors, $statusErrors);
                     $rowNumber++;
 
                     continue;
                 }
 
-                // Validate dates
-                if (! strtotime($row[3]) || ! strtotime($row[4])) {
-                    $errors[] = "Row {$rowNumber}: Invalid date format (use YYYY-MM-DD)";
+                // Validasi format tanggal
+                $startDateErrors = $this->importService->validateDate($row[3], 'Start Date', $rowNumber);
+                $endDateErrors = $this->importService->validateDate($row[4], 'End Date', $rowNumber);
+
+                if (! empty($startDateErrors) || ! empty($endDateErrors)) {
+                    $errors = array_merge($errors, $startDateErrors, $endDateErrors);
                     $rowNumber++;
 
                     continue;
                 }
 
-                // Validate end_date >= start_date
-                if (strtotime($row[4]) < strtotime($row[3])) {
-                    $errors[] = "Row {$rowNumber}: End date must be after or equal to start date";
+                // Validasi range tanggal
+                $dateRangeErrors = $this->importService->validateDateRange($row[3], $row[4], $rowNumber);
+
+                if (! empty($dateRangeErrors)) {
+                    $errors = array_merge($errors, $dateRangeErrors);
                     $rowNumber++;
 
                     continue;
@@ -216,6 +248,9 @@ class ProjectController extends Controller
             }
 
             DB::commit();
+
+            // Log progress
+            $this->importService->logImportProgress('project', $imported, count($rows), $errors);
 
             if (empty($errors)) {
                 return redirect()->route('master.project.index')
