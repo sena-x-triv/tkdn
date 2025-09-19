@@ -80,17 +80,17 @@ class ImportServiceTest extends TestCase
 
         // Clear cache to ensure fresh lookup
         $this->importService->clearCache();
-        
+
         [$categoryId, $errors] = $this->importService->validateAndGetCategoryId('Building Material', 1);
 
         $this->assertNotNull($categoryId);
         $this->assertNotEmpty($categoryId);
         $this->assertEmpty($errors);
-        
+
         // Verify the category exists in database
         $this->assertDatabaseHas('categories', [
             'id' => $categoryId,
-            'name' => 'Building Material'
+            'name' => 'Building Material',
         ]);
     }
 
@@ -205,6 +205,55 @@ class ImportServiceTest extends TestCase
         // Test that cache is cleared without errors
         $this->importService->clearCache();
         $this->assertTrue(true); // If no exception is thrown, test passes
+    }
+
+    public function test_validate_classification_tkdn_success()
+    {
+        $errors = $this->importService->validateClassificationTkdn('1.1', 1);
+
+        $this->assertEmpty($errors);
+    }
+
+    public function test_validate_classification_tkdn_invalid_format()
+    {
+        $errors = $this->importService->validateClassificationTkdn('invalid', 1);
+
+        $this->assertCount(1, $errors);
+        $this->assertStringContainsString('Classification TKDN must be in format', $errors[0]);
+    }
+
+    public function test_validate_classification_tkdn_empty()
+    {
+        $errors = $this->importService->validateClassificationTkdn('', 1);
+
+        $this->assertEmpty($errors);
+    }
+
+    public function test_validate_classification_tkdn_null()
+    {
+        $errors = $this->importService->validateClassificationTkdn(null, 1);
+
+        $this->assertEmpty($errors);
+    }
+
+    public function test_validate_classification_tkdn_various_formats()
+    {
+        $validFormats = ['1.1', '2.3', '10.5', '99.99'];
+
+        foreach ($validFormats as $format) {
+            $errors = $this->importService->validateClassificationTkdn($format, 1);
+            $this->assertEmpty($errors, "Format '{$format}' should be valid");
+        }
+    }
+
+    public function test_validate_classification_tkdn_invalid_formats()
+    {
+        $invalidFormats = ['1', '1.1.1', 'abc', '1.a', 'a.1', '1.1a'];
+
+        foreach ($invalidFormats as $format) {
+            $errors = $this->importService->validateClassificationTkdn($format, 1);
+            $this->assertCount(1, $errors, "Format '{$format}' should be invalid");
+        }
     }
 
     public function test_log_import_progress()

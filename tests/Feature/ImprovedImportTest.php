@@ -27,8 +27,8 @@ class ImprovedImportTest extends TestCase
         $category = Category::factory()->create(['name' => 'Building Equipment']);
 
         $file = $this->createExcelFile([
-            ['Name', 'Category', 'TKDN', 'Equipment Type', 'Period', 'Price', 'Description', 'Location'],
-            ['Excavator', 'Building Equipment', '85', 'reusable', '5', '50000000', 'Heavy equipment', 'Jakarta'],
+            ['Name', 'Category', 'TKDN', 'Equipment Type', 'Period', 'Price', 'Description', 'Location', 'Classification TKDN'],
+            ['Excavator', 'Building Equipment', '85', 'reusable', '5', '50000000', 'Heavy equipment', 'Jakarta', '1.1'],
         ]);
 
         $response = $this->post(route('master.equipment.import'), [
@@ -41,6 +41,7 @@ class ImprovedImportTest extends TestCase
         $this->assertDatabaseHas('equipment', [
             'name' => 'Excavator',
             'category_id' => $category->id,
+            'classification_tkdn' => '1.1',
             'tkdn' => 85,
             'period' => 5,
             'price' => 50000000,
@@ -94,8 +95,8 @@ class ImprovedImportTest extends TestCase
         $category = Category::factory()->create(['name' => 'Building Material']);
 
         $file = $this->createExcelFile([
-            ['Name', 'Category', 'Brand', 'Specification', 'TKDN', 'Price', 'Unit', 'Link', 'Price Inflasi', 'Description', 'Location'],
-            ['Cement', 'Building Material', 'Semen Gresik', 'Type I', '100', '85000', 'Sak', 'https://example.com', '90000', 'Portland cement', 'Jakarta'],
+            ['Name', 'Category', 'Brand', 'Specification', 'TKDN', 'Price', 'Unit', 'Link', 'Price Inflasi', 'Description', 'Location', 'Classification TKDN'],
+            ['Cement', 'Building Material', 'Semen Gresik', 'Type I', '100', '85000', 'Sak', 'https://example.com', '90000', 'Portland cement', 'Jakarta', '1.2'],
         ]);
 
         $response = $this->post(route('master.material.import'), [
@@ -108,6 +109,7 @@ class ImprovedImportTest extends TestCase
         $this->assertDatabaseHas('material', [
             'name' => 'Cement',
             'category_id' => $category->id,
+            'classification_tkdn' => '1.2',
             'brand' => 'Semen Gresik',
             'tkdn' => 100,
             'price' => 85000,
@@ -119,8 +121,8 @@ class ImprovedImportTest extends TestCase
         $category = Category::factory()->create(['name' => 'Construction Worker']);
 
         $file = $this->createExcelFile([
-            ['Name', 'Unit', 'Category', 'Price', 'TKDN', 'Location'],
-            ['Mason', 'Person', 'Construction Worker', '200000', '100', 'Jakarta'],
+            ['Name', 'Unit', 'Category', 'Price', 'TKDN', 'Location', 'Classification TKDN'],
+            ['Mason', 'Person', 'Construction Worker', '200000', '100', 'Jakarta', '3.1'],
         ]);
 
         $response = $this->post(route('master.worker.import'), [
@@ -133,6 +135,7 @@ class ImprovedImportTest extends TestCase
         $this->assertDatabaseHas('workers', [
             'name' => 'Mason',
             'category_id' => $category->id,
+            'classification_tkdn' => '3.1',
             'unit' => 'Person',
             'price' => 200000,
             'tkdn' => 100,
@@ -187,9 +190,9 @@ class ImprovedImportTest extends TestCase
         $category = Category::factory()->create(['name' => 'Building Equipment']);
 
         $file = $this->createExcelFile([
-            ['Name', 'Category', 'TKDN', 'Equipment Type', 'Period', 'Price', 'Description', 'Location'],
-            ['Valid Equipment', 'Building Equipment', '85', 'reusable', '5', '50000000', 'Valid equipment', 'Jakarta'],
-            ['Invalid Equipment', 'Non Existent', '150', 'invalid', '-1', 'invalid', 'Invalid equipment', 'Jakarta'],
+            ['Name', 'Category', 'TKDN', 'Equipment Type', 'Period', 'Price', 'Description', 'Location', 'Classification TKDN'],
+            ['Valid Equipment', 'Building Equipment', '85', 'reusable', '5', '50000000', 'Valid equipment', 'Jakarta', '1.1'],
+            ['Invalid Equipment', 'Non Existent', '150', 'invalid', '-1', 'invalid', 'Invalid equipment', 'Jakarta', 'invalid_format'],
         ]);
 
         $response = $this->post(route('master.equipment.import'), [
@@ -207,6 +210,28 @@ class ImprovedImportTest extends TestCase
 
         $this->assertDatabaseMissing('equipment', [
             'name' => 'Invalid Equipment',
+        ]);
+    }
+
+    public function test_import_with_invalid_classification_tkdn_format()
+    {
+        $category = Category::factory()->create(['name' => 'Building Equipment']);
+
+        $file = $this->createExcelFile([
+            ['Name', 'Category', 'TKDN', 'Equipment Type', 'Period', 'Price', 'Description', 'Location', 'Classification TKDN'],
+            ['Test Equipment', 'Building Equipment', '85', 'reusable', '5', '50000000', 'Test equipment', 'Jakarta', 'invalid_format'],
+        ]);
+
+        $response = $this->post(route('master.equipment.import'), [
+            'excel_file' => $file,
+        ]);
+
+        $response->assertRedirect(route('master.equipment.index'));
+        $response->assertSessionHas('import_errors');
+        $response->assertSessionHas('success', 'Successfully imported 0 equipment!');
+
+        $this->assertDatabaseMissing('equipment', [
+            'name' => 'Test Equipment',
         ]);
     }
 

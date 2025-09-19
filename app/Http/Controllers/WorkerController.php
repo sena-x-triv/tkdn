@@ -109,22 +109,22 @@ class WorkerController extends Controller
         $sheet = $spreadsheet->getActiveSheet();
 
         // Set headers
-        $headers = ['Name', 'Unit', 'Category', 'Price', 'TKDN', 'Location'];
+        $headers = ['Name', 'Unit', 'Category', 'Price', 'TKDN', 'Location', 'Classification TKDN'];
         $sheet->fromArray($headers, null, 'A1');
 
         // Set example data
         $exampleData = [
-            ['John Doe', 'OH', 'Teknisi', '50000', '100', 'Jakarta'],
-            ['Jane Smith', 'Person', 'Operator', '75000', '85', 'Bandung'],
+            ['John Doe', 'OH', 'Teknisi', '50000', '100', 'Jakarta', '3.1'],
+            ['Jane Smith', 'Person', 'Operator', '75000', '85', 'Bandung', '3.2'],
         ];
         $sheet->fromArray($exampleData, null, 'A2');
 
         // Style headers
-        $sheet->getStyle('A1:F1')->getFont()->setBold(true);
-        $sheet->getStyle('A1:F1')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('E5E7EB');
+        $sheet->getStyle('A1:G1')->getFont()->setBold(true);
+        $sheet->getStyle('A1:G1')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('E5E7EB');
 
         // Auto size columns
-        foreach (range('A', 'F') as $col) {
+        foreach (range('A', 'G') as $col) {
             $sheet->getColumnDimension($col)->setAutoSize(true);
         }
 
@@ -232,6 +232,19 @@ class WorkerController extends Controller
                     continue;
                 }
 
+                // Validasi Classification TKDN
+                $classificationErrors = $this->importService->validateClassificationTkdn(
+                    $row[6] ?? null,
+                    $rowNumber
+                );
+
+                if (! empty($classificationErrors)) {
+                    $errors = array_merge($errors, $classificationErrors);
+                    $rowNumber++;
+
+                    continue;
+                }
+
                 try {
                     // Generate code
                     $code = $this->codeGenerationService->generateCode('worker');
@@ -241,6 +254,7 @@ class WorkerController extends Controller
                         'name' => trim($row[0]),
                         'unit' => trim($row[1]),
                         'category_id' => $categoryId,
+                        'classification_tkdn' => ! empty($row[6]) ? trim($row[6]) : null,
                         'price' => (int) $row[3],
                         'tkdn' => (int) $row[4],
                         'location' => ! empty($row[5]) ? trim($row[5]) : null,

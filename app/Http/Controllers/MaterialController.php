@@ -141,22 +141,22 @@ class MaterialController extends Controller
         $sheet = $spreadsheet->getActiveSheet();
 
         // Set headers
-        $headers = ['Name', 'Category', 'Brand', 'Specification', 'TKDN', 'Price', 'Unit', 'Link', 'Price Inflasi', 'Description', 'Location'];
+        $headers = ['Name', 'Category', 'Brand', 'Specification', 'TKDN', 'Price', 'Unit', 'Link', 'Price Inflasi', 'Description', 'Location', 'Classification TKDN'];
         $sheet->fromArray($headers, null, 'A1');
 
         // Set example data
         $exampleData = [
-            ['Cement Portland', 'Building Material', 'Semen Gresik', 'Type I', '100', '85000', 'Sak', 'https://example.com', '90000', 'Portland cement type I', 'Jakarta'],
-            ['Steel Bar', 'Steel', 'Krakatau Steel', 'Diameter 10mm', '85', '150000', 'Ton', 'https://example.com', '160000', 'Steel reinforcement bar', 'Bandung'],
+            ['Cement Portland', 'Building Material', 'Semen Gresik', 'Type I', '100', '85000', 'Sak', 'https://example.com', '90000', 'Portland cement type I', 'Jakarta', '1.2'],
+            ['Steel Bar', 'Steel', 'Krakatau Steel', 'Diameter 10mm', '85', '150000', 'Ton', 'https://example.com', '160000', 'Steel reinforcement bar', 'Bandung', '2.1'],
         ];
         $sheet->fromArray($exampleData, null, 'A2');
 
         // Style headers
-        $sheet->getStyle('A1:K1')->getFont()->setBold(true);
-        $sheet->getStyle('A1:K1')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('E5E7EB');
+        $sheet->getStyle('A1:L1')->getFont()->setBold(true);
+        $sheet->getStyle('A1:L1')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('E5E7EB');
 
         // Auto size columns
-        foreach (range('A', 'K') as $col) {
+        foreach (range('A', 'L') as $col) {
             $sheet->getColumnDimension($col)->setAutoSize(true);
         }
 
@@ -279,6 +279,19 @@ class MaterialController extends Controller
                     continue;
                 }
 
+                // Validasi Classification TKDN
+                $classificationErrors = $this->importService->validateClassificationTkdn(
+                    $row[11] ?? null,
+                    $rowNumber
+                );
+
+                if (! empty($classificationErrors)) {
+                    $errors = array_merge($errors, $classificationErrors);
+                    $rowNumber++;
+
+                    continue;
+                }
+
                 try {
                     // Generate code
                     $code = $this->codeGenerationService->generateCode('material');
@@ -287,6 +300,7 @@ class MaterialController extends Controller
                     Material::create([
                         'name' => trim($row[0]),
                         'category_id' => $categoryId,
+                        'classification_tkdn' => ! empty($row[11]) ? trim($row[11]) : null,
                         'brand' => ! empty($row[2]) ? trim($row[2]) : null,
                         'specification' => ! empty($row[3]) ? trim($row[3]) : null,
                         'tkdn' => ! empty($row[4]) ? (int) $row[4] : 100,

@@ -208,6 +208,23 @@ class ImportService
     }
 
     /**
+     * Validasi classification TKDN
+     */
+    public function validateClassificationTkdn(?string $classification, int $rowNumber): array
+    {
+        if (empty($classification)) {
+            return [];
+        }
+
+        // Validasi format classification TKDN (biasanya berupa kode seperti "1.1", "2.3", dll)
+        if (! preg_match('/^\d+\.\d+$/', trim($classification))) {
+            return ["Row {$rowNumber}: Classification TKDN must be in format 'X.Y' (e.g., '1.1', '2.3')"];
+        }
+
+        return [];
+    }
+
+    /**
      * Log import progress
      */
     public function logImportProgress(string $type, int $imported, int $total, array $errors = []): void

@@ -174,22 +174,22 @@ class EquipmentController extends Controller
         $sheet = $spreadsheet->getActiveSheet();
 
         // Set headers
-        $headers = ['Name', 'Category', 'TKDN', 'Equipment Type', 'Period (Days)', 'Price', 'Description', 'Location'];
+        $headers = ['Name', 'Category', 'TKDN', 'Equipment Type', 'Period (Days)', 'Price', 'Description', 'Location', 'Classification TKDN'];
         $sheet->fromArray($headers, null, 'A1');
 
         // Set example data
         $exampleData = [
-            ['Excavator Mini', 'Heavy Equipment', '85.50', 'reusable', '30', '2500000', 'Mini excavator for small projects', 'Jakarta'],
-            ['Safety Helmet', 'Safety Equipment', '100.00', 'disposable', '0', '150000', 'Safety helmet for workers', 'Bandung'],
+            ['Excavator Mini', 'Heavy Equipment', '85.50', 'reusable', '30', '2500000', 'Mini excavator for small projects', 'Jakarta', '1.1'],
+            ['Safety Helmet', 'Safety Equipment', '100.00', 'disposable', '0', '150000', 'Safety helmet for workers', 'Bandung', '2.3'],
         ];
         $sheet->fromArray($exampleData, null, 'A2');
 
         // Style headers
-        $sheet->getStyle('A1:H1')->getFont()->setBold(true);
-        $sheet->getStyle('A1:H1')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('E5E7EB');
+        $sheet->getStyle('A1:I1')->getFont()->setBold(true);
+        $sheet->getStyle('A1:I1')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('E5E7EB');
 
         // Auto size columns
-        foreach (range('A', 'H') as $col) {
+        foreach (range('A', 'I') as $col) {
             $sheet->getColumnDimension($col)->setAutoSize(true);
         }
 
@@ -342,6 +342,19 @@ class EquipmentController extends Controller
                     continue;
                 }
 
+                // Validasi Classification TKDN
+                $classificationErrors = $this->importService->validateClassificationTkdn(
+                    $row[8] ?? null,
+                    $rowNumber
+                );
+
+                if (! empty($classificationErrors)) {
+                    $errors = array_merge($errors, $classificationErrors);
+                    $rowNumber++;
+
+                    continue;
+                }
+
                 try {
                     // Generate code
                     $code = $this->codeGenerationService->generateCode('equipment');
@@ -350,6 +363,7 @@ class EquipmentController extends Controller
                     Equipment::create([
                         'name' => trim($row[0]),
                         'category_id' => $categoryId,
+                        'classification_tkdn' => ! empty($row[8]) ? trim($row[8]) : null,
                         'tkdn' => ! empty($row[2]) ? (float) $row[2] : null,
                         'period' => (int) $row[4],
                         'price' => (int) $row[5],

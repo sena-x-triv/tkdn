@@ -12,6 +12,7 @@ Fungsi import data di master data telah ditingkatkan untuk mendukung penggunaan 
   - Pencarian kategori berdasarkan nama dengan fuzzy matching (exact match + partial match)
   - Pencarian project berdasarkan nama dengan fuzzy matching
   - Validasi field required, numeric range, date format, dan array values
+  - Validasi classification TKDN dengan format X.Y (e.g., 1.1, 2.3)
   - Caching untuk performa yang lebih baik
   - Logging untuk monitoring import progress
 
@@ -20,16 +21,19 @@ Fungsi import data di master data telah ditingkatkan untuk mendukung penggunaan 
 #### EquipmentController
 - Menggunakan nama kategori untuk mapping ke ID
 - Validasi yang lebih robust untuk equipment type, period, dan price
+- Support untuk field classification_tkdn dengan validasi format X.Y
 - Error handling yang lebih baik
 
 #### MaterialController  
 - Menggunakan nama kategori untuk mapping ke ID
 - Validasi TKDN, price, dan price inflasi
+- Support untuk field classification_tkdn dengan validasi format X.Y
 - Support untuk semua field material
 
 #### WorkerController
 - Menggunakan nama kategori untuk mapping ke ID
 - Validasi TKDN dan price
+- Support untuk field classification_tkdn dengan validasi format X.Y
 - Support untuk semua field worker
 
 #### ProjectController
@@ -74,20 +78,20 @@ Fungsi import data di master data telah ditingkatkan untuk mendukung penggunaan 
 
 ### 1. Import Equipment
 ```excel
-Name | Category | TKDN | Equipment Type | Period | Price | Description | Location
-Excavator | Building Equipment | 85 | reusable | 5 | 50000000 | Heavy equipment | Jakarta
+Name | Category | TKDN | Equipment Type | Period | Price | Description | Location | Classification TKDN
+Excavator | Building Equipment | 85 | reusable | 5 | 50000000 | Heavy equipment | Jakarta | 1.1
 ```
 
 ### 2. Import Material
 ```excel
-Name | Category | Brand | Specification | TKDN | Price | Unit | Link | Price Inflasi | Description | Location
-Cement | Building Material | Semen Gresik | Type I | 100 | 85000 | Sak | https://example.com | 90000 | Portland cement | Jakarta
+Name | Category | Brand | Specification | TKDN | Price | Unit | Link | Price Inflasi | Description | Location | Classification TKDN
+Cement | Building Material | Semen Gresik | Type I | 100 | 85000 | Sak | https://example.com | 90000 | Portland cement | Jakarta | 1.2
 ```
 
 ### 3. Import Worker
 ```excel
-Name | Unit | Category | Price | TKDN | Location
-Mason | Person | Construction Worker | 200000 | 100 | Jakarta
+Name | Unit | Category | Price | TKDN | Location | Classification TKDN
+Mason | Person | Construction Worker | 200000 | 100 | Jakarta | 3.1
 ```
 
 ### 4. Import Project
@@ -107,7 +111,11 @@ Test Project | tkdn_jasa | draft | 2024-01-01 | 2024-12-31 | Test description | 
 - Error: "Row X: TKDN must be a number between 0-100"
 - Error: "Row X: Equipment Type must be one of: disposable, reusable"
 
-### 3. Mixed Results
+### 3. Invalid Classification TKDN
+- Error: "Row X: Classification TKDN must be in format 'X.Y' (e.g., '1.1', '2.3')"
+- Action: Skip row dan lanjut ke row berikutnya
+
+### 4. Mixed Results
 - Import berhasil untuk data yang valid
 - Error ditampilkan untuk data yang invalid
 - Summary: "Successfully imported X items!" dengan daftar error
