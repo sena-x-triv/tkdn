@@ -147,7 +147,7 @@ class HppController extends Controller
      */
     public function edit(string $id)
     {
-        $hpp = Hpp::with(['items', 'project'])->findOrFail($id);
+        $hpp = Hpp::with(['items.estimationItem.estimation', 'project'])->findOrFail($id);
         $projects = Project::all();
         $ahsData = $this->getAhsData();
 

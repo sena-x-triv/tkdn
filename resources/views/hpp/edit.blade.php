@@ -213,6 +213,46 @@
                                 <input type="number" name="items[{{ $index }}][total_price]" value="{{ $item->total_price }}" class="form-input total-price-input" step="0.01" readonly>
                             </div>
                         </div>
+                        
+                        <!-- AHS Detail Information -->
+                        @if($item->estimationItem)
+                        <div class="ahs-detail-info mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                            <div class="flex items-start space-x-3">
+                                <div class="flex-shrink-0">
+                                    <svg class="h-5 w-5 text-blue-500 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                    </svg>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <h5 class="text-sm font-medium text-blue-900 dark:text-blue-100 mb-1">
+                                        Detail AHS
+                                    </h5>
+                                    <div class="text-xs text-blue-700 dark:text-blue-300 space-y-1">
+                                        <div class="flex justify-between">
+                                            <span class="font-medium">Kode AHS:</span>
+                                            <span class="font-mono">{{ $item->estimationItem->estimation->code ?? 'N/A' }}</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="font-medium">Judul AHS:</span>
+                                            <span>{{ $item->estimationItem->estimation->title ?? 'N/A' }}</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="font-medium">Klasifikasi TKDN:</span>
+                                            <span>{{ $item->estimationItem->classification_tkdn ?? 'N/A' }}</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="font-medium">TKDN Value:</span>
+                                            <span>{{ $item->estimationItem->tkdn_value ? $item->estimationItem->tkdn_value . '%' : 'N/A' }}</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="font-medium">Kategori:</span>
+                                            <span>{{ ucfirst($item->estimationItem->category) ?? 'N/A' }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @endif
                     </div>
                     @endforeach
                 </div>
@@ -336,6 +376,44 @@
                 <input type="number" name="items[INDEX][total_price]" class="form-input total-price-input" step="0.01" readonly>
             </div>
         </div>
+        
+        <!-- AHS Detail Information -->
+        <div class="ahs-detail-info hidden mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+            <div class="flex items-start space-x-3">
+                <div class="flex-shrink-0">
+                    <svg class="h-5 w-5 text-blue-500 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <h5 class="text-sm font-medium text-blue-900 dark:text-blue-100 mb-1">
+                        Detail AHS
+                    </h5>
+                    <div class="text-xs text-blue-700 dark:text-blue-300 space-y-1">
+                        <div class="flex justify-between">
+                            <span class="font-medium">Kode AHS:</span>
+                            <span class="ahs-code font-mono"></span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="font-medium">Judul AHS:</span>
+                            <span class="ahs-title"></span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="font-medium">Klasifikasi TKDN:</span>
+                            <span class="ahs-classification"></span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="font-medium">TKDN Value:</span>
+                            <span class="ahs-tkdn-value"></span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="font-medium">Kategori:</span>
+                            <span class="ahs-category"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -391,9 +469,8 @@
 
 <script>
 const containerEl = document.getElementById('items-container');
-let itemIndex = parseInt(containerEl.dataset.count || '0', 10);
+let itemIndex = 0;
 let ahsData = [];
-let currentItemRow = null;
 let projects = [];
 let currentProjectType = '';
 
@@ -401,6 +478,12 @@ try {
     projects = JSON.parse(containerEl.dataset.projects || '[]');
 } catch (e) {
     projects = [];
+}
+
+// Initialize itemIndex based on existing items
+function initializeItemIndex() {
+    const existingItems = containerEl.querySelectorAll('.item-row');
+    itemIndex = existingItems.length;
 }
 
 function addItem() {
@@ -532,10 +615,24 @@ function selectAhsForItems(ahs) {
                 return;
             }
             
-            // Add all AHS items to HPP
-            data.items.forEach(function(item) {
-                addAhsItem(item, ahs);
-            });
+            // First, try to fill empty rows
+            let remainingItems = [...data.items];
+            const emptyRows = findEmptyRows();
+            
+            // Fill empty rows first
+            for (let i = 0; i < emptyRows.length && remainingItems.length > 0; i++) {
+                const emptyRow = emptyRows[i];
+                const item = remainingItems.shift();
+                fillExistingRowWithAhsItem(emptyRow, item, ahs);
+            }
+            
+            // Add remaining items as new rows
+            if (remainingItems.length > 0) {
+                initializeItemIndex();
+                remainingItems.forEach(function(item) {
+                    addAhsItem(item, ahs);
+                });
+            }
             
             // Close modal
             closeAhsModal();
@@ -547,6 +644,57 @@ function selectAhsForItems(ahs) {
             console.error('Error:', error);
             alert('Terjadi kesalahan saat memuat data AHS items');
         });
+}
+
+function findEmptyRows() {
+    const allRows = containerEl.querySelectorAll('.item-row');
+    const emptyRows = [];
+    
+    allRows.forEach(function(row) {
+        const descriptionInput = row.querySelector('.description-input');
+        if (descriptionInput && !descriptionInput.value.trim()) {
+            emptyRows.push(row);
+        }
+    });
+    
+    return emptyRows;
+}
+
+function fillExistingRowWithAhsItem(row, item, ahs) {
+    // Fill data
+    const descriptionInput = row.querySelector('.description-input');
+    const estimationItemIdInput = row.querySelector('.estimation-item-id-input');
+    const unitPriceInput = row.querySelector('.unit-price-input');
+    const unitInput = row.querySelector('.unit-input');
+    const volumeInput = row.querySelector('.volume-input');
+    
+    descriptionInput.value = `${ahs.description} - ${item.description}`;
+    estimationItemIdInput.value = item.id;
+    unitPriceInput.value = item.unit_price;
+    unitInput.value = item.unit || 'Unit';
+    volumeInput.value = item.coefficient || 1;
+    
+    // Show AHS detail information
+    const ahsDetailInfo = row.querySelector('.ahs-detail-info');
+    const ahsCode = row.querySelector('.ahs-code');
+    const ahsTitle = row.querySelector('.ahs-title');
+    const ahsClassification = row.querySelector('.ahs-classification');
+    const ahsTkdnValue = row.querySelector('.ahs-tkdn-value');
+    const ahsCategory = row.querySelector('.ahs-category');
+    
+    if (ahsDetailInfo) {
+        ahsCode.textContent = ahs.code;
+        ahsTitle.textContent = ahs.title;
+        ahsClassification.textContent = item.classification_tkdn || 'N/A';
+        ahsTkdnValue.textContent = item.tkdn_value ? item.tkdn_value + '%' : 'N/A';
+        ahsCategory.textContent = item.category || 'N/A';
+        
+        // Show the detail info
+        ahsDetailInfo.classList.remove('hidden');
+    }
+    
+    // Calculate total
+    calculateTotal(row);
 }
 
 function addAhsItem(item, ahs) {
@@ -576,6 +724,23 @@ function addAhsItem(item, ahs) {
     unitPriceInput.value = item.unit_price;
     unitInput.value = item.unit || 'Unit';
     volumeInput.value = item.coefficient || 1;
+    
+    // Show AHS detail information
+    const ahsDetailInfo = clone.querySelector('.ahs-detail-info');
+    const ahsCode = clone.querySelector('.ahs-code');
+    const ahsTitle = clone.querySelector('.ahs-title');
+    const ahsClassification = clone.querySelector('.ahs-classification');
+    const ahsTkdnValue = clone.querySelector('.ahs-tkdn-value');
+    const ahsCategory = clone.querySelector('.ahs-category');
+    
+    ahsCode.textContent = ahs.code;
+    ahsTitle.textContent = ahs.title;
+    ahsClassification.textContent = item.classification_tkdn || 'N/A';
+    ahsTkdnValue.textContent = item.tkdn_value ? item.tkdn_value + '%' : 'N/A';
+    ahsCategory.textContent = item.category || 'N/A';
+    
+    // Show the detail info
+    ahsDetailInfo.classList.remove('hidden');
     
     container.appendChild(clone);
     
@@ -622,6 +787,9 @@ function showNotification(message, type = 'info') {
 
 // Add event listener for project selection
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize itemIndex based on existing items
+    initializeItemIndex();
+    
     const projectSelect = document.getElementById('project_id');
     if (projectSelect) {
         projectSelect.addEventListener('change', function() {
