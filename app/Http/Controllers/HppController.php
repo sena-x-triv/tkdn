@@ -48,6 +48,11 @@ class HppController extends Controller
      */
     public function store(Request $request)
     {
+        \Log::info('HPP Store method called', [
+            'request_data' => $request->all(),
+            'user_id' => auth()->id()
+        ]);
+        
         $request->validate([
             'project_id' => 'required|exists:projects,id',
             'overhead_percentage' => 'required|numeric|min:0|max:100',
@@ -56,7 +61,7 @@ class HppController extends Controller
             'notes' => 'nullable|string',
             'items' => 'required|array|min:1',
             'items.*.description' => 'required|string',
-            'items.*.tkdn_classification' => 'required|string',
+            'items.*.estimation_item_id' => 'nullable|exists:estimation_items,id',
             'items.*.volume' => 'required|numeric|min:0',
             'items.*.unit' => 'required|string',
             'items.*.duration' => 'required|integer|min:1',
@@ -173,7 +178,7 @@ class HppController extends Controller
             'notes' => 'nullable|string',
             'items' => 'required|array|min:1',
             'items.*.description' => 'required|string',
-            'items.*.tkdn_classification' => 'required|string',
+            'items.*.estimation_item_id' => 'nullable|exists:estimation_items,id',
             'items.*.volume' => 'required|numeric|min:0',
             'items.*.unit' => 'required|string',
             'items.*.duration' => 'required|integer|min:1',

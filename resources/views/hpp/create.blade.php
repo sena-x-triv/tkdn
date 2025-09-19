@@ -18,7 +18,7 @@
         </div>
     @endif
 
-    <form action="{{ route('hpp.store') }}" method="POST" class="space-y-6">
+    <form action="{{ route('hpp.store') }}" method="POST" class="space-y-6" id="hppForm">
         @csrf
         
         <!-- Informasi Umum -->
@@ -174,17 +174,17 @@
             
             <div>
                 <label class="form-label">Volume <span class="text-red-500">*</span></label>
-                <input type="number" name="items[INDEX][volume]" class="form-input volume-input" step="0.01" min="0" required>
+                <input type="number" name="items[INDEX][volume]" class="form-input volume-input" step="0.01" min="0" value="1" required>
             </div>
             
             <div>
                 <label class="form-label">Satuan <span class="text-red-500">*</span></label>
-                <input type="text" name="items[INDEX][unit]" class="form-input unit-input" required>
+                <input type="text" name="items[INDEX][unit]" class="form-input unit-input" value="Unit" required>
             </div>
             
             <div>
                 <label class="form-label">Durasi <span class="text-red-500">*</span></label>
-                <input type="number" name="items[INDEX][duration]" class="form-input" min="1" required>
+                <input type="number" name="items[INDEX][duration]" class="form-input" min="1" value="1" required>
             </div>
             
             <div>
@@ -199,7 +199,7 @@
             
             <div>
                 <label class="form-label">Harga Satuan (Rp) <span class="text-red-500">*</span></label>
-                <input type="number" name="items[INDEX][unit_price]" class="form-input unit-price-input" step="0.01" min="0" required>
+                <input type="number" name="items[INDEX][unit_price]" class="form-input unit-price-input" step="0.01" min="0" value="0" required>
             </div>
             
             <div>
@@ -314,6 +314,9 @@ try {
 function initializeItemIndex() {
     const existingItems = containerEl.querySelectorAll('.item-row');
     itemIndex = existingItems.length;
+    
+    // Update data-count attribute
+    containerEl.setAttribute('data-count', itemIndex);
 }
 
 function addItem() {
@@ -332,6 +335,7 @@ function addItem() {
     itemNumber.textContent = itemIndex + 1;
     
     container.appendChild(clone);
+    
     
     // Add event listeners for calculation
     const volumeInput = container.lastElementChild.querySelector('.volume-input');
@@ -497,7 +501,6 @@ function fillExistingRowWithAhsItem(row, item, ahs) {
     const unitPriceInput = row.querySelector('.unit-price-input');
     const unitInput = row.querySelector('.unit-input');
     const volumeInput = row.querySelector('.volume-input');
-    
     descriptionInput.value = `${ahs.description} - ${item.description}`;
     estimationItemIdInput.value = item.id;
     unitPriceInput.value = item.unit_price;
@@ -548,7 +551,6 @@ function addAhsItem(item, ahs) {
     const unitPriceInput = clone.querySelector('.unit-price-input');
     const unitInput = clone.querySelector('.unit-input');
     const volumeInput = clone.querySelector('.volume-input');
-    
     descriptionInput.value = `${ahs.description} - ${item.description}`;
     estimationItemIdInput.value = item.id;
     unitPriceInput.value = item.unit_price;
@@ -620,25 +622,6 @@ function numberFormat(number) {
     return new Intl.NumberFormat('id-ID').format(number);
 }
 
-// Project selection handler
-document.getElementById('project_id').addEventListener('change', function() {
-    const projectId = this.value;
-    const projectInfo = document.getElementById('project-info');
-    
-    if (projectId) {
-        const project = projects.find(function(p) { return p.id === projectId; });
-        if (project) {
-            document.getElementById('project-name').textContent = project.name;
-            document.getElementById('project-type').textContent = getProjectTypeLabel(project.project_type);
-            document.getElementById('project-company').textContent = project.company || '-';
-            document.getElementById('project-description').textContent = project.description || '-';
-            projectInfo.classList.remove('hidden');
-        }
-    } else {
-        projectInfo.classList.add('hidden');
-    }
-});
-
 // Helper function to get project type label
 function getProjectTypeLabel(projectType) {
     switch(projectType) {
@@ -652,44 +635,112 @@ function getProjectTypeLabel(projectType) {
 }
 
 // Search functionality
-document.getElementById('ahsSearch').addEventListener('input', function(e) {
-    const searchTerm = e.target.value.toLowerCase();
-    const ahsItems = document.querySelectorAll('#ahsList > div');
-    
-    ahsItems.forEach(function(item) {
-        const text = item.textContent.toLowerCase();
-        if (text.includes(searchTerm)) {
-            item.style.display = 'block';
-        } else {
-            item.style.display = 'none';
-        }
+const ahsSearchEl = document.getElementById('ahsSearch');
+if (ahsSearchEl) {
+    ahsSearchEl.addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        const ahsItems = document.querySelectorAll('#ahsList > div');
+        
+        ahsItems.forEach(function(item) {
+            const text = item.textContent.toLowerCase();
+            if (text.includes(searchTerm)) {
+                item.style.display = 'block';
+            } else {
+                item.style.display = 'none';
+            }
+        });
     });
-});
+}
 
 // Close modal when clicking outside
-document.getElementById('ahsModal').addEventListener('click', function(e) {
-    if (e.target === this) {
-        closeAhsModal();
-    }
-});
+const ahsModalEl = document.getElementById('ahsModal');
+if (ahsModalEl) {
+    ahsModalEl.addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeAhsModal();
+        }
+    });
+}
 
-// Add event listener for project selection
+// Form validation
+function validateForm() {
+    const items = containerEl.querySelectorAll('.item-row');
+    if (items.length === 0) {
+        alert('Minimal harus ada satu item pekerjaan');
+        return false;
+    }
+    
+    // Check if all items have required fields
+    let hasValidItem = false;
+    items.forEach(function(item) {
+        const description = item.querySelector('.description-input').value.trim();
+        const volume = parseFloat(item.querySelector('.volume-input').value) || 0;
+        const unitPrice = parseFloat(item.querySelector('.unit-price-input').value) || 0;
+        
+        if (description && volume > 0 && unitPrice > 0) {
+            hasValidItem = true;
+        }
+    });
+    
+    if (!hasValidItem) {
+        alert('Minimal harus ada satu item dengan deskripsi, volume, dan harga satuan yang valid');
+        return false;
+    }
+    
+    return true;
+}
+
+// Initialize everything on page load
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize itemIndex based on existing items
+    initializeItemIndex();
+    
+    // Add first item if none exist
+    if (containerEl.querySelectorAll('.item-row').length === 0) {
+        addItem();
+    }
+    
+    // Setup project selection handler
     const projectSelect = document.getElementById('project_id');
     if (projectSelect) {
         projectSelect.addEventListener('change', function() {
+            const projectId = this.value;
+            const projectInfo = document.getElementById('project-info');
+            
+            if (projectId) {
+                const project = projects.find(function(p) { return p.id === projectId; });
+                if (project) {
+                    document.getElementById('project-name').textContent = project.name;
+                    document.getElementById('project-type').textContent = getProjectTypeLabel(project.project_type);
+                    document.getElementById('project-company').textContent = project.company || '-';
+                    document.getElementById('project-description').textContent = project.description || '-';
+                    projectInfo.classList.remove('hidden');
+                }
+            } else {
+                projectInfo.classList.add('hidden');
+            }
+            
+            // Update project type for AHS filtering
             updateProjectType();
         });
         
         // Initialize project type on page load
         updateProjectType();
     }
-});
-
-// Initialize and add first item on page load
-document.addEventListener('DOMContentLoaded', function() {
-    initializeItemIndex();
-    addItem();
+    
+    // Add form validation
+    const form = document.getElementById('hppForm');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            console.log('Form submit triggered');
+            if (!validateForm()) {
+                console.log('Form validation failed');
+                e.preventDefault();
+                return false;
+            }
+            console.log('Form validation passed, submitting...');
+        });
+    }
 });
 </script>
 @endsection

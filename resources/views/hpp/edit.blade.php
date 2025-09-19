@@ -343,17 +343,17 @@
             
             <div>
                 <label class="form-label">Volume <span class="text-red-500">*</span></label>
-                <input type="number" name="items[INDEX][volume]" class="form-input volume-input" step="0.01" min="0" required>
+                <input type="number" name="items[INDEX][volume]" class="form-input volume-input" step="0.01" min="0" value="1" required>
             </div>
             
             <div>
                 <label class="form-label">Satuan <span class="text-red-500">*</span></label>
-                <input type="text" name="items[INDEX][unit]" class="form-input unit-input" required>
+                <input type="text" name="items[INDEX][unit]" class="form-input unit-input" value="Unit" required>
             </div>
             
             <div>
                 <label class="form-label">Durasi <span class="text-red-500">*</span></label>
-                <input type="number" name="items[INDEX][duration]" class="form-input" min="1" required>
+                <input type="number" name="items[INDEX][duration]" class="form-input" min="1" value="1" required>
             </div>
             
             <div>
@@ -368,7 +368,7 @@
             
             <div>
                 <label class="form-label">Harga Satuan (Rp) <span class="text-red-500">*</span></label>
-                <input type="number" name="items[INDEX][unit_price]" class="form-input unit-price-input" step="0.01" min="0" required>
+                <input type="number" name="items[INDEX][unit_price]" class="form-input unit-price-input" step="0.01" min="0" value="0" required>
             </div>
             
             <div>
