@@ -71,8 +71,8 @@ class EstimationItem extends Model
     public function scopeForProjectType($query, string $projectType)
     {
         $classifications = $projectType === 'tkdn_jasa'
-            ? ['3.1', '3.2', '3.3', '3.4', '3.5']
-            : ['4.1', '4.2', '4.3', '4.4', '4.5', '4.6', '4.7'];
+            ? ['Overhead & Manajemen', 'Alat Kerja / Fasilitas', 'Konstruksi & Fabrikasi', 'Peralatan (Jasa Umum)']
+            : ['Material (Bahan Baku)', 'Peralatan (Barang Jadi)', 'Overhead & Manajemen', 'Alat Kerja / Fasilitas', 'Konstruksi & Fabrikasi', 'Peralatan (Jasa Umum)'];
 
         return $query->where(function ($q) use ($classifications) {
             $q->whereHas('worker', function ($workerQuery) use ($classifications) {

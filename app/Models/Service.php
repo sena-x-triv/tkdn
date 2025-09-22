@@ -155,17 +155,20 @@ class Service extends Model
     public function getFormsToGenerate(): array
     {
         $forms = [];
-        
+
         // Get all unique classifications from master data in this project
         $classifications = $this->getProjectClassifications();
-        
+
+        // Get project type for proper form mapping
+        $projectType = $this->project ? $this->project->project_type : null;
+
         foreach ($classifications as $classification) {
-            $formNumbers = \App\Models\Material::getFormNumbersForClassification($classification);
+            $formNumbers = \App\Models\Material::getFormNumbersForClassification($classification, $projectType);
             foreach ($formNumbers as $formNumber) {
                 $forms[$formNumber] = $this->getFormTitleForNumber($formNumber);
             }
         }
-        
+
         return $forms;
     }
 
@@ -175,12 +178,12 @@ class Service extends Model
     private function getProjectClassifications(): array
     {
         $classifications = collect();
-        
+
         // Get classifications from HPP items through estimation items
         $hppItems = \App\Models\HppItem::whereHas('hpp', function ($query) {
             $query->where('project_id', $this->project_id);
         })->with('estimationItem.worker', 'estimationItem.material', 'estimationItem.equipment')->get();
-        
+
         foreach ($hppItems as $hppItem) {
             if ($hppItem->estimationItem) {
                 if ($hppItem->estimationItem->worker && $hppItem->estimationItem->worker->classification_tkdn) {
@@ -194,7 +197,7 @@ class Service extends Model
                 }
             }
         }
-        
+
         return $classifications->unique()->values()->toArray();
     }
 
