@@ -166,7 +166,17 @@ trait OptimizedServiceItems
         return HppItem::whereHas('hpp', function ($query) {
             $query->where('project_id', $this->project_id);
         })
-            ->where('tkdn_classification', $classification)
+            ->whereHas('estimationItem', function ($query) use ($classification) {
+                $query->where(function ($q) use ($classification) {
+                    $q->whereHas('worker', function ($workerQuery) use ($classification) {
+                        $workerQuery->where('classification_tkdn', $classification);
+                    })->orWhereHas('material', function ($materialQuery) use ($classification) {
+                        $materialQuery->where('classification_tkdn', $classification);
+                    })->orWhereHas('equipment', function ($equipmentQuery) use ($classification) {
+                        $equipmentQuery->where('classification_tkdn', $classification);
+                    });
+                });
+            })
             ->with(['hpp', 'estimationItem'])
             ->get();
     }

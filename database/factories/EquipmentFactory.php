@@ -25,7 +25,7 @@ class EquipmentFactory extends Factory
             'tkdn' => $this->faker->randomFloat(2, 0, 100),
             'period' => $this->faker->numberBetween(1, 12),
             'price' => $this->faker->numberBetween(500000, 2000000),
-            'description' => $this->faker->paragraph(),
+            'description' => $this->faker->sentence(10),
             'location' => $this->faker->city(),
         ];
     }

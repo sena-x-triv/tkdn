@@ -36,38 +36,29 @@ class Material extends Model
     public static function getClassificationOptions(): array
     {
         return [
-            '3.1' => '3.1 - Overhead & Manajemen',
-            '3.2' => '3.2 - Alat / Fasilitas Kerja',
-            '3.3' => '3.3 - Konstruksi Fabrikasi',
-            '3.4' => '3.4 - Peralatan (Jasa Umum)',
-            '3.5' => '3.5 - Summary',
-            '4.1' => '4.1 - Material (Bahan Baku)',
-            '4.2' => '4.2 - Peralatan (Barang Jadi)',
-            '4.3' => '4.3 - Overhead & Manajemen',
-            '4.4' => '4.4 - Alat / Fasilitas Kerja',
-            '4.5' => '4.5 - Konstruksi & Fabrikasi',
-            '4.6' => '4.6 - Peralatan (Jasa Umum)',
-            '4.7' => '4.7 - Summary',
+            'Overhead & Manajemen' => 'Overhead & Manajemen',
+            'Alat Kerja / Fasilitas' => 'Alat Kerja / Fasilitas',
+            'Konstruksi & Fabrikasi' => 'Konstruksi & Fabrikasi',
+            'Peralatan (Jasa Umum)' => 'Peralatan (Jasa Umum)',
+            'Material (Bahan Baku)' => 'Material (Bahan Baku)',
+            'Peralatan (Barang Jadi)' => 'Peralatan (Barang Jadi)',
         ];
     }
 
     /**
-     * Get new classification mapping
+     * Get form numbers for a classification
      */
-    public static function getNewClassificationMapping(): array
+    public static function getFormNumbersForClassification(string $classification): array
     {
-        return Category::getFormMapping();
-    }
-
-    /**
-     * Get classification label with new format
-     */
-    public function getClassificationLabelAttribute(): string
-    {
-        $mapping = self::getNewClassificationMapping();
-        $formCode = $this->classification_tkdn;
-        
-        return $mapping[$formCode] ?? $formCode;
+        return match ($classification) {
+            'Overhead & Manajemen' => ['3.1', '4.3'],
+            'Alat Kerja / Fasilitas' => ['3.2', '4.4'],
+            'Konstruksi & Fabrikasi' => ['3.3', '4.5'],
+            'Peralatan (Jasa Umum)' => ['3.4', '4.6'],
+            'Material (Bahan Baku)' => ['4.1'],
+            'Peralatan (Barang Jadi)' => ['4.2'],
+            default => [],
+        };
     }
 
     public function getRouteKeyName()
