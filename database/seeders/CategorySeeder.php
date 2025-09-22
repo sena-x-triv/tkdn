@@ -8,85 +8,13 @@ class CategorySeeder extends Seeder
 {
     public function run(): void
     {
-        // Data kategori baru sesuai permintaan
         $data = [
-            // Form 3.x (TKDN Jasa)
-            [
-                'name' => 'Overhead & Manajemen',
-                'code' => 'OM',
-                'tkdn_type' => 'tkdn_jasa',
-                'form_mapping' => '3.1'
-            ],
-            [
-                'name' => 'Alat / Fasilitas Kerja',
-                'code' => 'AF',
-                'tkdn_type' => 'tkdn_jasa',
-                'form_mapping' => '3.2'
-            ],
-            [
-                'name' => 'Konstruksi Fabrikasi',
-                'code' => 'KF',
-                'tkdn_type' => 'tkdn_jasa',
-                'form_mapping' => '3.3'
-            ],
-            [
-                'name' => 'Peralatan (Jasa Umum)',
-                'code' => 'PJ',
-                'tkdn_type' => 'tkdn_jasa',
-                'form_mapping' => '3.4'
-            ],
-            [
-                'name' => 'Summary TKDN Jasa',
-                'code' => 'S3',
-                'tkdn_type' => 'tkdn_jasa',
-                'form_mapping' => '3.5'
-            ],
-            
-            // Form 4.x (TKDN Barang & Jasa)
-            [
-                'name' => 'Material (Bahan Baku)',
-                'code' => 'MB',
-                'tkdn_type' => 'tkdn_barang_jasa',
-                'form_mapping' => '4.1'
-            ],
-            [
-                'name' => 'Peralatan (Barang Jadi)',
-                'code' => 'PB',
-                'tkdn_type' => 'tkdn_barang_jasa',
-                'form_mapping' => '4.2'
-            ],
-            [
-                'name' => 'Overhead & Manajemen',
-                'code' => 'OM4',
-                'tkdn_type' => 'tkdn_barang_jasa',
-                'form_mapping' => '4.3'
-            ],
-            [
-                'name' => 'Alat / Fasilitas Kerja',
-                'code' => 'AF4',
-                'tkdn_type' => 'tkdn_barang_jasa',
-                'form_mapping' => '4.4'
-            ],
-            [
-                'name' => 'Konstruksi & Fabrikasi',
-                'code' => 'KF4',
-                'tkdn_type' => 'tkdn_barang_jasa',
-                'form_mapping' => '4.5'
-            ],
-            [
-                'name' => 'Peralatan (Jasa Umum)',
-                'code' => 'PJ4',
-                'tkdn_type' => 'tkdn_barang_jasa',
-                'form_mapping' => '4.6'
-            ],
-            [
-                'name' => 'Summary TKDN Barang & Jasa',
-                'code' => 'S4',
-                'tkdn_type' => 'tkdn_barang_jasa',
-                'form_mapping' => '4.7'
-            ]
+            ['name' => 'Material', 'code' => 'MT'],
+            ['name' => 'Pekerja', 'code' => 'PJ'],
+            ['name' => 'Elektrika', 'code' => 'EL'],
+            ['name' => 'Peralatan', 'code' => 'EQ'],
+            ['name' => 'HSE', 'code' => 'HS'],
         ];
-        
         foreach ($data as $item) {
             Category::firstOrCreate(['code' => $item['code']], $item);
         }

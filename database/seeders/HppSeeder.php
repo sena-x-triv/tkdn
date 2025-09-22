@@ -66,7 +66,6 @@ class HppSeeder extends Seeder
             // TKDN 3.1 - Manajemen Proyek dan Perekayasaan
             [
                 'description' => 'Manajemen Proyek - Pekerjaan Galian dan Urugan Tanah',
-                'tkdn_classification' => '3.1',
                 'estimation_codes' => ['A.1.1', 'A.1.2'], // Galian & Urugan
                 'volume' => 100.00,
                 'unit' => 'm3',
@@ -76,7 +75,6 @@ class HppSeeder extends Seeder
             ],
             [
                 'description' => 'Perekayasaan - Struktur Fondasi dan Beton',
-                'tkdn_classification' => '3.1',
                 'estimation_codes' => ['A.2.1', 'A.2.2'], // Fondasi
                 'volume' => 150.00,
                 'unit' => 'm3',
@@ -88,7 +86,6 @@ class HppSeeder extends Seeder
             // TKDN 3.2 - Alat Kerja dan Fasilitas Kerja
             [
                 'description' => 'Alat Kerja - Peralatan Dinding dan Plester',
-                'tkdn_classification' => '3.2',
                 'estimation_codes' => ['A.3.1', 'A.3.2'], // Dinding & Plester
                 'volume' => 200.00,
                 'unit' => 'm2',
@@ -98,7 +95,6 @@ class HppSeeder extends Seeder
             ],
             [
                 'description' => 'Fasilitas Kerja - Peralatan Atap dan Kusen',
-                'tkdn_classification' => '3.2',
                 'estimation_codes' => ['A.4.1', 'A.4.2'], // Atap & Kusen
                 'volume' => 120.00,
                 'unit' => 'm2',
@@ -110,7 +106,6 @@ class HppSeeder extends Seeder
             // TKDN 3.3 - Konstruksi dan Fabrikasi
             [
                 'description' => 'Konstruksi - Lantai dan Finishing',
-                'tkdn_classification' => '3.3',
                 'estimation_codes' => ['A.5.1', 'A.5.2'], // Lantai & Cat
                 'volume' => 180.00,
                 'unit' => 'm2',
@@ -120,7 +115,6 @@ class HppSeeder extends Seeder
             ],
             [
                 'description' => 'Fabrikasi - Instalasi MEP dan Sanitasi',
-                'tkdn_classification' => '3.3',
                 'estimation_codes' => ['A.6.1', 'A.6.2', 'A.7.1'], // Listrik, Air, Sanitasi
                 'volume' => 80.00,
                 'unit' => 'titik',
@@ -132,7 +126,6 @@ class HppSeeder extends Seeder
             // TKDN 3.4 - Jasa Umum
             [
                 'description' => 'Jasa Umum - Pagar dan Landscaping',
-                'tkdn_classification' => '3.4',
                 'estimation_codes' => ['A.8.1', 'A.9.1'], // Pagar & Taman
                 'volume' => 50.00,
                 'unit' => 'm2',
@@ -144,7 +137,6 @@ class HppSeeder extends Seeder
             // TKDN 4.1 - Jasa Teknik dan Rekayasa
             [
                 'description' => 'Jasa Teknik - Rekayasa Struktur dan Sistem',
-                'tkdn_classification' => '4.1',
                 'estimation_codes' => ['A.2.1', 'A.6.1'], // Fondasi & Listrik
                 'volume' => 100.00,
                 'unit' => 'm3',
@@ -156,7 +148,6 @@ class HppSeeder extends Seeder
             // TKDN 4.2 - Jasa Pengadaan dan Logistik
             [
                 'description' => 'Jasa Pengadaan - Manajemen Material dan Logistik',
-                'tkdn_classification' => '4.2',
                 'estimation_codes' => ['A.3.1', 'A.4.1'], // Dinding & Atap
                 'volume' => 150.00,
                 'unit' => 'm2',
@@ -168,7 +159,6 @@ class HppSeeder extends Seeder
             // TKDN 4.3 - Jasa Operasi dan Pemeliharaan
             [
                 'description' => 'Jasa Operasi - Maintenance dan Perawatan',
-                'tkdn_classification' => '4.3',
                 'estimation_codes' => ['A.5.1', 'A.7.1'], // Lantai & Sanitasi
                 'volume' => 120.00,
                 'unit' => 'm2',
@@ -180,7 +170,6 @@ class HppSeeder extends Seeder
             // TKDN 4.4 - Jasa Pelatihan dan Sertifikasi
             [
                 'description' => 'Jasa Pelatihan - Training dan Sertifikasi Teknis',
-                'tkdn_classification' => '4.4',
                 'estimation_codes' => ['A.1.1', 'A.2.2'], // Galian & Fondasi
                 'volume' => 80.00,
                 'unit' => 'm3',
@@ -192,7 +181,6 @@ class HppSeeder extends Seeder
             // TKDN 4.5 - Jasa Teknologi Informasi
             [
                 'description' => 'Jasa IT - Sistem Informasi dan Database',
-                'tkdn_classification' => '4.5',
                 'estimation_codes' => ['A.6.2'], // Air
                 'volume' => 60.00,
                 'unit' => 'titik',
@@ -204,7 +192,6 @@ class HppSeeder extends Seeder
             // TKDN 4.6 - Jasa Lingkungan dan Keamanan
             [
                 'description' => 'Jasa Lingkungan - Environmental dan Security',
-                'tkdn_classification' => '4.6',
                 'estimation_codes' => ['A.8.1', 'A.9.1'], // Pagar & Taman
                 'volume' => 40.00,
                 'unit' => 'm2',
@@ -216,7 +203,6 @@ class HppSeeder extends Seeder
             // TKDN 4.7 - Jasa Lainnya
             [
                 'description' => 'Jasa Lainnya - Konsultasi dan Support',
-                'tkdn_classification' => '4.7',
                 'estimation_codes' => ['A.3.2', 'A.5.2'], // Plester & Cat
                 'volume' => 100.00,
                 'unit' => 'm2',
@@ -245,7 +231,6 @@ class HppSeeder extends Seeder
                 'hpp_id' => $hpp->id,
                 'estimation_item_id' => $estimationItemId,
                 'description' => $itemData['description'],
-                'tkdn_classification' => $itemData['tkdn_classification'],
                 'volume' => $itemData['volume'],
                 'unit' => $itemData['unit'],
                 'duration' => $itemData['duration'],

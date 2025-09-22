@@ -190,8 +190,8 @@ class ServiceFormCategoryTest extends TestCase
 
         $response->assertStatus(200);
 
-        // Check project name is displayed
-        $response->assertSee('Test Project');
+        // Check service name is displayed
+        $response->assertSee($service->service_name);
 
         // Check form tabs for TKDN Jasa are displayed
         $response->assertSee('Form 3.1');
@@ -210,14 +210,12 @@ class ServiceFormCategoryTest extends TestCase
             'project_id' => $project->id,
         ]);
 
-        // Create HPP items with form 3.x classifications
+        // Create HPP items (tkdn_classification is determined from project type)
         \App\Models\HppItem::factory()->create([
             'hpp_id' => $hpp->id,
-            'tkdn_classification' => '3.1',
         ]);
         \App\Models\HppItem::factory()->create([
             'hpp_id' => $hpp->id,
-            'tkdn_classification' => '3.2',
         ]);
 
         $response = $this->post(route('service.store'), [
@@ -237,14 +235,12 @@ class ServiceFormCategoryTest extends TestCase
             'project_id' => $project->id,
         ]);
 
-        // Create HPP items with form 4.x classifications
+        // Create HPP items (tkdn_classification is determined from project type)
         \App\Models\HppItem::factory()->create([
             'hpp_id' => $hpp->id,
-            'tkdn_classification' => '4.1',
         ]);
         \App\Models\HppItem::factory()->create([
             'hpp_id' => $hpp->id,
-            'tkdn_classification' => '4.2',
         ]);
 
         $response = $this->post(route('service.store'), [
@@ -264,14 +260,12 @@ class ServiceFormCategoryTest extends TestCase
             'project_id' => $project->id,
         ]);
 
-        // Create HPP items with both form 3.x and 4.x classifications
+        // Create HPP items (form category is determined by project type)
         \App\Models\HppItem::factory()->create([
             'hpp_id' => $hpp->id,
-            'tkdn_classification' => '3.1',
         ]);
         \App\Models\HppItem::factory()->create([
             'hpp_id' => $hpp->id,
-            'tkdn_classification' => '4.1',
         ]);
 
         $response = $this->post(route('service.store'), [

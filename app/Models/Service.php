@@ -114,9 +114,9 @@ class Service extends Model
     public function getFormTitle()
     {
         return match ($this->service_type) {
-            self::TYPE_PROJECT => 'Formulir 3.1: TKDN Jasa untuk Manajemen Proyek dan Perekayasaan',
-            self::TYPE_EQUIPMENT => 'Formulir 3.2: TKDN Jasa untuk Alat Kerja dan Peralatan',
-            self::TYPE_CONSTRUCTION => 'Formulir 3.3: TKDN Jasa untuk Konstruksi dan Pembangunan',
+            self::TYPE_PROJECT => 'Formulir 3.1: TKDN Jasa untuk Overhead & Manajemen',
+            self::TYPE_EQUIPMENT => 'Formulir 3.2: TKDN Jasa untuk Alat / Fasilitas Kerja',
+            self::TYPE_CONSTRUCTION => 'Formulir 3.3: TKDN Jasa untuk Konstruksi Fabrikasi',
             default => 'Formulir TKDN Jasa',
         };
     }
@@ -130,22 +130,93 @@ class Service extends Model
     {
         return match ($this->form_category) {
             self::CATEGORY_TKDN_JASA => [
-                '3.1' => 'Jasa Manajemen Proyek dan Perekayasaan',
-                '3.2' => 'Jasa Alat Kerja dan Peralatan',
-                '3.3' => 'Jasa Konstruksi dan Pembangunan',
-                '3.4' => 'Jasa Konsultasi dan Pengawasan',
-                '3.5' => 'Rangkuman TKDN Jasa',
+                '3.1' => 'Overhead & Manajemen',
+                '3.2' => 'Alat Kerja / Fasilitas',
+                '3.3' => 'Konstruksi & Fabrikasi',
+                '3.4' => 'Peralatan (Jasa Umum)',
+                '3.5' => 'Summary',
             ],
             self::CATEGORY_TKDN_BARANG_JASA => [
-                '4.1' => 'Jasa Teknik dan Rekayasa',
-                '4.2' => 'Jasa Pengadaan dan Logistik',
-                '4.3' => 'Jasa Operasi dan Pemeliharaan',
-                '4.4' => 'Jasa Pelatihan dan Sertifikasi',
-                '4.5' => 'Jasa Teknologi Informasi',
-                '4.6' => 'Jasa Lingkungan dan Keamanan',
-                '4.7' => 'Jasa Lainnya',
+                '4.1' => 'Material (Bahan Baku)',
+                '4.2' => 'Peralatan (Barang Jadi)',
+                '4.3' => 'Overhead & Manajemen',
+                '4.4' => 'Alat Kerja / Fasilitas',
+                '4.5' => 'Konstruksi & Fabrikasi',
+                '4.6' => 'Peralatan (Jasa Umum)',
+                '4.7' => 'Summary',
             ],
             default => [],
+        };
+    }
+
+    /**
+     * Get forms that should be generated based on master data classifications
+     */
+    public function getFormsToGenerate(): array
+    {
+        $forms = [];
+        
+        // Get all unique classifications from master data in this project
+        $classifications = $this->getProjectClassifications();
+        
+        foreach ($classifications as $classification) {
+            $formNumbers = \App\Models\Material::getFormNumbersForClassification($classification);
+            foreach ($formNumbers as $formNumber) {
+                $forms[$formNumber] = $this->getFormTitleForNumber($formNumber);
+            }
+        }
+        
+        return $forms;
+    }
+
+    /**
+     * Get all classifications used in this project's master data
+     */
+    private function getProjectClassifications(): array
+    {
+        $classifications = collect();
+        
+        // Get classifications from HPP items through estimation items
+        $hppItems = \App\Models\HppItem::whereHas('hpp', function ($query) {
+            $query->where('project_id', $this->project_id);
+        })->with('estimationItem.worker', 'estimationItem.material', 'estimationItem.equipment')->get();
+        
+        foreach ($hppItems as $hppItem) {
+            if ($hppItem->estimationItem) {
+                if ($hppItem->estimationItem->worker && $hppItem->estimationItem->worker->classification_tkdn) {
+                    $classifications->push($hppItem->estimationItem->worker->classification_tkdn);
+                }
+                if ($hppItem->estimationItem->material && $hppItem->estimationItem->material->classification_tkdn) {
+                    $classifications->push($hppItem->estimationItem->material->classification_tkdn);
+                }
+                if ($hppItem->estimationItem->equipment && $hppItem->estimationItem->equipment->classification_tkdn) {
+                    $classifications->push($hppItem->estimationItem->equipment->classification_tkdn);
+                }
+            }
+        }
+        
+        return $classifications->unique()->values()->toArray();
+    }
+
+    /**
+     * Get form title for a specific form number
+     */
+    private function getFormTitleForNumber(string $formNumber): string
+    {
+        return match ($formNumber) {
+            '3.1' => 'Overhead & Manajemen',
+            '3.2' => 'Alat Kerja / Fasilitas',
+            '3.3' => 'Konstruksi & Fabrikasi',
+            '3.4' => 'Peralatan (Jasa Umum)',
+            '3.5' => 'Summary',
+            '4.1' => 'Material (Bahan Baku)',
+            '4.2' => 'Peralatan (Barang Jadi)',
+            '4.3' => 'Overhead & Manajemen',
+            '4.4' => 'Alat Kerja / Fasilitas',
+            '4.5' => 'Konstruksi & Fabrikasi',
+            '4.6' => 'Peralatan (Jasa Umum)',
+            '4.7' => 'Summary',
+            default => 'Unknown Form',
         };
     }
 }

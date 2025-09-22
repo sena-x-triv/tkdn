@@ -28,7 +28,6 @@ class HppItemFactory extends Factory
         return [
             'hpp_id' => Hpp::factory(),
             'estimation_item_id' => null,
-            'tkdn_classification' => $this->faker->randomElement(['3.1', '3.2', '3.3', '3.4', '3.5']),
             'description' => $this->faker->sentence(3),
             'volume' => $this->faker->randomFloat(2, 0.1, 100.0),
             'unit' => $this->faker->randomElement(['ls', 'm2', 'm3', 'kg', 'unit']),
