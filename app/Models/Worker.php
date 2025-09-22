@@ -24,19 +24,38 @@ class Worker extends Model
     public static function getClassificationOptions(): array
     {
         return [
-            '3.1' => '3.1 - Manajemen Proyek dan Perekayasaan',
-            '3.2' => '3.2 - Alat Kerja',
-            '3.3' => '3.3 - Konstruksi dan fabrikasi',
-            '3.4' => '3.4 - Jasa Umum',
-            '3.5' => '3.5 - Rekapitulasi',
-            '4.1' => '4.1 - Material Langsung (Bahan Baku)',
+            '3.1' => '3.1 - Overhead & Manajemen',
+            '3.2' => '3.2 - Alat / Fasilitas Kerja',
+            '3.3' => '3.3 - Konstruksi Fabrikasi',
+            '3.4' => '3.4 - Peralatan (Jasa Umum)',
+            '3.5' => '3.5 - Summary',
+            '4.1' => '4.1 - Material (Bahan Baku)',
             '4.2' => '4.2 - Peralatan (Barang Jadi)',
-            '4.3' => '4.3 - Manajemen Proyek & Perekayasaan',
-            '4.4' => '4.4 - Alat Kerja',
+            '4.3' => '4.3 - Overhead & Manajemen',
+            '4.4' => '4.4 - Alat / Fasilitas Kerja',
             '4.5' => '4.5 - Konstruksi & Fabrikasi',
-            '4.6' => '4.6 - Jasa Umum',
-            '4.7' => '4.7 - Rekapitulasi',
+            '4.6' => '4.6 - Peralatan (Jasa Umum)',
+            '4.7' => '4.7 - Summary',
         ];
+    }
+
+    /**
+     * Get new classification mapping
+     */
+    public static function getNewClassificationMapping(): array
+    {
+        return Category::getFormMapping();
+    }
+
+    /**
+     * Get classification label with new format
+     */
+    public function getClassificationLabelAttribute(): string
+    {
+        $mapping = self::getNewClassificationMapping();
+        $formCode = $this->classification_tkdn;
+        
+        return $mapping[$formCode] ?? $formCode;
     }
 
     public function getRouteKeyName()
