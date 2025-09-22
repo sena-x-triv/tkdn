@@ -866,62 +866,62 @@ class ServiceController extends Controller
 
     private function generateTkdnForms(Service $service)
     {
-        Log::info('Starting TKDN forms generation', [
+        Log::info('Starting TKDN forms generation with new classification', [
             'service_id' => $service->id,
             'service_type' => $service->service_type,
             'project_id' => $service->project_id,
         ]);
 
-        // Generate Form 3.1 - Jasa Manajemen Proyek dan Perekayasaan
+        // Generate Form 3.1 - Overhead & Manajemen
         if ($service->service_type === 'project') {
-            $this->createTkdnForm($service, '3.1', 'Jasa Manajemen Proyek dan Perekayasaan');
+            $this->createTkdnForm($service, '3.1', 'Overhead & Manajemen');
         }
 
-        // Generate Form 3.2 - Jasa Alat Kerja dan Peralatan
+        // Generate Form 3.2 - Alat / Fasilitas Kerja
         if ($service->service_type === 'equipment') {
-            $this->createTkdnForm($service, '3.2', 'Jasa Alat Kerja dan Peralatan');
+            $this->createTkdnForm($service, '3.2', 'Alat / Fasilitas Kerja');
         }
 
-        // Generate Form 3.3 - Jasa Konstruksi dan Pembangunan
+        // Generate Form 3.3 - Konstruksi Fabrikasi
         if ($service->service_type === 'construction') {
-            $this->createTkdnForm($service, '3.3', 'Jasa Konstruksi dan Pembangunan');
+            $this->createTkdnForm($service, '3.3', 'Konstruksi Fabrikasi');
         }
 
-        // Generate Form 3.4 - Jasa Konsultasi dan Pengawasan (selalu ada)
-        Log::info('Generating Form 3.4 - Jasa Konsultasi dan Pengawasan');
-        $this->createTkdnForm($service, '3.4', 'Jasa Konsultasi dan Pengawasan');
+        // Generate Form 3.4 - Peralatan (Jasa Umum) (selalu ada)
+        Log::info('Generating Form 3.4 - Peralatan (Jasa Umum)');
+        $this->createTkdnForm($service, '3.4', 'Peralatan (Jasa Umum)');
 
-        // Generate Form 4.1 - Jasa Teknik dan Rekayasa (selalu ada)
-        Log::info('Generating Form 4.1 - Jasa Teknik dan Rekayasa');
-        $this->createTkdnForm($service, '4.1', 'Jasa Teknik dan Rekayasa');
+        // Generate Form 4.1 - Material (Bahan Baku) (selalu ada)
+        Log::info('Generating Form 4.1 - Material (Bahan Baku)');
+        $this->createTkdnForm($service, '4.1', 'Material (Bahan Baku)');
 
-        // Generate Form 4.2 - Jasa Pengadaan dan Logistik (selalu ada)
-        Log::info('Generating Form 4.2 - Jasa Pengadaan dan Logistik');
-        $this->createTkdnForm($service, '4.2', 'Jasa Pengadaan dan Logistik');
+        // Generate Form 4.2 - Peralatan (Barang Jadi) (selalu ada)
+        Log::info('Generating Form 4.2 - Peralatan (Barang Jadi)');
+        $this->createTkdnForm($service, '4.2', 'Peralatan (Barang Jadi)');
 
-        // Generate Form 4.3 - Jasa Operasi dan Pemeliharaan (selalu ada)
-        Log::info('Generating Form 4.3 - Jasa Operasi dan Pemeliharaan');
-        $this->createTkdnForm($service, '4.3', 'Jasa Operasi dan Pemeliharaan');
+        // Generate Form 4.3 - Overhead & Manajemen (selalu ada)
+        Log::info('Generating Form 4.3 - Overhead & Manajemen');
+        $this->createTkdnForm($service, '4.3', 'Overhead & Manajemen');
 
-        // Generate Form 4.4 - Jasa Pelatihan dan Sertifikasi (selalu ada)
-        Log::info('Generating Form 4.4 - Jasa Pelatihan dan Sertifikasi');
-        $this->createTkdnForm($service, '4.4', 'Jasa Pelatihan dan Sertifikasi');
+        // Generate Form 4.4 - Alat / Fasilitas Kerja (selalu ada)
+        Log::info('Generating Form 4.4 - Alat / Fasilitas Kerja');
+        $this->createTkdnForm($service, '4.4', 'Alat / Fasilitas Kerja');
 
-        // Generate Form 4.5 - Jasa Teknologi Informasi (selalu ada)
-        Log::info('Generating Form 4.5 - Jasa Teknologi Informasi');
-        $this->createTkdnForm($service, '4.5', 'Jasa Teknologi Informasi');
+        // Generate Form 4.5 - Konstruksi & Fabrikasi (selalu ada)
+        Log::info('Generating Form 4.5 - Konstruksi & Fabrikasi');
+        $this->createTkdnForm($service, '4.5', 'Konstruksi & Fabrikasi');
 
-        // Generate Form 4.6 - Jasa Lingkungan dan Keamanan (selalu ada)
-        Log::info('Generating Form 4.6 - Jasa Lingkungan dan Keamanan');
-        $this->createTkdnForm($service, '4.6', 'Jasa Lingkungan dan Keamanan');
+        // Generate Form 4.6 - Peralatan (Jasa Umum) (selalu ada)
+        Log::info('Generating Form 4.6 - Peralatan (Jasa Umum)');
+        $this->createTkdnForm($service, '4.6', 'Peralatan (Jasa Umum)');
 
-        // Generate Form 4.7 - Jasa Lainnya (selalu ada)
-        Log::info('Generating Form 4.7 - Jasa Lainnya');
-        $this->createTkdnForm($service, '4.7', 'Jasa Lainnya');
+        // Generate Form 3.5 - Summary TKDN Jasa (selalu ada)
+        Log::info('Generating Form 3.5 - Summary TKDN Jasa');
+        $this->createTkdnForm($service, '3.5', 'Summary TKDN Jasa');
 
-        // Generate Form 3.5 - Rangkuman TKDN Jasa (selalu ada)
-        Log::info('Generating Form 3.5 - Rangkuman TKDN Jasa');
-        $this->createTkdnForm($service, '3.5', 'Rangkuman TKDN Jasa');
+        // Generate Form 4.7 - Summary TKDN Barang & Jasa (selalu ada)
+        Log::info('Generating Form 4.7 - Summary TKDN Barang & Jasa');
+        $this->createTkdnForm($service, '4.7', 'Summary TKDN Barang & Jasa');
 
         // Verifikasi semua form telah di-generate
         $generatedForms = $service->items()->select('tkdn_classification')->distinct()->pluck('tkdn_classification')->toArray();
