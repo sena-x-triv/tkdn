@@ -40,17 +40,17 @@ class Equipment extends Model
     }
 
     /**
-     * Get form numbers for a classification
+     * Get form numbers for a classification based on project type
      */
-    public static function getFormNumbersForClassification(string $classification): array
+    public static function getFormNumbersForClassification(string $classification, ?string $projectType = null): array
     {
         return match ($classification) {
-            'Overhead & Manajemen' => ['3.1', '4.3'],
-            'Alat Kerja / Fasilitas' => ['3.2', '4.4'],
-            'Konstruksi & Fabrikasi' => ['3.3', '4.5'],
-            'Peralatan (Jasa Umum)' => ['3.4', '4.6'],
-            'Material (Bahan Baku)' => ['4.1'],
-            'Peralatan (Barang Jadi)' => ['4.2'],
+            'Overhead & Manajemen' => $projectType === 'tkdn_jasa' ? ['3.1'] : ($projectType === 'tkdn_barang_jasa' ? ['4.3'] : ['3.1', '4.3']),
+            'Alat Kerja / Fasilitas' => $projectType === 'tkdn_jasa' ? ['3.2'] : ($projectType === 'tkdn_barang_jasa' ? ['4.4'] : ['3.2', '4.4']),
+            'Konstruksi & Fabrikasi' => $projectType === 'tkdn_jasa' ? ['3.3'] : ($projectType === 'tkdn_barang_jasa' ? ['4.5'] : ['3.3', '4.5']),
+            'Peralatan (Jasa Umum)' => $projectType === 'tkdn_jasa' ? ['3.4'] : ($projectType === 'tkdn_barang_jasa' ? ['4.6'] : ['3.4', '4.6']),
+            'Material (Bahan Baku)' => $projectType === 'tkdn_barang_jasa' ? ['4.1'] : [],
+            'Peralatan (Barang Jadi)' => $projectType === 'tkdn_barang_jasa' ? ['4.2'] : [],
             default => [],
         };
     }

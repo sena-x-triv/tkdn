@@ -75,11 +75,11 @@ class ServiceController extends Controller
                         $query->whereHas('estimationItem', function ($estimationQuery) {
                             $estimationQuery->where(function ($q) {
                                 $q->whereHas('worker', function ($workerQuery) {
-                                    $workerQuery->whereIn('classification_tkdn', ['3.1', '3.2', '3.3', '3.4', '3.5']);
+                                    $workerQuery->whereIn('classification_tkdn', ['Overhead & Manajemen', 'Alat Kerja / Fasilitas', 'Konstruksi & Fabrikasi', 'Peralatan (Jasa Umum)']);
                                 })->orWhereHas('material', function ($materialQuery) {
-                                    $materialQuery->whereIn('classification_tkdn', ['3.1', '3.2', '3.3', '3.4', '3.5']);
+                                    $materialQuery->whereIn('classification_tkdn', ['Overhead & Manajemen', 'Alat Kerja / Fasilitas', 'Konstruksi & Fabrikasi', 'Peralatan (Jasa Umum)']);
                                 })->orWhereHas('equipment', function ($equipmentQuery) {
-                                    $equipmentQuery->whereIn('classification_tkdn', ['3.1', '3.2', '3.3', '3.4', '3.5']);
+                                    $equipmentQuery->whereIn('classification_tkdn', ['Overhead & Manajemen', 'Alat Kerja / Fasilitas', 'Konstruksi & Fabrikasi', 'Peralatan (Jasa Umum)']);
                                 });
                             });
                         });
@@ -87,11 +87,11 @@ class ServiceController extends Controller
                         $query->whereHas('estimationItem', function ($estimationQuery) {
                             $estimationQuery->where(function ($q) {
                                 $q->whereHas('worker', function ($workerQuery) {
-                                    $workerQuery->whereIn('classification_tkdn', ['4.1', '4.2', '4.3', '4.4', '4.5', '4.6', '4.7']);
+                                    $workerQuery->whereIn('classification_tkdn', ['Material (Bahan Baku)', 'Peralatan (Barang Jadi)', 'Overhead & Manajemen', 'Alat Kerja / Fasilitas', 'Konstruksi & Fabrikasi', 'Peralatan (Jasa Umum)']);
                                 })->orWhereHas('material', function ($materialQuery) {
-                                    $materialQuery->whereIn('classification_tkdn', ['4.1', '4.2', '4.3', '4.4', '4.5', '4.6', '4.7']);
+                                    $materialQuery->whereIn('classification_tkdn', ['Material (Bahan Baku)', 'Peralatan (Barang Jadi)', 'Overhead & Manajemen', 'Alat Kerja / Fasilitas', 'Konstruksi & Fabrikasi', 'Peralatan (Jasa Umum)']);
                                 })->orWhereHas('equipment', function ($equipmentQuery) {
-                                    $equipmentQuery->whereIn('classification_tkdn', ['4.1', '4.2', '4.3', '4.4', '4.5', '4.6', '4.7']);
+                                    $equipmentQuery->whereIn('classification_tkdn', ['Material (Bahan Baku)', 'Peralatan (Barang Jadi)', 'Overhead & Manajemen', 'Alat Kerja / Fasilitas', 'Konstruksi & Fabrikasi', 'Peralatan (Jasa Umum)']);
                                 });
                             });
                         });
@@ -133,18 +133,25 @@ class ServiceController extends Controller
                         'project_name' => $hpp->project ? $hpp->project->name : 'N/A',
                         'project_code' => $hpp->project ? $hpp->project->code : 'N/A',
                         'project_type' => $hpp->project ? $hpp->project->project_type : 'tkdn_jasa',
-                        'tkdn_breakdown' => $hpp->items ? $hpp->items->groupBy('tkdn_classification')->map(function ($items, $classification) {
+                        'tkdn_breakdown' => $hpp->items ? $hpp->items->groupBy(function ($item) {
+                            // Get classification from master data through estimation item
+                            return $item->estimationItem->classification_tkdn ?? 'Unknown';
+                        })->map(function ($items, $classification) {
                             return [
                                 'classification' => $classification,
                                 'count' => $items->count(),
                                 'total_cost' => $items->sum('total_price'),
                             ];
                         })->filter(function ($data, $classification) use ($hpp) {
-                            // Filter berdasarkan project_type
+                            // Filter berdasarkan project_type menggunakan mapping yang baru
                             if ($hpp->project->project_type === 'tkdn_jasa') {
-                                return in_array($classification, ['3.1', '3.2', '3.3', '3.4', '3.5']);
+                                $formNumbers = \App\Models\Material::getFormNumbersForClassification($classification, 'tkdn_jasa');
+
+                                return ! empty($formNumbers);
                             } elseif ($hpp->project->project_type === 'tkdn_barang_jasa') {
-                                return in_array($classification, ['4.1', '4.2', '4.3', '4.4', '4.5', '4.6', '4.7']);
+                                $formNumbers = \App\Models\Material::getFormNumbersForClassification($classification, 'tkdn_barang_jasa');
+
+                                return ! empty($formNumbers);
                             }
 
                             return true;
@@ -718,10 +725,10 @@ class ServiceController extends Controller
         // Ambil HPP items yang sesuai dengan project_type melalui master data
         $hppItems = collect();
         if ($service->project_id) {
-            $classifications = $projectType === 'tkdn_jasa' 
+            $classifications = $projectType === 'tkdn_jasa'
                 ? ['3.1', '3.2', '3.3', '3.4', '3.5']
                 : ['4.1', '4.2', '4.3', '4.4', '4.5', '4.6', '4.7'];
-            
+
             $hppItems = \App\Models\HppItem::whereHas('hpp', function ($query) use ($service) {
                 $query->where('project_id', $service->project_id);
             })
@@ -738,7 +745,7 @@ class ServiceController extends Controller
                 })
                 ->with(['hpp', 'estimation'])
                 ->get();
-            
+
             // Group by classification from master data
             $hppItems = $hppItems->groupBy(function ($item) {
                 // Get classification from master data
@@ -751,6 +758,7 @@ class ServiceController extends Controller
                         return $item->estimationItem->equipment->classification_tkdn;
                     }
                 }
+
                 return 'unknown';
             });
         }
@@ -1065,14 +1073,16 @@ class ServiceController extends Controller
         $project = Project::find($projectId);
         if (! $project) {
             Log::warning('Project not found for HPP items query', ['project_id' => $projectId]);
+
             return collect();
         }
 
-        // Dapatkan klasifikasi yang sesuai dengan form number
-        $classifications = $this->getClassificationsForFormNumber($formNumber);
-        
+        // Dapatkan klasifikasi yang sesuai dengan form number dan project type
+        $classifications = $this->getClassificationsForFormNumber($formNumber, $project->project_type);
+
         if (empty($classifications)) {
-            Log::warning('No classifications found for form number', ['form_number' => $formNumber]);
+            Log::warning('No classifications found for form number', ['form_number' => $formNumber, 'project_type' => $project->project_type]);
+
             return collect();
         }
 
@@ -1117,29 +1127,29 @@ class ServiceController extends Controller
     }
 
     /**
-     * Get classifications that should generate a specific form number
+     * Get classifications that should generate a specific form number based on project type
      */
-    private function getClassificationsForFormNumber(string $formNumber): array
+    private function getClassificationsForFormNumber(string $formNumber, string $projectType): array
     {
         $classifications = [];
-        
+
         // Check all master data models for classifications that generate this form number
         $allClassifications = [
             'Overhead & Manajemen',
-            'Alat Kerja / Fasilitas', 
+            'Alat Kerja / Fasilitas',
             'Konstruksi & Fabrikasi',
             'Peralatan (Jasa Umum)',
             'Material (Bahan Baku)',
-            'Peralatan (Barang Jadi)'
+            'Peralatan (Barang Jadi)',
         ];
-        
+
         foreach ($allClassifications as $classification) {
-            $formNumbers = \App\Models\Material::getFormNumbersForClassification($classification);
+            $formNumbers = \App\Models\Material::getFormNumbersForClassification($classification, $projectType);
             if (in_array($formNumber, $formNumbers)) {
                 $classifications[] = $classification;
             }
         }
-        
+
         return $classifications;
     }
 

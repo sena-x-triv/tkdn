@@ -1,8 +1,6 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
@@ -12,116 +10,80 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Update Material table - convert to new classification names (without form numbers)
-        DB::table('material')->where('classification_tkdn', '3.1 - Overhead & Manajemen')
-            ->update(['classification_tkdn' => 'Overhead & Manajemen']);
-        
-        DB::table('material')->where('classification_tkdn', '3.2 - Alat / Fasilitas Kerja')
-            ->update(['classification_tkdn' => 'Alat Kerja / Fasilitas']);
-        
-        DB::table('material')->where('classification_tkdn', '3.3 - Konstruksi Fabrikasi')
-            ->update(['classification_tkdn' => 'Konstruksi & Fabrikasi']);
-        
-        DB::table('material')->where('classification_tkdn', '3.4 - Peralatan (Jasa Umum)')
-            ->update(['classification_tkdn' => 'Peralatan (Jasa Umum)']);
-        
-        DB::table('material')->where('classification_tkdn', '3.5 - Summary')
-            ->update(['classification_tkdn' => 'Summary']);
-        
-        DB::table('material')->where('classification_tkdn', '4.1 - Material (Bahan Baku)')
-            ->update(['classification_tkdn' => 'Material (Bahan Baku)']);
-        
-        DB::table('material')->where('classification_tkdn', '4.2 - Peralatan (Barang Jadi)')
-            ->update(['classification_tkdn' => 'Peralatan (Barang Jadi)']);
-        
-        DB::table('material')->where('classification_tkdn', '4.3 - Overhead & Manajemen')
-            ->update(['classification_tkdn' => 'Overhead & Manajemen']);
-        
-        DB::table('material')->where('classification_tkdn', '4.4 - Alat / Fasilitas Kerja')
-            ->update(['classification_tkdn' => 'Alat Kerja / Fasilitas']);
-        
-        DB::table('material')->where('classification_tkdn', '4.5 - Konstruksi & Fabrikasi')
-            ->update(['classification_tkdn' => 'Konstruksi & Fabrikasi']);
-        
-        DB::table('material')->where('classification_tkdn', '4.6 - Peralatan (Jasa Umum)')
-            ->update(['classification_tkdn' => 'Peralatan (Jasa Umum)']);
-        
-        DB::table('material')->where('classification_tkdn', '4.7 - Summary')
-            ->update(['classification_tkdn' => 'Summary']);
+        // Define mapping for all possible old formats to new formats
+        $classificationMappings = [
+            // Format: "3.1 - Description" or "3.1" -> "Overhead & Manajemen"
+            '3.1' => 'Overhead & Manajemen',
+            '3.1 - Overhead & Manajemen' => 'Overhead & Manajemen',
+            '3.1 - Manajemen Proyek dan Perekayasaan' => 'Overhead & Manajemen',
+            '3.1 - Manajemen Proyek & Perekayasaan' => 'Overhead & Manajemen',
 
-        // Update Workers table - convert to new classification names (without form numbers)
-        DB::table('workers')->where('classification_tkdn', '3.1 - Overhead & Manajemen')
-            ->update(['classification_tkdn' => 'Overhead & Manajemen']);
-        
-        DB::table('workers')->where('classification_tkdn', '3.2 - Alat / Fasilitas Kerja')
-            ->update(['classification_tkdn' => 'Alat Kerja / Fasilitas']);
-        
-        DB::table('workers')->where('classification_tkdn', '3.3 - Konstruksi Fabrikasi')
-            ->update(['classification_tkdn' => 'Konstruksi & Fabrikasi']);
-        
-        DB::table('workers')->where('classification_tkdn', '3.4 - Peralatan (Jasa Umum)')
-            ->update(['classification_tkdn' => 'Peralatan (Jasa Umum)']);
-        
-        DB::table('workers')->where('classification_tkdn', '3.5 - Summary')
-            ->update(['classification_tkdn' => 'Summary']);
-        
-        DB::table('workers')->where('classification_tkdn', '4.1 - Material (Bahan Baku)')
-            ->update(['classification_tkdn' => 'Material (Bahan Baku)']);
-        
-        DB::table('workers')->where('classification_tkdn', '4.2 - Peralatan (Barang Jadi)')
-            ->update(['classification_tkdn' => 'Peralatan (Barang Jadi)']);
-        
-        DB::table('workers')->where('classification_tkdn', '4.3 - Overhead & Manajemen')
-            ->update(['classification_tkdn' => 'Overhead & Manajemen']);
-        
-        DB::table('workers')->where('classification_tkdn', '4.4 - Alat / Fasilitas Kerja')
-            ->update(['classification_tkdn' => 'Alat Kerja / Fasilitas']);
-        
-        DB::table('workers')->where('classification_tkdn', '4.5 - Konstruksi & Fabrikasi')
-            ->update(['classification_tkdn' => 'Konstruksi & Fabrikasi']);
-        
-        DB::table('workers')->where('classification_tkdn', '4.6 - Peralatan (Jasa Umum)')
-            ->update(['classification_tkdn' => 'Peralatan (Jasa Umum)']);
-        
-        DB::table('workers')->where('classification_tkdn', '4.7 - Summary')
-            ->update(['classification_tkdn' => 'Summary']);
+            // Format: "3.2 - Description" or "3.2" -> "Alat Kerja / Fasilitas"
+            '3.2' => 'Alat Kerja / Fasilitas',
+            '3.2 - Alat / Fasilitas Kerja' => 'Alat Kerja / Fasilitas',
+            '3.2 - Alat Kerja' => 'Alat Kerja / Fasilitas',
+            '3.2 - Alat Kerja / Fasilitas' => 'Alat Kerja / Fasilitas',
 
-        // Update Equipment table - convert to new classification names (without form numbers)
-        DB::table('equipment')->where('classification_tkdn', '3.1 - Overhead & Manajemen')
-            ->update(['classification_tkdn' => 'Overhead & Manajemen']);
-        
-        DB::table('equipment')->where('classification_tkdn', '3.2 - Alat / Fasilitas Kerja')
-            ->update(['classification_tkdn' => 'Alat Kerja / Fasilitas']);
-        
-        DB::table('equipment')->where('classification_tkdn', '3.3 - Konstruksi Fabrikasi')
-            ->update(['classification_tkdn' => 'Konstruksi & Fabrikasi']);
-        
-        DB::table('equipment')->where('classification_tkdn', '3.4 - Peralatan (Jasa Umum)')
-            ->update(['classification_tkdn' => 'Peralatan (Jasa Umum)']);
-        
-        DB::table('equipment')->where('classification_tkdn', '3.5 - Summary')
-            ->update(['classification_tkdn' => 'Summary']);
-        
-        DB::table('equipment')->where('classification_tkdn', '4.1 - Material (Bahan Baku)')
-            ->update(['classification_tkdn' => 'Material (Bahan Baku)']);
-        
-        DB::table('equipment')->where('classification_tkdn', '4.2 - Peralatan (Barang Jadi)')
-            ->update(['classification_tkdn' => 'Peralatan (Barang Jadi)']);
-        
-        DB::table('equipment')->where('classification_tkdn', '4.3 - Overhead & Manajemen')
-            ->update(['classification_tkdn' => 'Overhead & Manajemen']);
-        
-        DB::table('equipment')->where('classification_tkdn', '4.4 - Alat / Fasilitas Kerja')
-            ->update(['classification_tkdn' => 'Alat Kerja / Fasilitas']);
-        
-        DB::table('equipment')->where('classification_tkdn', '4.5 - Konstruksi & Fabrikasi')
-            ->update(['classification_tkdn' => 'Konstruksi & Fabrikasi']);
-        
-        DB::table('equipment')->where('classification_tkdn', '4.6 - Peralatan (Jasa Umum)')
-            ->update(['classification_tkdn' => 'Peralatan (Jasa Umum)']);
-        
-        DB::table('equipment')->where('classification_tkdn', '4.7 - Summary')
-            ->update(['classification_tkdn' => 'Summary']);
+            // Format: "3.3 - Description" or "3.3" -> "Konstruksi & Fabrikasi"
+            '3.3' => 'Konstruksi & Fabrikasi',
+            '3.3 - Konstruksi Fabrikasi' => 'Konstruksi & Fabrikasi',
+            '3.3 - Konstruksi dan Fabrikasi' => 'Konstruksi & Fabrikasi',
+            '3.3 - Konstruksi & Fabrikasi' => 'Konstruksi & Fabrikasi',
+
+            // Format: "3.4 - Description" or "3.4" -> "Peralatan (Jasa Umum)"
+            '3.4' => 'Peralatan (Jasa Umum)',
+            '3.4 - Peralatan (Jasa Umum)' => 'Peralatan (Jasa Umum)',
+            '3.4 - Jasa Umum' => 'Peralatan (Jasa Umum)',
+
+            // Format: "3.5 - Description" or "3.5" -> "Summary"
+            '3.5' => 'Summary',
+            '3.5 - Summary' => 'Summary',
+            '3.5 - Rekapitulasi' => 'Summary',
+
+            // Format: "4.1 - Description" or "4.1" -> "Material (Bahan Baku)"
+            '4.1' => 'Material (Bahan Baku)',
+            '4.1 - Material (Bahan Baku)' => 'Material (Bahan Baku)',
+            '4.1 - Material Langsung (Bahan Baku)' => 'Material (Bahan Baku)',
+
+            // Format: "4.2 - Description" or "4.2" -> "Peralatan (Barang Jadi)"
+            '4.2' => 'Peralatan (Barang Jadi)',
+            '4.2 - Peralatan (Barang Jadi)' => 'Peralatan (Barang Jadi)',
+
+            // Format: "4.3 - Description" or "4.3" -> "Overhead & Manajemen"
+            '4.3' => 'Overhead & Manajemen',
+            '4.3 - Overhead & Manajemen' => 'Overhead & Manajemen',
+            '4.3 - Manajemen Proyek & Perekayasaan' => 'Overhead & Manajemen',
+
+            // Format: "4.4 - Description" or "4.4" -> "Alat Kerja / Fasilitas"
+            '4.4' => 'Alat Kerja / Fasilitas',
+            '4.4 - Alat / Fasilitas Kerja' => 'Alat Kerja / Fasilitas',
+            '4.4 - Alat Kerja' => 'Alat Kerja / Fasilitas',
+
+            // Format: "4.5 - Description" or "4.5" -> "Konstruksi & Fabrikasi"
+            '4.5' => 'Konstruksi & Fabrikasi',
+            '4.5 - Konstruksi & Fabrikasi' => 'Konstruksi & Fabrikasi',
+
+            // Format: "4.6 - Description" or "4.6" -> "Peralatan (Jasa Umum)"
+            '4.6' => 'Peralatan (Jasa Umum)',
+            '4.6 - Peralatan (Jasa Umum)' => 'Peralatan (Jasa Umum)',
+            '4.6 - Jasa Umum' => 'Peralatan (Jasa Umum)',
+
+            // Format: "4.7 - Description" or "4.7" -> "Summary"
+            '4.7' => 'Summary',
+            '4.7 - Summary' => 'Summary',
+            '4.7 - Rekapitulasi' => 'Summary',
+        ];
+
+        // Update all tables with comprehensive mapping
+        $tables = ['material', 'workers', 'equipment'];
+
+        foreach ($tables as $table) {
+            foreach ($classificationMappings as $oldFormat => $newFormat) {
+                DB::table($table)
+                    ->where('classification_tkdn', $oldFormat)
+                    ->update(['classification_tkdn' => $newFormat]);
+            }
+        }
     }
 
     /**
@@ -129,115 +91,26 @@ return new class extends Migration
      */
     public function down(): void
     {
-        // Reverse Material table
-        DB::table('material')->where('classification_tkdn', 'Overhead & Manajemen')
-            ->update(['classification_tkdn' => '3.1 - Overhead & Manajemen']);
-        
-        DB::table('material')->where('classification_tkdn', 'Alat Kerja / Fasilitas')
-            ->update(['classification_tkdn' => '3.2 - Alat / Fasilitas Kerja']);
-        
-        DB::table('material')->where('classification_tkdn', 'Konstruksi & Fabrikasi')
-            ->update(['classification_tkdn' => '3.3 - Konstruksi Fabrikasi']);
-        
-        DB::table('material')->where('classification_tkdn', 'Peralatan (Jasa Umum)')
-            ->update(['classification_tkdn' => '3.4 - Peralatan (Jasa Umum)']);
-        
-        DB::table('material')->where('classification_tkdn', 'Summary')
-            ->update(['classification_tkdn' => '3.5 - Summary']);
-        
-        DB::table('material')->where('classification_tkdn', 'Material (Bahan Baku)')
-            ->update(['classification_tkdn' => '4.1 - Material (Bahan Baku)']);
-        
-        DB::table('material')->where('classification_tkdn', 'Peralatan (Barang Jadi)')
-            ->update(['classification_tkdn' => '4.2 - Peralatan (Barang Jadi)']);
-        
-        DB::table('material')->where('classification_tkdn', 'Overhead & Manajemen')
-            ->update(['classification_tkdn' => '4.3 - Overhead & Manajemen']);
-        
-        DB::table('material')->where('classification_tkdn', 'Alat Kerja / Fasilitas')
-            ->update(['classification_tkdn' => '4.4 - Alat / Fasilitas Kerja']);
-        
-        DB::table('material')->where('classification_tkdn', 'Konstruksi & Fabrikasi')
-            ->update(['classification_tkdn' => '4.5 - Konstruksi & Fabrikasi']);
-        
-        DB::table('material')->where('classification_tkdn', 'Peralatan (Jasa Umum)')
-            ->update(['classification_tkdn' => '4.6 - Peralatan (Jasa Umum)']);
-        
-        DB::table('material')->where('classification_tkdn', 'Summary')
-            ->update(['classification_tkdn' => '4.7 - Summary']);
+        // Define reverse mapping from new formats back to old formats
+        $reverseMappings = [
+            'Overhead & Manajemen' => '3.1 - Overhead & Manajemen',
+            'Alat Kerja / Fasilitas' => '3.2 - Alat / Fasilitas Kerja',
+            'Konstruksi & Fabrikasi' => '3.3 - Konstruksi Fabrikasi',
+            'Peralatan (Jasa Umum)' => '3.4 - Peralatan (Jasa Umum)',
+            'Summary' => '3.5 - Summary',
+            'Material (Bahan Baku)' => '4.1 - Material (Bahan Baku)',
+            'Peralatan (Barang Jadi)' => '4.2 - Peralatan (Barang Jadi)',
+        ];
 
-        // Reverse Workers table
-        DB::table('workers')->where('classification_tkdn', 'Overhead & Manajemen')
-            ->update(['classification_tkdn' => '3.1 - Overhead & Manajemen']);
-        
-        DB::table('workers')->where('classification_tkdn', 'Alat Kerja / Fasilitas')
-            ->update(['classification_tkdn' => '3.2 - Alat / Fasilitas Kerja']);
-        
-        DB::table('workers')->where('classification_tkdn', 'Konstruksi & Fabrikasi')
-            ->update(['classification_tkdn' => '3.3 - Konstruksi Fabrikasi']);
-        
-        DB::table('workers')->where('classification_tkdn', 'Peralatan (Jasa Umum)')
-            ->update(['classification_tkdn' => '3.4 - Peralatan (Jasa Umum)']);
-        
-        DB::table('workers')->where('classification_tkdn', 'Summary')
-            ->update(['classification_tkdn' => '3.5 - Summary']);
-        
-        DB::table('workers')->where('classification_tkdn', 'Material (Bahan Baku)')
-            ->update(['classification_tkdn' => '4.1 - Material (Bahan Baku)']);
-        
-        DB::table('workers')->where('classification_tkdn', 'Peralatan (Barang Jadi)')
-            ->update(['classification_tkdn' => '4.2 - Peralatan (Barang Jadi)']);
-        
-        DB::table('workers')->where('classification_tkdn', 'Overhead & Manajemen')
-            ->update(['classification_tkdn' => '4.3 - Overhead & Manajemen']);
-        
-        DB::table('workers')->where('classification_tkdn', 'Alat Kerja / Fasilitas')
-            ->update(['classification_tkdn' => '4.4 - Alat / Fasilitas Kerja']);
-        
-        DB::table('workers')->where('classification_tkdn', 'Konstruksi & Fabrikasi')
-            ->update(['classification_tkdn' => '4.5 - Konstruksi & Fabrikasi']);
-        
-        DB::table('workers')->where('classification_tkdn', 'Peralatan (Jasa Umum)')
-            ->update(['classification_tkdn' => '4.6 - Peralatan (Jasa Umum)']);
-        
-        DB::table('workers')->where('classification_tkdn', 'Summary')
-            ->update(['classification_tkdn' => '4.7 - Summary']);
+        // Reverse all tables
+        $tables = ['material', 'workers', 'equipment'];
 
-        // Reverse Equipment table
-        DB::table('equipment')->where('classification_tkdn', 'Overhead & Manajemen')
-            ->update(['classification_tkdn' => '3.1 - Overhead & Manajemen']);
-        
-        DB::table('equipment')->where('classification_tkdn', 'Alat Kerja / Fasilitas')
-            ->update(['classification_tkdn' => '3.2 - Alat / Fasilitas Kerja']);
-        
-        DB::table('equipment')->where('classification_tkdn', 'Konstruksi & Fabrikasi')
-            ->update(['classification_tkdn' => '3.3 - Konstruksi Fabrikasi']);
-        
-        DB::table('equipment')->where('classification_tkdn', 'Peralatan (Jasa Umum)')
-            ->update(['classification_tkdn' => '3.4 - Peralatan (Jasa Umum)']);
-        
-        DB::table('equipment')->where('classification_tkdn', 'Summary')
-            ->update(['classification_tkdn' => '3.5 - Summary']);
-        
-        DB::table('equipment')->where('classification_tkdn', 'Material (Bahan Baku)')
-            ->update(['classification_tkdn' => '4.1 - Material (Bahan Baku)']);
-        
-        DB::table('equipment')->where('classification_tkdn', 'Peralatan (Barang Jadi)')
-            ->update(['classification_tkdn' => '4.2 - Peralatan (Barang Jadi)']);
-        
-        DB::table('equipment')->where('classification_tkdn', 'Overhead & Manajemen')
-            ->update(['classification_tkdn' => '4.3 - Overhead & Manajemen']);
-        
-        DB::table('equipment')->where('classification_tkdn', 'Alat Kerja / Fasilitas')
-            ->update(['classification_tkdn' => '4.4 - Alat / Fasilitas Kerja']);
-        
-        DB::table('equipment')->where('classification_tkdn', 'Konstruksi & Fabrikasi')
-            ->update(['classification_tkdn' => '4.5 - Konstruksi & Fabrikasi']);
-        
-        DB::table('equipment')->where('classification_tkdn', 'Peralatan (Jasa Umum)')
-            ->update(['classification_tkdn' => '4.6 - Peralatan (Jasa Umum)']);
-        
-        DB::table('equipment')->where('classification_tkdn', 'Summary')
-            ->update(['classification_tkdn' => '4.7 - Summary']);
+        foreach ($tables as $table) {
+            foreach ($reverseMappings as $newFormat => $oldFormat) {
+                DB::table($table)
+                    ->where('classification_tkdn', $newFormat)
+                    ->update(['classification_tkdn' => $oldFormat]);
+            }
+        }
     }
 };

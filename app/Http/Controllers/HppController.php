@@ -50,9 +50,9 @@ class HppController extends Controller
     {
         \Log::info('HPP Store method called', [
             'request_data' => $request->all(),
-            'user_id' => auth()->id()
+            'user_id' => auth()->id(),
         ]);
-        
+
         $request->validate([
             'project_id' => 'required|exists:projects,id',
             'overhead_percentage' => 'required|numeric|min:0|max:100',
@@ -542,8 +542,8 @@ class HppController extends Controller
     private function getClassificationsForProjectType(string $projectType): array
     {
         return $projectType === 'tkdn_jasa'
-            ? ['3.1', '3.2', '3.3', '3.4', '3.5']
-            : ['4.1', '4.2', '4.3', '4.4', '4.5', '4.6', '4.7'];
+            ? ['Overhead & Manajemen', 'Alat Kerja / Fasilitas', 'Konstruksi & Fabrikasi', 'Peralatan (Jasa Umum)']
+            : ['Material (Bahan Baku)', 'Peralatan (Barang Jadi)', 'Overhead & Manajemen', 'Alat Kerja / Fasilitas', 'Konstruksi & Fabrikasi', 'Peralatan (Jasa Umum)'];
     }
 
     /**
@@ -558,15 +558,18 @@ class HppController extends Controller
 
         $ahsData = [];
         foreach ($estimations as $estimation) {
-            $ahsData[] = [
-                'type' => 'ahs',
-                'id' => $estimation->id,
-                'code' => $estimation->code,
-                'title' => $estimation->title,
-                'description' => $estimation->code.' - '.$estimation->title,
-                'category' => 'AHS',
-                'item_count' => $estimation->items->count(),
-            ];
+            // Only include estimations that have items matching the project type
+            if ($estimation->items->count() > 0) {
+                $ahsData[] = [
+                    'type' => 'ahs',
+                    'id' => $estimation->id,
+                    'code' => $estimation->code,
+                    'title' => $estimation->title,
+                    'description' => $estimation->code.' - '.$estimation->title,
+                    'category' => 'AHS',
+                    'item_count' => $estimation->items->count(),
+                ];
+            }
         }
 
         return response()->json($ahsData);
