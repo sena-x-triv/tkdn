@@ -1486,6 +1486,14 @@
 
                     <!-- Summary Statistics Cards -->
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        @php
+                            // Calculate totals for each form
+                            $form31Total = isset($groupedItems['3.1']) ? $groupedItems['3.1']->sum('total_cost') : 0;
+                            $form32Total = isset($groupedItems['3.2']) ? $groupedItems['3.2']->sum('total_cost') : 0;
+                            $form33Total = isset($groupedItems['3.3']) ? $groupedItems['3.3']->sum('total_cost') : 0;
+                            $form34Total = isset($groupedItems['3.4']) ? $groupedItems['3.4']->sum('total_cost') : 0;
+                        @endphp
+
                         <!-- Form 3.1 Card -->
                         <div class="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-xl p-6 border border-blue-200 dark:border-blue-700">
                             <div class="flex items-center justify-between">
@@ -1500,7 +1508,7 @@
                                 </div>
                             </div>
                             <div class="mt-4">
-                                <p class="text-2xl font-bold text-blue-900 dark:text-blue-100" id="form31-total">Rp 0</p>
+                                <p class="text-2xl font-bold text-blue-900 dark:text-blue-100">Rp {{ number_format($form31Total, 0, ',', '.') }}</p>
                                 <p class="text-xs text-blue-600 dark:text-blue-400">Total Biaya</p>
                             </div>
                         </div>
@@ -1519,7 +1527,7 @@
                                 </div>
                             </div>
                             <div class="mt-4">
-                                <p class="text-2xl font-bold text-green-900 dark:text-green-100" id="form32-total">Rp 0</p>
+                                <p class="text-2xl font-bold text-green-900 dark:text-green-100">Rp {{ number_format($form32Total, 0, ',', '.') }}</p>
                                 <p class="text-xs text-green-600 dark:text-green-400">Total Biaya</p>
                             </div>
                         </div>
@@ -1538,7 +1546,7 @@
                                 </div>
                             </div>
                             <div class="mt-4">
-                                <p class="text-2xl font-bold text-purple-900 dark:text-purple-100" id="form33-total">Rp 0</p>
+                                <p class="text-2xl font-bold text-purple-900 dark:text-purple-100">Rp {{ number_format($form33Total, 0, ',', '.') }}</p>
                                 <p class="text-xs text-purple-600 dark:text-purple-400">Total Biaya</p>
                             </div>
                         </div>
@@ -1557,7 +1565,7 @@
                                 </div>
                             </div>
                             <div class="mt-4">
-                                <p class="text-2xl font-bold text-orange-900 dark:text-orange-100" id="form34-total">Rp 0</p>
+                                <p class="text-2xl font-bold text-orange-900 dark:text-orange-100">Rp {{ number_format($form34Total, 0, ',', '.') }}</p>
                                 <p class="text-xs text-orange-600 dark:text-orange-400">Total Biaya</p>
                             </div>
                         </div>
