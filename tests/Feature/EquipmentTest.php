@@ -31,6 +31,7 @@ class EquipmentTest extends TestCase
             'period' => 10,
             'price' => 100000,
             'description' => 'Test Desc',
+            'classification_tkdn' => 6,
         ];
         $this->actingAs($user)
             ->post(route('master.equipment.store'), $data)

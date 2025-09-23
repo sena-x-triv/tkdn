@@ -31,6 +31,7 @@ class MaterialTest extends TestCase
             'unit' => 'Kg',
             'price' => 5000,
             'tkdn' => 70,
+            'classification_tkdn' => 5,
         ];
         $this->actingAs($user)
             ->post(route('master.material.store'), $data)

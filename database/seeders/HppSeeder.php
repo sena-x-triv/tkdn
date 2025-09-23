@@ -72,14 +72,7 @@ class HppSeeder extends Seeder
             $createdHppCount++;
 
             // Create HPP Items based on different TKDN classifications
-            $classifications = [
-                'Overhead & Manajemen',
-                'Alat Kerja / Fasilitas',
-                'Konstruksi & Fabrikasi',
-                'Peralatan (Jasa Umum)',
-                'Material (Bahan Baku)',
-                'Peralatan (Barang Jadi)',
-            ];
+            $classifications = [1, 2, 3, 4, 5, 6]; // Integer codes from TkdnClassificationHelper
 
             // Create 2-4 HPP items per HPP with different classifications
             $itemCount = rand(2, 4);
@@ -90,7 +83,7 @@ class HppSeeder extends Seeder
                 $estimationItem = null;
                 $estimation = $estimations->random();
 
-                if ($classification === 'Overhead & Manajemen') {
+                if ($classification === 1) { // Overhead & Manajemen
                     $worker = $workers->where('classification_tkdn', $classification)->first();
                     if (! $worker) {
                         $worker = \App\Models\Worker::inRandomOrder()->first(); // Fallback to any worker
@@ -104,7 +97,7 @@ class HppSeeder extends Seeder
                         'unit_price' => $worker->price,
                         'total_price' => $worker->price * rand(10, 50),
                     ]);
-                } elseif ($classification === 'Material (Bahan Baku)') {
+                } elseif ($classification === 5) { // Material (Bahan Baku)
                     $material = $materials->where('classification_tkdn', $classification)->first();
                     if (! $material) {
                         $material = \App\Models\Material::inRandomOrder()->first(); // Fallback to any material
@@ -119,6 +112,7 @@ class HppSeeder extends Seeder
                         'total_price' => $material->price * rand(5, 20),
                     ]);
                 } else {
+                    // For other classifications (2, 3, 4, 6) - use equipment
                     $equipmentItem = $equipment->where('classification_tkdn', $classification)->first();
                     if (! $equipmentItem) {
                         $equipmentItem = \App\Models\Equipment::inRandomOrder()->first(); // Fallback to any equipment
@@ -152,10 +146,14 @@ class HppSeeder extends Seeder
                     $description = "HPP Item #{$j} - {$equipment->name} ({$classification})";
                 }
 
+                // Get TKDN classification code from helper
+                $tkdnClassificationCode = \App\Helpers\TkdnClassificationHelper::getCodeByName($classification);
+
                 HppItem::create([
                     'hpp_id' => $hpp->id,
                     'estimation_item_id' => $estimationItem->id,
                     'description' => $description,
+                    'tkdn_classification' => $tkdnClassificationCode, // Store integer code instead of string
                     'volume' => $volume,
                     'unit' => 'unit',
                     'duration' => rand(1, 30),

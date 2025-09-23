@@ -94,9 +94,17 @@ class ServiceExportTest extends TestCase
             'project_id' => $project->id,
         ]);
 
+        // Create estimation item first
+        $estimation = \App\Models\Estimation::factory()->create();
+        $estimationItem = \App\Models\EstimationItem::factory()->create([
+            'estimation_id' => $estimation->id,
+            'category' => 'worker',
+            'reference_id' => \App\Models\Worker::factory()->create(['classification_tkdn' => 1])->id,
+        ]);
+
         \App\Models\HppItem::factory()->create([
             'hpp_id' => $hpp->id,
-            'tkdn_classification' => '3.1',
+            'estimation_item_id' => $estimationItem->id,
             'description' => 'Test Item',
             'total_price' => 1000000,
         ]);

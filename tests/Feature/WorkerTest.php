@@ -28,6 +28,7 @@ class WorkerTest extends TestCase
             'unit' => 'Orang',
             'price' => 10000,
             'tkdn' => 80,
+            'classification_tkdn' => 1,
         ];
         $this->actingAs($user)
             ->post(route('master.worker.store'), $data)
@@ -59,4 +60,4 @@ class WorkerTest extends TestCase
             ->assertRedirect(route('master.worker.index'));
         $this->assertDatabaseMissing('workers', ['id' => $worker->id]);
     }
-} 
+}

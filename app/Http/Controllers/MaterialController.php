@@ -64,6 +64,7 @@ class MaterialController extends Controller
                 'price_inflasi' => 'nullable|integer|min:0',
                 'description' => 'nullable|string',
                 'location' => 'nullable|string',
+                'classification_tkdn' => 'required|integer|min:1|max:6',
             ]);
 
             // Generate code otomatis
@@ -300,7 +301,7 @@ class MaterialController extends Controller
                     Material::create([
                         'name' => trim($row[0]),
                         'category_id' => $categoryId,
-                        'classification_tkdn' => ! empty($row[11]) ? trim($row[11]) : null,
+                        'classification_tkdn' => ! empty($row[11]) ? (int) trim($row[11]) : null,
                         'brand' => ! empty($row[2]) ? trim($row[2]) : null,
                         'specification' => ! empty($row[3]) ? trim($row[3]) : null,
                         'tkdn' => ! empty($row[4]) ? (int) $row[4] : 100,

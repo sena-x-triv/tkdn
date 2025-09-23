@@ -17,6 +17,7 @@ class HppItem extends Model
         'estimation_item_id',
         'item_number',
         'description',
+        'tkdn_classification',
         'volume',
         'unit',
         'duration',
@@ -26,6 +27,7 @@ class HppItem extends Model
     ];
 
     protected $casts = [
+        'tkdn_classification' => 'integer',
         'volume' => 'decimal:2',
         'unit_price' => 'decimal:2',
         'total_price' => 'decimal:2',

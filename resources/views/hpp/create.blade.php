@@ -518,7 +518,7 @@ function fillExistingRowWithAhsItem(row, item, ahs) {
     if (ahsDetailInfo) {
         ahsCode.textContent = ahs.code;
         ahsTitle.textContent = ahs.title;
-        ahsClassification.textContent = item.classification_tkdn || 'N/A';
+        ahsClassification.textContent = item.classification_tkdn_name || 'N/A';
         ahsTkdnValue.textContent = item.tkdn_value ? item.tkdn_value + '%' : 'N/A';
         ahsCategory.textContent = item.category || 'N/A';
         
@@ -567,7 +567,7 @@ function addAhsItem(item, ahs) {
     
     ahsCode.textContent = ahs.code;
     ahsTitle.textContent = ahs.title;
-    ahsClassification.textContent = item.classification_tkdn || 'N/A';
+    ahsClassification.textContent = item.classification_tkdn_name || 'N/A';
     ahsTkdnValue.textContent = item.tkdn_value ? item.tkdn_value + '%' : 'N/A';
     ahsCategory.textContent = item.category || 'N/A';
     

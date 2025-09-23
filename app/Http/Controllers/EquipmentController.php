@@ -63,6 +63,7 @@ class EquipmentController extends Controller
                 'price' => 'required|integer|min:0',
                 'description' => 'nullable|string|max:255',
                 'location' => 'nullable|string|max:255',
+                'classification_tkdn' => 'required|integer|min:1|max:6',
             ]);
 
             // Validasi period berdasarkan jenis equipment
@@ -363,7 +364,7 @@ class EquipmentController extends Controller
                     Equipment::create([
                         'name' => trim($row[0]),
                         'category_id' => $categoryId,
-                        'classification_tkdn' => ! empty($row[8]) ? trim($row[8]) : null,
+                        'classification_tkdn' => ! empty($row[8]) ? (int) trim($row[8]) : null,
                         'tkdn' => ! empty($row[2]) ? (float) $row[2] : null,
                         'period' => (int) $row[4],
                         'price' => (int) $row[5],

@@ -51,7 +51,7 @@ class EstimationItem extends Model
     /**
      * Get classification TKDN from master data
      */
-    public function getClassificationTkdnAttribute(): ?string
+    public function getClassificationTkdnAttribute(): ?int
     {
         switch ($this->category) {
             case 'worker':
@@ -66,21 +66,41 @@ class EstimationItem extends Model
     }
 
     /**
+     * Get classification TKDN name from master data
+     */
+    public function getClassificationTkdnNameAttribute(): ?string
+    {
+        $code = $this->getClassificationTkdnAttribute();
+        if (! $code) {
+            return null;
+        }
+
+        return \App\Helpers\TkdnClassificationHelper::getNameByCode($code);
+    }
+
+    /**
      * Scope untuk filter berdasarkan project type
      */
     public function scopeForProjectType($query, string $projectType)
     {
-        $classifications = $projectType === 'tkdn_jasa'
-            ? ['Overhead & Manajemen', 'Alat Kerja / Fasilitas', 'Konstruksi & Fabrikasi', 'Peralatan (Jasa Umum)']
-            : ['Material (Bahan Baku)', 'Peralatan (Barang Jadi)', 'Overhead & Manajemen', 'Alat Kerja / Fasilitas', 'Konstruksi & Fabrikasi', 'Peralatan (Jasa Umum)'];
+        $classifications = \App\Helpers\TkdnClassificationHelper::getClassificationsForProjectType($projectType);
 
-        return $query->where(function ($q) use ($classifications) {
-            $q->whereHas('worker', function ($workerQuery) use ($classifications) {
-                $workerQuery->whereIn('classification_tkdn', $classifications);
-            })->orWhereHas('material', function ($materialQuery) use ($classifications) {
-                $materialQuery->whereIn('classification_tkdn', $classifications);
-            })->orWhereHas('equipment', function ($equipmentQuery) use ($classifications) {
-                $equipmentQuery->whereIn('classification_tkdn', $classifications);
+        // Convert classification names to codes
+        $classificationCodes = [];
+        foreach ($classifications as $classificationName) {
+            $code = \App\Helpers\TkdnClassificationHelper::getCodeByName($classificationName);
+            if ($code) {
+                $classificationCodes[] = $code;
+            }
+        }
+
+        return $query->where(function ($q) use ($classificationCodes) {
+            $q->whereHas('worker', function ($workerQuery) use ($classificationCodes) {
+                $workerQuery->whereIn('classification_tkdn', $classificationCodes);
+            })->orWhereHas('material', function ($materialQuery) use ($classificationCodes) {
+                $materialQuery->whereIn('classification_tkdn', $classificationCodes);
+            })->orWhereHas('equipment', function ($equipmentQuery) use ($classificationCodes) {
+                $equipmentQuery->whereIn('classification_tkdn', $classificationCodes);
             });
         });
     }

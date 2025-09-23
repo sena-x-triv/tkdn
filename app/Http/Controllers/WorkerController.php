@@ -53,6 +53,7 @@ class WorkerController extends Controller
             'price' => 'required|integer',
             'tkdn' => 'required|integer',
             'location' => 'nullable|string',
+            'classification_tkdn' => 'required|integer|min:1|max:6',
         ]);
 
         // Generate code otomatis
@@ -254,7 +255,7 @@ class WorkerController extends Controller
                         'name' => trim($row[0]),
                         'unit' => trim($row[1]),
                         'category_id' => $categoryId,
-                        'classification_tkdn' => ! empty($row[6]) ? trim($row[6]) : null,
+                        'classification_tkdn' => ! empty($row[6]) ? (int) trim($row[6]) : null,
                         'price' => (int) $row[3],
                         'tkdn' => (int) $row[4],
                         'location' => ! empty($row[5]) ? trim($row[5]) : null,

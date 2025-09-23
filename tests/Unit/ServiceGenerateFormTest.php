@@ -4,13 +4,24 @@ namespace Tests\Unit;
 
 use App\Models\Project;
 use App\Models\Service;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class ServiceGenerateFormTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected $user;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // Create a user for authentication with admin role
+        $this->user = User::factory()->create(['role' => 'admin']);
+        $this->actingAs($this->user);
+    }
 
     public function test_can_generate_form_3_1(): void
     {
@@ -104,18 +115,27 @@ class ServiceGenerateFormTest extends TestCase
             'status' => 'draft',
         ]);
 
-        // Mock HPP items data
-        DB::table('hpp_items')->insert([
-            'id' => 'test-hpp-1',
-            'hpp_id' => 'test-hpp',
+        // Create HPP and related data
+        $hpp = \App\Models\Hpp::factory()->create(['project_id' => $project->id]);
+
+        // Create estimation item with worker
+        $estimation = \App\Models\Estimation::factory()->create();
+        $worker = \App\Models\Worker::factory()->create(['classification_tkdn' => 1]);
+        $estimationItem = \App\Models\EstimationItem::factory()->create([
+            'estimation_id' => $estimation->id,
+            'category' => 'worker',
+            'reference_id' => $worker->id,
+        ]);
+
+        // Create HPP item
+        \App\Models\HppItem::factory()->create([
+            'hpp_id' => $hpp->id,
+            'estimation_item_id' => $estimationItem->id,
             'description' => 'Test Item 1',
-            'tkdn_classification' => '3.1',
             'volume' => 1,
             'duration' => 12,
             'duration_unit' => 'bulan',
             'total_price' => 1000000,
-            'created_at' => now(),
-            'updated_at' => now(),
         ]);
 
         $response = $this->post(route('service.generate-form', ['service' => $service->id, 'formNumber' => '3.1']));

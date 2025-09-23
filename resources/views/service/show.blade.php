@@ -1304,10 +1304,10 @@
                     </div>
 
                     <!-- Data Table -->
-                    @if($projectType === 'tkdn_jasa' && (isset($hppItems['3.4']) && $hppItems['3.4']->isNotEmpty() || isset($groupedItems['3.4']) && $groupedItems['3.4']->isNotEmpty()))
+                    @if($projectType === 'tkdn_jasa' && (isset($hppItems['4']) && $hppItems['4']->isNotEmpty() || isset($groupedItems['4']) && $groupedItems['4']->isNotEmpty()))
                         @php
-                            $hppItems4 = $hppItems['3.4'] ?? collect();
-                            $serviceItems4 = $groupedItems['3.4'] ?? collect();
+                            $hppItems4 = $hppItems['4'] ?? collect();
+                            $serviceItems4 = $groupedItems['4'] ?? collect();
                         @endphp
                         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
                             <div class="px-6 py-4 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 border-b border-gray-200 dark:border-gray-600">
@@ -1485,6 +1485,14 @@
                     </div>
 
                     <!-- Summary Statistics Cards -->
+                    @php
+                        // Hitung total untuk setiap form TKDN Jasa (3.1-3.4)
+                        $form31Total = isset($groupedItems['3.1']) ? $groupedItems['3.1']->sum('total_cost') : 0;
+                        $form32Total = isset($groupedItems['3.2']) ? $groupedItems['3.2']->sum('total_cost') : 0;
+                        $form33Total = isset($groupedItems['3.3']) ? $groupedItems['3.3']->sum('total_cost') : 0;
+                        $form34Total = isset($groupedItems['3.4']) ? $groupedItems['3.4']->sum('total_cost') : 0;
+                    @endphp
+                    
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                         <!-- Form 3.1 Card -->
                         <div class="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-xl p-6 border border-blue-200 dark:border-blue-700">
@@ -1500,7 +1508,7 @@
                                 </div>
                             </div>
                             <div class="mt-4">
-                                <p class="text-2xl font-bold text-blue-900 dark:text-blue-100" id="form31-total">Rp 0</p>
+                                <p class="text-2xl font-bold text-blue-900 dark:text-blue-100">Rp {{ number_format($form31Total, 0, ',', '.') }}</p>
                                 <p class="text-xs text-blue-600 dark:text-blue-400">Total Biaya</p>
                             </div>
                         </div>
@@ -1519,7 +1527,7 @@
                                 </div>
                             </div>
                             <div class="mt-4">
-                                <p class="text-2xl font-bold text-green-900 dark:text-green-100" id="form32-total">Rp 0</p>
+                                <p class="text-2xl font-bold text-green-900 dark:text-green-100">Rp {{ number_format($form32Total, 0, ',', '.') }}</p>
                                 <p class="text-xs text-green-600 dark:text-green-400">Total Biaya</p>
                             </div>
                         </div>
@@ -1538,7 +1546,7 @@
                                 </div>
                             </div>
                             <div class="mt-4">
-                                <p class="text-2xl font-bold text-purple-900 dark:text-purple-100" id="form33-total">Rp 0</p>
+                                <p class="text-2xl font-bold text-purple-900 dark:text-purple-100">Rp {{ number_format($form33Total, 0, ',', '.') }}</p>
                                 <p class="text-xs text-purple-600 dark:text-purple-400">Total Biaya</p>
                             </div>
                         </div>
@@ -1557,7 +1565,7 @@
                                 </div>
                             </div>
                             <div class="mt-4">
-                                <p class="text-2xl font-bold text-orange-900 dark:text-orange-100" id="form34-total">Rp 0</p>
+                                <p class="text-2xl font-bold text-orange-900 dark:text-orange-100">Rp {{ number_format($form34Total, 0, ',', '.') }}</p>
                                 <p class="text-xs text-orange-600 dark:text-orange-400">Total Biaya</p>
                             </div>
                         </div>
@@ -1566,16 +1574,28 @@
                     <!-- Rangkuman TKDN Table -->
                     @if($projectType === 'tkdn_jasa' && isset($groupedItems['3.5']) && $groupedItems['3.5']->isNotEmpty())
                         @php
-                            // Ambil data dari Service Items untuk Form 3.5 (rangkuman)
-                            $summaryItems = $groupedItems['3.5'];
+                            // Hitung total dari semua form TKDN Jasa (3.1-3.4), bukan dari summary items
+                            $totalKdn = 0;
+                            $totalKln = 0;
+                            $totalBiaya = 0;
                             
-                            // Hitung total dari semua form
-                            $totalKdn = $summaryItems->sum('domestic_cost');
-                            $totalKln = $summaryItems->sum('foreign_cost');
-                            $totalBiaya = $summaryItems->sum('total_cost');
+                            // Hitung dari form 3.1-3.4 (exclude summary form 3.5)
+                            // Prioritize integer classification codes over string form numbers to avoid duplication
+                            $formClassifications = [1, 2, 3, 4]; // Classification codes untuk form 3.1-3.4
+                            foreach ($formClassifications as $classification) {
+                                if (isset($groupedItems[$classification])) {
+                                    $totalKdn += $groupedItems[$classification]->sum('domestic_cost');
+                                    $totalKln += $groupedItems[$classification]->sum('foreign_cost');
+                                    $totalBiaya += $groupedItems[$classification]->sum('total_cost');
+                                }
+                            }
+                            
                             
                             // Hitung TKDN percentage keseluruhan
                             $tkdnPercentage = $totalBiaya > 0 ? ($totalKdn / $totalBiaya) * 100 : 0;
+                            
+                            // Ambil data dari Service Items untuk Form 3.5 (rangkuman) untuk display
+                            $summaryItems = $groupedItems['3.5'] ?? collect();
                         @endphp
 
                     @if($summaryItems->count() > 0)
@@ -1737,6 +1757,19 @@
                 </h3>
             </div>
             
+            @php
+                // Gunakan data yang sama dengan form yang di-generate
+                // Group items berdasarkan tkdn_classification seperti di form
+                $serviceItems = collect();
+                foreach ($groupedItems as $classification => $items) {
+                    foreach ($items as $item) {
+                        $serviceItems->push($item);
+                    }
+                }
+                // Sort by item_number untuk konsistensi
+                $serviceItems = $serviceItems->sortBy('item_number')->values();
+            @endphp
+
             <!-- TKDN Classification Filter -->
             <div class="px-6 py-4 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -1749,72 +1782,92 @@
                         </label>
                         <select id="tkdnFilter" class="form-select w-32 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500" onchange="filterTkdnItems()">
                             <option value="">Semua</option>
-                            <option value="3.1">3.1</option>
-                            <option value="3.2">3.2</option>
-                            <option value="3.3">3.3</option>
-                            <option value="3.4">3.4</option>
-                            <option value="3.5">3.5</option>
+                            @if($projectType === 'tkdn_jasa')
+                                <option value="3.1">3.1</option>
+                                <option value="3.2">3.2</option>
+                                <option value="3.3">3.3</option>
+                                <option value="3.4">3.4</option>
+                                <option value="3.5">3.5</option>
+                            @elseif($projectType === 'tkdn_barang_jasa')
+                                <option value="4.1">4.1</option>
+                                <option value="4.2">4.2</option>
+                                <option value="4.3">4.3</option>
+                                <option value="4.4">4.4</option>
+                                <option value="4.5">4.5</option>
+                                <option value="4.6">4.6</option>
+                                <option value="4.7">4.7</option>
+                            @endif
                         </select>
                     </div>
-                    <div class="text-sm text-gray-600 dark:text-gray-400">
-                        Total Items: <span class="font-semibold text-green-600 dark:text-green-400">{{ $service->items->count() }}</span>
+                    <div class="flex items-center space-x-4 text-sm text-gray-600 dark:text-gray-400">
+                        <div>
+                            Total Items: <span class="font-semibold text-green-600 dark:text-green-400">{{ $serviceItems->count() }}</span>
+                        </div>
+                        <div>
+                            Total Biaya: <span class="font-semibold text-blue-600 dark:text-blue-400">Rp {{ number_format($serviceItems->sum('total_cost'), 0, ',', '.') }}</span>
+                        </div>
+                        <div>
+                            TKDN: <span class="font-semibold text-purple-600 dark:text-purple-400">{{ number_format($service->tkdn_percentage, 2) }}%</span>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div class="overflow-x-auto">
-                <table class="table">
-                    <thead>
+                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    <thead class="bg-gray-50 dark:bg-gray-700">
                         <tr>
-                            <th class="text-center">No.</th>
-                            <th>Uraian</th>
-                            <th>Kualifikasi</th>
-                            <th>WN</th>
-                            <th class="text-center">TKDN (%)</th>
-                            <th class="text-center">Jumlah</th>
-                            <th class="text-center">Durasi</th>
-                            <th class="text-center">Upah (Rupiah)</th>
-                            <th class="text-center" colspan="3">BIAYA (Rupiah)</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">No.</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Uraian</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Kualifikasi</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">WN</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">TKDN (%)</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Jumlah</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Durasi</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Upah (Rupiah)</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider" colspan="3">BIAYA (Rupiah)</th>
                         </tr>
                         <tr>
-                            <th colspan="8"></th>
-                            <th class="text-center">KDN</th>
-                            <th class="text-center">KLN</th>
-                            <th class="text-center">TOTAL</th>
+                            <th colspan="7" class="px-6 py-3"></th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">KDN</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">KLN</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">TOTAL</th>
                         </tr>
                     </thead>
-                    <tbody id="tkdnItemsTable">
-                        @php
-                            // Ambil semua service items untuk service ini
-                            $serviceItems = $service->itemsOrdered()
-                                ->with(['estimationItem'])
-                                ->get();
-                        @endphp
+                    <tbody id="tkdnItemsTable" class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
 
                         @if($serviceItems->count() > 0)
                             @foreach($serviceItems as $index => $serviceItem)
-                                <tr class="tkdn-item-row hover:bg-gray-50 dark:hover:bg-gray-700" data-tkdn-classification="{{ $serviceItem->tkdn_classification }}">
-                                    <td class="text-center">{{ $serviceItem->item_number }}</td>
-                                    <td>{{ $serviceItem->description }}</td>
-                                    <td>{{ \Illuminate\Support\Str::limit($serviceItem->qualification ?? '-', 30) }}</td>
-                                    <td>{{ $serviceItem->nationality }}</td>
-                                    <td class="text-center">{{ number_format($serviceItem->tkdn_percentage, 1) }}%</td>
-                                    <td class="text-center">{{ $serviceItem->quantity }}</td>
-                                    <td class="text-center">{{ $serviceItem->duration }} {{ $serviceItem->duration_unit }}</td>
-                                    <td class="text-right">{{ number_format($serviceItem->wage, 0, ',', '.') }}</td>
-                                    <td class="text-right">{{ number_format($serviceItem->domestic_cost, 0, ',', '.') }}</td>
-                                    <td class="text-right">{{ number_format($serviceItem->foreign_cost, 0, ',', '.') }}</td>
-                                    <td class="text-right">{{ number_format($serviceItem->total_cost, 0, ',', '.') }}</td>
+                                <tr class="tkdn-item-row hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200" data-tkdn-classification="{{ $serviceItem->tkdn_classification }}">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white text-center">{{ $serviceItem->item_number }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ $serviceItem->description }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400" title="{{ $serviceItem->qualification ?? '-' }}">{{ \Illuminate\Support\Str::limit($serviceItem->qualification ?? '-', 30) }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ $serviceItem->nationality }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-center">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
+                                            @if($serviceItem->tkdn_percentage >= 80) bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
+                                            @elseif($serviceItem->tkdn_percentage >= 60) bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200
+                                            @else bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200
+                                            @endif">
+                                            {{ number_format($serviceItem->tkdn_percentage, 1) }}%
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white text-center">{{ $serviceItem->quantity }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white text-center">{{ $serviceItem->duration }} {{ $serviceItem->duration_unit }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white text-right font-medium">{{ number_format($serviceItem->wage, 0, ',', '.') }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-blue-600 dark:text-blue-400 text-right font-medium">{{ number_format($serviceItem->domestic_cost, 0, ',', '.') }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 dark:text-red-400 text-right font-medium">{{ number_format($serviceItem->foreign_cost, 0, ',', '.') }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 dark:text-green-400 text-right font-medium">{{ number_format($serviceItem->total_cost, 0, ',', '.') }}</td>
                                 </tr>
                             @endforeach
                             
                             <!-- Sub Total -->
                             <tr class="bg-gray-50 dark:bg-gray-700 font-semibold">
-                                <td colspan="7" class="text-center">SUB TOTAL</td>
-                                <td class="text-right">{{ number_format($serviceItems->sum('wage'), 0, ',', '.') }}</td>
-                                <td class="text-right">{{ number_format($serviceItems->sum('domestic_cost'), 0, ',', '.') }}</td>
-                                <td class="text-right">{{ number_format($serviceItems->sum('foreign_cost'), 0, ',', '.') }}</td>
-                                <td class="text-right">{{ number_format($serviceItems->sum('total_cost'), 0, ',', '.') }}</td>
+                                <td colspan="7" class="px-6 py-4 text-center text-sm font-bold text-gray-900 dark:text-gray-100">SUB TOTAL</td>
+                                <td class="px-6 py-4 text-right text-sm font-bold text-gray-900 dark:text-gray-100">{{ number_format($serviceItems->sum('wage'), 0, ',', '.') }}</td>
+                                <td class="px-6 py-4 text-right text-sm font-bold text-gray-900 dark:text-gray-100">{{ number_format($serviceItems->sum('domestic_cost'), 0, ',', '.') }}</td>
+                                <td class="px-6 py-4 text-right text-sm font-bold text-gray-900 dark:text-gray-100">{{ number_format($serviceItems->sum('foreign_cost'), 0, ',', '.') }}</td>
+                                <td class="px-6 py-4 text-right text-sm font-bold text-gray-900 dark:text-gray-100">{{ number_format($serviceItems->sum('total_cost'), 0, ',', '.') }}</td>
                             </tr>
                         @else
                             <tr>
@@ -3036,6 +3089,90 @@
                                 </div>
                             </div>
                         </div>
+                    @endif
+
+                    <!-- Rangkuman TKDN Barang Jasa Table -->
+                    @if($projectType === 'tkdn_barang_jasa' && isset($groupedItems['4.7']) && $groupedItems['4.7']->isNotEmpty())
+                        @php
+                            // Hitung total dari semua form TKDN Barang Jasa (4.1-4.6), bukan dari summary items
+                            $totalKdn = 0;
+                            $totalKln = 0;
+                            $totalBiaya = 0;
+                            
+                            // Hitung dari form 4.1-4.6 (exclude summary form 4.7)
+                            // Prioritize integer classification codes over string form numbers to avoid duplication
+                            $formClassifications = [5, 6, 1, 2, 3, 4]; // Classification codes untuk form 4.1-4.6
+                            foreach ($formClassifications as $classification) {
+                                if (isset($groupedItems[$classification])) {
+                                    $totalKdn += $groupedItems[$classification]->sum('domestic_cost');
+                                    $totalKln += $groupedItems[$classification]->sum('foreign_cost');
+                                    $totalBiaya += $groupedItems[$classification]->sum('total_cost');
+                                }
+                            }
+                            
+                            
+                            // Hitung TKDN percentage keseluruhan
+                            $tkdnPercentage = $totalBiaya > 0 ? ($totalKdn / $totalBiaya) * 100 : 0;
+                            
+                            // Ambil data dari Service Items untuk Form 4.7 (rangkuman) untuk display
+                            $summaryItems = $groupedItems['4.7'] ?? collect();
+                        @endphp
+
+                    @if($summaryItems->count() > 0)
+                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden mt-8">
+                            <div class="px-6 py-4 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-b border-green-200 dark:border-green-600">
+                                <h5 class="text-lg font-semibold text-green-900 dark:text-green-100 flex items-center">
+                                    <svg class="w-5 h-5 mr-2 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                    </svg>
+                                    Rangkuman TKDN Barang & Jasa
+                                </h5>
+                            </div>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                <thead class="bg-gray-50 dark:bg-gray-700">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Uraian</th>
+                                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Biaya KDN (Rp)</th>
+                                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Biaya KLN (Rp)</th>
+                                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Total Biaya (Rp)</th>
+                                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">TKDN (%)</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+                                    @foreach($summaryItems as $item)
+                                        @if($item->description !== 'Total Barang & Jasa')
+                                            <tr class="hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors duration-200">
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">{{ $item->description }}</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-blue-600 dark:text-blue-400 text-right font-medium">{{ number_format($item->domestic_cost, 0, ',', '.') }}</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 dark:text-red-400 text-right font-medium">{{ number_format($item->foreign_cost, 0, ',', '.') }}</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 dark:text-green-400 text-right font-medium">{{ number_format($item->total_cost, 0, ',', '.') }}</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-center">
+                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                                                        {{ number_format($item->tkdn_percentage, 2) }}%
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        @endif
+                                    @endforeach
+                                    
+                                    <!-- Total Row -->
+                                    <tr class="bg-green-50 dark:bg-green-900/20 font-bold">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-green-900 dark:text-green-100">TOTAL BARANG & JASA</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-blue-600 dark:text-blue-400 text-right">{{ number_format($totalKdn, 0, ',', '.') }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-red-600 dark:text-red-400 text-right">{{ number_format($totalKln, 0, ',', '.') }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-green-600 dark:text-green-400 text-right">{{ number_format($totalBiaya, 0, ',', '.') }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-center">
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-green-200 text-green-900 dark:bg-green-800 dark:text-green-100">
+                                                {{ number_format($tkdnPercentage, 2) }}%
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        </div>
+                    @endif
                     @endif
                 </div>
             </div>

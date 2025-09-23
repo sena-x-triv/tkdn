@@ -63,12 +63,14 @@ trait OptimizedServiceItems
         // Ambil stored service items dulu
         $storedItems = $this->items;
 
-        // Filter berdasarkan project type
+        // Filter berdasarkan project type using both integer classification codes and string form numbers
         $filteredStoredItems = $storedItems->filter(function ($item) use ($projectType) {
             if ($projectType === 'tkdn_jasa') {
-                return in_array($item->tkdn_classification, ['3.1', '3.2', '3.3', '3.4', '3.5']);
+                // Include both integer classification codes and string form numbers for tkdn_jasa
+                return in_array($item->tkdn_classification, [1, 2, 3, 4, 5, 6, '3.1', '3.2', '3.3', '3.4', '3.5']);
             } elseif ($projectType === 'tkdn_barang_jasa') {
-                return in_array($item->tkdn_classification, ['4.1', '4.2', '4.3', '4.4', '4.5', '4.6', '4.7']);
+                // Include both integer classification codes and string form numbers for tkdn_barang_jasa
+                return in_array($item->tkdn_classification, [1, 2, 3, 4, 5, 6, '4.1', '4.2', '4.3', '4.4', '4.5', '4.6', '4.7']);
             }
 
             return true;
@@ -89,7 +91,7 @@ trait OptimizedServiceItems
     }
 
     /**
-     * Generate service items from HPP items for specific classification
+     * Generate service items from HPP items for specific classification (form number)
      */
     protected function generateServiceItemsFromHpp(string $classification): Collection
     {
@@ -140,18 +142,75 @@ trait OptimizedServiceItems
     }
 
     /**
+     * Generate service items from HPP items for specific classification code
+     */
+    protected function generateServiceItemsFromHppByCode(int $classificationCode): Collection
+    {
+        $hppItems = $this->getHppItemsByClassificationCode($classificationCode);
+
+        if ($hppItems->isEmpty()) {
+            return collect();
+        }
+
+        $generatedItems = collect();
+
+        foreach ($hppItems as $index => $hppItem) {
+            $tkdnPercentage = 100; // Default TKDN percentage
+            $wage = $hppItem->total_price ?? 0;
+            $quantity = $hppItem->volume ?? 1;
+            $duration = $hppItem->duration ?? 1;
+
+            $totalCost = $wage * $quantity * $duration;
+            $domesticCost = ($totalCost * $tkdnPercentage) / 100;
+            $foreignCost = $totalCost - $domesticCost;
+
+            // Create virtual service item (tidak disimpan ke database)
+            $virtualItem = new ServiceItem([
+                'service_id' => $this->id,
+                'tkdn_classification' => $classificationCode, // Use integer code
+                'item_number' => $index + 1,
+                'description' => $hppItem->description ?? 'Item '.($index + 1),
+                'qualification' => $this->getQualificationFromHppItem($hppItem),
+                'nationality' => 'WNI',
+                'tkdn_percentage' => $tkdnPercentage,
+                'quantity' => $quantity,
+                'duration' => $duration,
+                'duration_unit' => $hppItem->duration_unit ?? 'ls',
+                'wage' => $wage,
+                'domestic_cost' => $domesticCost,
+                'foreign_cost' => $foreignCost,
+                'total_cost' => $totalCost,
+            ]);
+
+            // Set flag bahwa ini virtual item
+            $virtualItem->is_virtual = true;
+            $virtualItem->hpp_item_id = $hppItem->id;
+
+            $generatedItems->push($virtualItem);
+        }
+
+        return $generatedItems;
+    }
+
+    /**
      * Generate from all HPP items for project type
      */
     protected function generateFromHppItems(string $projectType): Collection
     {
-        $classifications = $projectType === 'tkdn_jasa'
-            ? ['3.1', '3.2', '3.3', '3.4', '3.5']
-            : ['4.1', '4.2', '4.3', '4.4', '4.5', '4.6', '4.7'];
+        // Get classifications for project type using helper
+        $classifications = \App\Helpers\TkdnClassificationHelper::getClassificationsForProjectType($projectType);
+        $classificationCodes = [];
+        foreach ($classifications as $classificationName) {
+            $code = \App\Helpers\TkdnClassificationHelper::getCodeByName($classificationName);
+            if ($code) {
+                $classificationCodes[] = $code;
+            }
+        }
 
         $allItems = collect();
 
-        foreach ($classifications as $classification) {
-            $items = $this->generateServiceItemsFromHpp($classification);
+        foreach ($classificationCodes as $classificationCode) {
+            $items = $this->generateServiceItemsFromHppByCode($classificationCode);
             $allItems = $allItems->merge($items);
         }
 
@@ -159,21 +218,44 @@ trait OptimizedServiceItems
     }
 
     /**
-     * Get HPP items by classification
+     * Get HPP items by classification (form number)
      */
     protected function getHppItemsByClassification(string $classification): Collection
+    {
+        // Convert form number to classification codes
+        $classifications = \App\Helpers\TkdnClassificationHelper::getClassificationsForFormNumber($classification);
+        $classificationCodes = [];
+        foreach ($classifications as $classificationName) {
+            $code = \App\Helpers\TkdnClassificationHelper::getCodeByName($classificationName);
+            if ($code) {
+                $classificationCodes[] = $code;
+            }
+        }
+
+        return HppItem::whereHas('hpp', function ($query) {
+            $query->where('project_id', $this->project_id);
+        })
+            ->whereIn('tkdn_classification', $classificationCodes)
+            ->with(['hpp', 'estimationItem'])
+            ->get();
+    }
+
+    /**
+     * Get HPP items by classification code (integer)
+     */
+    protected function getHppItemsByClassificationCode(int $classificationCode): Collection
     {
         return HppItem::whereHas('hpp', function ($query) {
             $query->where('project_id', $this->project_id);
         })
-            ->whereHas('estimationItem', function ($query) use ($classification) {
-                $query->where(function ($q) use ($classification) {
-                    $q->whereHas('worker', function ($workerQuery) use ($classification) {
-                        $workerQuery->where('classification_tkdn', $classification);
-                    })->orWhereHas('material', function ($materialQuery) use ($classification) {
-                        $materialQuery->where('classification_tkdn', $classification);
-                    })->orWhereHas('equipment', function ($equipmentQuery) use ($classification) {
-                        $equipmentQuery->where('classification_tkdn', $classification);
+            ->whereHas('estimationItem', function ($estimationQuery) use ($classificationCode) {
+                $estimationQuery->where(function ($q) use ($classificationCode) {
+                    $q->whereHas('worker', function ($workerQuery) use ($classificationCode) {
+                        $workerQuery->where('classification_tkdn', $classificationCode);
+                    })->orWhereHas('material', function ($materialQuery) use ($classificationCode) {
+                        $materialQuery->where('classification_tkdn', $classificationCode);
+                    })->orWhereHas('equipment', function ($equipmentQuery) use ($classificationCode) {
+                        $equipmentQuery->where('classification_tkdn', $classificationCode);
                     });
                 });
             })

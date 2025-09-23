@@ -541,9 +541,18 @@ class HppController extends Controller
      */
     private function getClassificationsForProjectType(string $projectType): array
     {
-        return $projectType === 'tkdn_jasa'
-            ? ['Overhead & Manajemen', 'Alat Kerja / Fasilitas', 'Konstruksi & Fabrikasi', 'Peralatan (Jasa Umum)']
-            : ['Material (Bahan Baku)', 'Peralatan (Barang Jadi)', 'Overhead & Manajemen', 'Alat Kerja / Fasilitas', 'Konstruksi & Fabrikasi', 'Peralatan (Jasa Umum)'];
+        $classifications = \App\Helpers\TkdnClassificationHelper::getClassificationsForProjectType($projectType);
+
+        // Convert classification names to codes
+        $classificationCodes = [];
+        foreach ($classifications as $classificationName) {
+            $code = \App\Helpers\TkdnClassificationHelper::getCodeByName($classificationName);
+            if ($code) {
+                $classificationCodes[] = $code;
+            }
+        }
+
+        return $classificationCodes;
     }
 
     /**

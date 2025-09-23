@@ -18,6 +18,8 @@ class HppProjectTypeFilteringTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected $user;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -34,12 +36,12 @@ class HppProjectTypeFilteringTest extends TestCase
         $hpp = Hpp::factory()->create(['project_id' => $project->id]);
 
         // Create workers with TKDN Jasa classifications
-        $worker31 = Worker::factory()->create(['classification_tkdn' => 'Overhead & Manajemen']);
-        $worker32 = Worker::factory()->create(['classification_tkdn' => 'Alat Kerja / Fasilitas']);
+        $worker31 = Worker::factory()->create(['classification_tkdn' => 1]); // Overhead & Manajemen
+        $worker32 = Worker::factory()->create(['classification_tkdn' => 2]); // Alat Kerja / Fasilitas
 
         // Create workers with TKDN Barang Jasa classifications (should be filtered out)
-        $worker41 = Worker::factory()->create(['classification_tkdn' => 'Material (Bahan Baku)']);
-        $worker42 = Worker::factory()->create(['classification_tkdn' => 'Peralatan (Barang Jadi)']);
+        $worker41 = Worker::factory()->create(['classification_tkdn' => 5]); // Material (Bahan Baku)
+        $worker42 = Worker::factory()->create(['classification_tkdn' => 6]); // Peralatan (Barang Jadi)
 
         // Create estimation items
         $estimationItem31 = EstimationItem::factory()->create([
@@ -68,6 +70,7 @@ class HppProjectTypeFilteringTest extends TestCase
             'estimation_item_id' => $estimationItem31->id,
             'description' => 'TKDN Jasa Item 3.1',
             'total_price' => 1000000,
+            'tkdn_classification' => 1, // Overhead & Manajemen
         ]);
 
         HppItem::factory()->create([
@@ -75,6 +78,7 @@ class HppProjectTypeFilteringTest extends TestCase
             'estimation_item_id' => $estimationItem32->id,
             'description' => 'TKDN Jasa Item 3.2',
             'total_price' => 2000000,
+            'tkdn_classification' => 2, // Alat Kerja / Fasilitas
         ]);
 
         // Create items that should be filtered out (4.x classifications)
@@ -83,6 +87,7 @@ class HppProjectTypeFilteringTest extends TestCase
             'estimation_item_id' => $estimationItem41->id,
             'description' => 'TKDN Barang Jasa Item 4.1',
             'total_price' => 3000000,
+            'tkdn_classification' => 5, // Material (Bahan Baku)
         ]);
 
         HppItem::factory()->create([
@@ -90,6 +95,7 @@ class HppProjectTypeFilteringTest extends TestCase
             'estimation_item_id' => $estimationItem42->id,
             'description' => 'TKDN Barang Jasa Item 4.2',
             'total_price' => 4000000,
+            'tkdn_classification' => 6, // Peralatan (Barang Jadi)
         ]);
 
         // Test getHppData API
@@ -105,17 +111,17 @@ class HppProjectTypeFilteringTest extends TestCase
         $this->assertEquals(2, $hppData['items_count']); // Only 3.1 and 3.2 items
         $this->assertEquals('tkdn_jasa', $hppData['project_type']);
 
-        // Check tkdn_breakdown only contains TKDN Jasa classifications
-        $this->assertArrayHasKey('Overhead & Manajemen', $hppData['tkdn_breakdown']);
-        $this->assertArrayHasKey('Alat Kerja / Fasilitas', $hppData['tkdn_breakdown']);
-        $this->assertArrayNotHasKey('Material (Bahan Baku)', $hppData['tkdn_breakdown']);
-        $this->assertArrayNotHasKey('Peralatan (Barang Jadi)', $hppData['tkdn_breakdown']);
+        // Check tkdn_breakdown only contains TKDN Jasa form numbers
+        $this->assertArrayHasKey('3.1', $hppData['tkdn_breakdown']); // Overhead & Manajemen
+        $this->assertArrayHasKey('3.2', $hppData['tkdn_breakdown']); // Alat Kerja / Fasilitas
+        $this->assertArrayNotHasKey('4.1', $hppData['tkdn_breakdown']); // Material (Bahan Baku)
+        $this->assertArrayNotHasKey('4.2', $hppData['tkdn_breakdown']); // Peralatan (Barang Jadi)
 
         // Check counts and costs
-        $this->assertEquals(1, $hppData['tkdn_breakdown']['Overhead & Manajemen']['count']);
-        $this->assertEquals(1000000, $hppData['tkdn_breakdown']['Overhead & Manajemen']['total_cost']);
-        $this->assertEquals(1, $hppData['tkdn_breakdown']['Alat Kerja / Fasilitas']['count']);
-        $this->assertEquals(2000000, $hppData['tkdn_breakdown']['Alat Kerja / Fasilitas']['total_cost']);
+        $this->assertEquals(1, $hppData['tkdn_breakdown']['3.1']['count']);
+        $this->assertEquals(1000000, $hppData['tkdn_breakdown']['3.1']['total_cost']);
+        $this->assertEquals(1, $hppData['tkdn_breakdown']['3.2']['count']);
+        $this->assertEquals(2000000, $hppData['tkdn_breakdown']['3.2']['total_cost']);
     }
 
     /** @test */
@@ -126,14 +132,14 @@ class HppProjectTypeFilteringTest extends TestCase
         $hpp = Hpp::factory()->create(['project_id' => $project->id]);
 
         // Create materials with TKDN Barang Jasa classifications
-        $material41 = Material::factory()->create(['classification_tkdn' => 'Material (Bahan Baku)']);
-        $equipment42 = Equipment::factory()->create(['classification_tkdn' => 'Peralatan (Barang Jadi)']);
+        $material41 = Material::factory()->create(['classification_tkdn' => 5]); // Material (Bahan Baku)
+        $equipment42 = Equipment::factory()->create(['classification_tkdn' => 6]); // Peralatan (Barang Jadi)
 
         // Create workers with TKDN Jasa classifications (should be filtered out for tkdn_barang_jasa)
         // Note: These classifications are valid for both project types, so we need to use different approach
         // Let's create workers that are only valid for tkdn_jasa by using classifications that don't exist in tkdn_barang_jasa
-        $worker31 = Worker::factory()->create(['classification_tkdn' => 'Overhead & Manajemen']);
-        $worker32 = Worker::factory()->create(['classification_tkdn' => 'Alat Kerja / Fasilitas']);
+        $worker31 = Worker::factory()->create(['classification_tkdn' => 1]); // Overhead & Manajemen
+        $worker32 = Worker::factory()->create(['classification_tkdn' => 2]); // Alat Kerja / Fasilitas
 
         // Create estimation items
         $estimationItem41 = EstimationItem::factory()->create([
@@ -162,6 +168,7 @@ class HppProjectTypeFilteringTest extends TestCase
             'estimation_item_id' => $estimationItem41->id,
             'description' => 'TKDN Barang Jasa Item 4.1',
             'total_price' => 1000000,
+            'tkdn_classification' => 5, // Material (Bahan Baku)
         ]);
 
         HppItem::factory()->create([
@@ -169,6 +176,7 @@ class HppProjectTypeFilteringTest extends TestCase
             'estimation_item_id' => $estimationItem42->id,
             'description' => 'TKDN Barang Jasa Item 4.2',
             'total_price' => 2000000,
+            'tkdn_classification' => 6, // Peralatan (Barang Jadi)
         ]);
 
         // Create items that should be filtered out (3.x classifications)
@@ -177,6 +185,7 @@ class HppProjectTypeFilteringTest extends TestCase
             'estimation_item_id' => $estimationItem31->id,
             'description' => 'TKDN Jasa Item 3.1',
             'total_price' => 3000000,
+            'tkdn_classification' => 1, // Overhead & Manajemen
         ]);
 
         HppItem::factory()->create([
@@ -184,6 +193,7 @@ class HppProjectTypeFilteringTest extends TestCase
             'estimation_item_id' => $estimationItem32->id,
             'description' => 'TKDN Jasa Item 3.2',
             'total_price' => 4000000,
+            'tkdn_classification' => 2, // Alat Kerja / Fasilitas
         ]);
 
         // Test getHppData API
@@ -199,21 +209,21 @@ class HppProjectTypeFilteringTest extends TestCase
         $this->assertEquals(4, $hppData['items_count']); // 4.1, 4.2, 4.3, and 4.4 items
         $this->assertEquals('tkdn_barang_jasa', $hppData['project_type']);
 
-        // Check tkdn_breakdown contains TKDN Barang Jasa classifications
-        $this->assertArrayHasKey('Material (Bahan Baku)', $hppData['tkdn_breakdown']);
-        $this->assertArrayHasKey('Peralatan (Barang Jadi)', $hppData['tkdn_breakdown']);
-        $this->assertArrayHasKey('Overhead & Manajemen', $hppData['tkdn_breakdown']); // Valid for form 4.3
-        $this->assertArrayHasKey('Alat Kerja / Fasilitas', $hppData['tkdn_breakdown']); // Valid for form 4.4
+        // Check tkdn_breakdown contains TKDN Barang Jasa form numbers
+        $this->assertArrayHasKey('4.1', $hppData['tkdn_breakdown']); // Material (Bahan Baku)
+        $this->assertArrayHasKey('4.2', $hppData['tkdn_breakdown']); // Peralatan (Barang Jadi)
+        $this->assertArrayHasKey('4.3', $hppData['tkdn_breakdown']); // Overhead & Manajemen
+        $this->assertArrayHasKey('4.4', $hppData['tkdn_breakdown']); // Alat Kerja / Fasilitas
 
         // Check counts and costs
-        $this->assertEquals(1, $hppData['tkdn_breakdown']['Material (Bahan Baku)']['count']);
-        $this->assertEquals(1000000, $hppData['tkdn_breakdown']['Material (Bahan Baku)']['total_cost']);
-        $this->assertEquals(1, $hppData['tkdn_breakdown']['Peralatan (Barang Jadi)']['count']);
-        $this->assertEquals(2000000, $hppData['tkdn_breakdown']['Peralatan (Barang Jadi)']['total_cost']);
-        $this->assertEquals(1, $hppData['tkdn_breakdown']['Overhead & Manajemen']['count']);
-        $this->assertEquals(3000000, $hppData['tkdn_breakdown']['Overhead & Manajemen']['total_cost']);
-        $this->assertEquals(1, $hppData['tkdn_breakdown']['Alat Kerja / Fasilitas']['count']);
-        $this->assertEquals(4000000, $hppData['tkdn_breakdown']['Alat Kerja / Fasilitas']['total_cost']);
+        $this->assertEquals(1, $hppData['tkdn_breakdown']['4.1']['count']);
+        $this->assertEquals(1000000, $hppData['tkdn_breakdown']['4.1']['total_cost']);
+        $this->assertEquals(1, $hppData['tkdn_breakdown']['4.2']['count']);
+        $this->assertEquals(2000000, $hppData['tkdn_breakdown']['4.2']['total_cost']);
+        $this->assertEquals(1, $hppData['tkdn_breakdown']['4.3']['count']);
+        $this->assertEquals(3000000, $hppData['tkdn_breakdown']['4.3']['total_cost']);
+        $this->assertEquals(1, $hppData['tkdn_breakdown']['4.4']['count']);
+        $this->assertEquals(4000000, $hppData['tkdn_breakdown']['4.4']['total_cost']);
     }
 
     /** @test */
@@ -224,11 +234,11 @@ class HppProjectTypeFilteringTest extends TestCase
         $hpp = Hpp::factory()->create(['project_id' => $project->id]);
 
         // Create workers with TKDN Jasa classifications (should be included)
-        $worker31 = Worker::factory()->create(['classification_tkdn' => 'Overhead & Manajemen']);
-        $worker32 = Worker::factory()->create(['classification_tkdn' => 'Alat Kerja / Fasilitas']);
+        $worker31 = Worker::factory()->create(['classification_tkdn' => 1]); // Overhead & Manajemen
+        $worker32 = Worker::factory()->create(['classification_tkdn' => 2]); // Alat Kerja / Fasilitas
 
         // Create material with TKDN Barang Jasa classification (should be filtered out)
-        $material41 = Material::factory()->create(['classification_tkdn' => 'Material (Bahan Baku)']);
+        $material41 = Material::factory()->create(['classification_tkdn' => 5]); // Material (Bahan Baku)
 
         // Create estimation items
         $estimationItem31 = EstimationItem::factory()->create([
@@ -252,6 +262,7 @@ class HppProjectTypeFilteringTest extends TestCase
             'estimation_item_id' => $estimationItem31->id,
             'description' => 'TKDN Jasa Item 3.1',
             'total_price' => 1000000,
+            'tkdn_classification' => 1, // Overhead & Manajemen
         ]);
 
         HppItem::factory()->create([
@@ -259,6 +270,7 @@ class HppProjectTypeFilteringTest extends TestCase
             'estimation_item_id' => $estimationItem32->id,
             'description' => 'TKDN Jasa Item 3.2',
             'total_price' => 2000000,
+            'tkdn_classification' => 2, // Alat Kerja / Fasilitas
         ]);
 
         // Create items with 4.x classifications (should be filtered out)
@@ -267,6 +279,7 @@ class HppProjectTypeFilteringTest extends TestCase
             'estimation_item_id' => $estimationItem41->id,
             'description' => 'TKDN Barang Jasa Item 4.1',
             'total_price' => 3000000,
+            'tkdn_classification' => 5, // Material (Bahan Baku)
         ]);
 
         // Generate service
@@ -298,7 +311,7 @@ class HppProjectTypeFilteringTest extends TestCase
         $hpp = Hpp::factory()->create(['project_id' => $project->id]);
 
         // Create material with TKDN Barang Jasa classification (should be filtered out)
-        $material41 = Material::factory()->create(['classification_tkdn' => 'Material (Bahan Baku)']);
+        $material41 = Material::factory()->create(['classification_tkdn' => 5]); // Material (Bahan Baku)
 
         $estimationItem41 = EstimationItem::factory()->create([
             'category' => 'material',
@@ -311,6 +324,7 @@ class HppProjectTypeFilteringTest extends TestCase
             'estimation_item_id' => $estimationItem41->id,
             'description' => 'TKDN Barang Jasa Item 4.1',
             'total_price' => 1000000,
+            'tkdn_classification' => 5, // Material (Bahan Baku) - should be filtered out
         ]);
 
         // Test getHppData API
@@ -336,11 +350,11 @@ class HppProjectTypeFilteringTest extends TestCase
         $hpp = Hpp::factory()->create(['project_id' => $project->id]);
 
         // Create workers with TKDN Jasa classifications
-        $worker31 = Worker::factory()->create(['classification_tkdn' => 'Overhead & Manajemen']);
-        $worker32 = Worker::factory()->create(['classification_tkdn' => 'Alat Kerja / Fasilitas']);
+        $worker31 = Worker::factory()->create(['classification_tkdn' => 1]); // Overhead & Manajemen
+        $worker32 = Worker::factory()->create(['classification_tkdn' => 2]); // Alat Kerja / Fasilitas
 
         // Create material with TKDN Barang Jasa classification (should be filtered out)
-        $material41 = Material::factory()->create(['classification_tkdn' => 'Material (Bahan Baku)']);
+        $material41 = Material::factory()->create(['classification_tkdn' => 5]); // Material (Bahan Baku)
 
         // Create estimation items
         $estimationItem31 = EstimationItem::factory()->create([
@@ -364,6 +378,7 @@ class HppProjectTypeFilteringTest extends TestCase
             'estimation_item_id' => $estimationItem31->id,
             'description' => 'TKDN Jasa Item 3.1',
             'total_price' => 1000000,
+            'tkdn_classification' => 1, // Overhead & Manajemen
         ]);
 
         HppItem::factory()->create([
@@ -371,6 +386,7 @@ class HppProjectTypeFilteringTest extends TestCase
             'estimation_item_id' => $estimationItem41->id,
             'description' => 'TKDN Barang Jasa Item 4.1',
             'total_price' => 2000000,
+            'tkdn_classification' => 5, // Material (Bahan Baku)
         ]);
 
         HppItem::factory()->create([
@@ -378,6 +394,7 @@ class HppProjectTypeFilteringTest extends TestCase
             'estimation_item_id' => $estimationItem32->id,
             'description' => 'TKDN Jasa Item 3.2',
             'total_price' => 3000000,
+            'tkdn_classification' => 2, // Alat Kerja / Fasilitas
         ]);
 
         // Test getHppData API
@@ -391,12 +408,12 @@ class HppProjectTypeFilteringTest extends TestCase
 
         // Should only include TKDN Jasa items
         $this->assertEquals(2, $hppData['items_count']);
-        $this->assertArrayHasKey('Overhead & Manajemen', $hppData['tkdn_breakdown']);
-        $this->assertArrayHasKey('Alat Kerja / Fasilitas', $hppData['tkdn_breakdown']);
-        $this->assertArrayNotHasKey('Material (Bahan Baku)', $hppData['tkdn_breakdown']);
+        $this->assertArrayHasKey('3.1', $hppData['tkdn_breakdown']); // Overhead & Manajemen
+        $this->assertArrayHasKey('3.2', $hppData['tkdn_breakdown']); // Alat Kerja / Fasilitas
+        $this->assertArrayNotHasKey('4.1', $hppData['tkdn_breakdown']); // Material (Bahan Baku)
 
         // Check total cost only includes filtered items
-        $totalCost = $hppData['tkdn_breakdown']['Overhead & Manajemen']['total_cost'] + $hppData['tkdn_breakdown']['Alat Kerja / Fasilitas']['total_cost'];
+        $totalCost = $hppData['tkdn_breakdown']['3.1']['total_cost'] + $hppData['tkdn_breakdown']['3.2']['total_cost'];
         $this->assertEquals(4000000, $totalCost); // 1000000 + 3000000
     }
 }

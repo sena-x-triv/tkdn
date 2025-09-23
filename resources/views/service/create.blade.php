@@ -141,6 +141,11 @@ function loadHppData() {
     hppSelection.classList.remove('hidden');
     noHppMessage.classList.add('hidden');
     
+    // Show loading indicator
+    const hppSelect = document.getElementById('hpp_id');
+    hppSelect.innerHTML = '<option value="">Memuat data HPP...</option>';
+    hppSelect.disabled = true;
+    
     // Fetch HPP data
     fetch(`/service/get-hpp-data?project_id=${projectId}`)
         .then(response => response.json())
@@ -155,9 +160,30 @@ function loadHppData() {
             }
         })
         .catch(error => {
-            console.error('Error:', error);
+            console.error('Error loading HPP data:', error);
             hppSelection.classList.add('hidden');
             noHppMessage.classList.remove('hidden');
+            
+            // Show error message to user
+            const errorMessage = document.createElement('div');
+            errorMessage.className = 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded-lg p-4 mb-4';
+            errorMessage.innerHTML = `
+                <div class="flex items-center">
+                    <svg class="w-5 h-5 text-red-600 dark:text-red-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <div>
+                        <h4 class="text-sm font-medium text-red-800 dark:text-red-200">Error Loading Data</h4>
+                        <p class="text-sm text-red-700 dark:text-red-300 mt-1">Gagal memuat data HPP. Silakan refresh halaman dan coba lagi.</p>
+                    </div>
+                </div>
+            `;
+            
+            // Insert error message before the preview section
+            const previewSection = document.querySelector('.card');
+            if (previewSection) {
+                previewSection.parentNode.insertBefore(errorMessage, previewSection);
+            }
         });
 }
 
@@ -166,8 +192,9 @@ function populateHppOptions(hppData) {
     const hppPreview = document.getElementById('hpp-preview');
     const hppDetails = document.getElementById('hpp-details');
     
-    // Clear existing options
+    // Clear existing options and enable select
     hppSelect.innerHTML = '<option value="">Pilih HPP</option>';
+    hppSelect.disabled = false;
     
     // Add HPP options
     hppData.forEach(hpp => {
@@ -184,10 +211,48 @@ function populateHppOptions(hppData) {
         if (selectedHpp) {
             const hppData = JSON.parse(this.selectedOptions[0].dataset.hppData);
             showHppPreview(hppData);
-            document.getElementById('submit-btn').disabled = false;
+            
+            // Enable submit button only if there's valid TKDN breakdown
+            const hasValidBreakdown = Object.keys(hppData.tkdn_breakdown).length > 0;
+            document.getElementById('submit-btn').disabled = !hasValidBreakdown;
+            
+            if (!hasValidBreakdown) {
+                // Show warning message
+                const warningMessage = document.createElement('div');
+                warningMessage.className = 'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg p-4 mb-4';
+                warningMessage.innerHTML = `
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 text-yellow-600 dark:text-yellow-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                        </svg>
+                        <div>
+                            <h4 class="text-sm font-medium text-yellow-800 dark:text-yellow-200">Perhatian</h4>
+                            <p class="text-sm text-yellow-700 dark:text-yellow-300 mt-1">HPP ini tidak memiliki items yang sesuai dengan jenis project. Service yang di-generate mungkin akan kosong.</p>
+                        </div>
+                    </div>
+                `;
+                
+                // Remove existing warning if any
+                const existingWarning = document.querySelector('.bg-yellow-50');
+                if (existingWarning) {
+                    existingWarning.remove();
+                }
+                
+                // Insert warning message
+                const previewSection = document.querySelector('.card');
+                if (previewSection) {
+                    previewSection.parentNode.insertBefore(warningMessage, previewSection);
+                }
+            }
         } else {
             hppPreview.classList.add('hidden');
             document.getElementById('submit-btn').disabled = true;
+            
+            // Remove warning message if any
+            const existingWarning = document.querySelector('.bg-yellow-50');
+            if (existingWarning) {
+                existingWarning.remove();
+            }
         }
     });
 }
@@ -226,10 +291,10 @@ function showHppPreview(hppData) {
             </div>
         `;
     } else {
-        Object.entries(hppData.tkdn_breakdown).forEach(([classification, data]) => {
+        Object.entries(hppData.tkdn_breakdown).forEach(([formNumber, data]) => {
             hppDetailsHtml += `
                 <div class="flex justify-between text-sm">
-                    <span>Form ${classification}:</span>
+                    <span>Form ${formNumber} - ${data.classification}:</span>
                     <span>${data.count} items - Rp ${formatNumber(data.total_cost)}</span>
                 </div>
             `;
