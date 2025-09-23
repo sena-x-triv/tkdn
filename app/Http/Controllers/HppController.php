@@ -18,7 +18,7 @@ class HppController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth')->except(['getAhsDataOnly', 'getAhsItems']);
         $this->middleware('can:manage-hpp')->only(['create', 'store', 'edit', 'update', 'destroy']);
     }
 
@@ -541,9 +541,10 @@ class HppController extends Controller
      */
     private function getClassificationsForProjectType(string $projectType): array
     {
+        // Menggunakan integer classification sesuai dengan StringHelper mapping
         return $projectType === 'tkdn_jasa'
-            ? ['Overhead & Manajemen', 'Alat Kerja / Fasilitas', 'Konstruksi & Fabrikasi', 'Peralatan (Jasa Umum)']
-            : ['Material (Bahan Baku)', 'Peralatan (Barang Jadi)', 'Overhead & Manajemen', 'Alat Kerja / Fasilitas', 'Konstruksi & Fabrikasi', 'Peralatan (Jasa Umum)'];
+            ? [1, 2, 3, 4] // Overhead & Manajemen, Alat Kerja / Fasilitas, Konstruksi & Fabrikasi, Peralatan (Jasa Umum)
+            : [1, 2, 3, 4, 5, 6]; // Semua classification termasuk Material (Bahan Baku) dan Peralatan (Barang Jadi)
     }
 
     /**

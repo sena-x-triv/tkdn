@@ -70,16 +70,16 @@ class ServiceController extends Controller
             // Ambil semua HPP untuk project ini dengan error handling
             $hpps = Hpp::where('project_id', $projectId)
                 ->with(['items' => function ($query) use ($project) {
-                    // Filter items berdasarkan project_type melalui master data
+                    // Filter items berdasarkan project_type melalui master data menggunakan integer classification
                     if ($project->project_type === 'tkdn_jasa') {
                         $query->whereHas('estimationItem', function ($estimationQuery) {
                             $estimationQuery->where(function ($q) {
                                 $q->whereHas('worker', function ($workerQuery) {
-                                    $workerQuery->whereIn('classification_tkdn', ['Overhead & Manajemen', 'Alat Kerja / Fasilitas', 'Konstruksi & Fabrikasi', 'Peralatan (Jasa Umum)']);
+                                    $workerQuery->whereIn('classification_tkdn', [1, 2, 3, 4]); // Overhead & Manajemen, Alat Kerja / Fasilitas, Konstruksi & Fabrikasi, Peralatan (Jasa Umum)
                                 })->orWhereHas('material', function ($materialQuery) {
-                                    $materialQuery->whereIn('classification_tkdn', ['Overhead & Manajemen', 'Alat Kerja / Fasilitas', 'Konstruksi & Fabrikasi', 'Peralatan (Jasa Umum)']);
+                                    $materialQuery->whereIn('classification_tkdn', [1, 2, 3, 4]);
                                 })->orWhereHas('equipment', function ($equipmentQuery) {
-                                    $equipmentQuery->whereIn('classification_tkdn', ['Overhead & Manajemen', 'Alat Kerja / Fasilitas', 'Konstruksi & Fabrikasi', 'Peralatan (Jasa Umum)']);
+                                    $equipmentQuery->whereIn('classification_tkdn', [1, 2, 3, 4]);
                                 });
                             });
                         });
@@ -87,17 +87,17 @@ class ServiceController extends Controller
                         $query->whereHas('estimationItem', function ($estimationQuery) {
                             $estimationQuery->where(function ($q) {
                                 $q->whereHas('worker', function ($workerQuery) {
-                                    $workerQuery->whereIn('classification_tkdn', ['Material (Bahan Baku)', 'Peralatan (Barang Jadi)', 'Overhead & Manajemen', 'Alat Kerja / Fasilitas', 'Konstruksi & Fabrikasi', 'Peralatan (Jasa Umum)']);
+                                    $workerQuery->whereIn('classification_tkdn', [1, 2, 3, 4, 5, 6]); // Semua classification termasuk Material (Bahan Baku) dan Peralatan (Barang Jadi)
                                 })->orWhereHas('material', function ($materialQuery) {
-                                    $materialQuery->whereIn('classification_tkdn', ['Material (Bahan Baku)', 'Peralatan (Barang Jadi)', 'Overhead & Manajemen', 'Alat Kerja / Fasilitas', 'Konstruksi & Fabrikasi', 'Peralatan (Jasa Umum)']);
+                                    $materialQuery->whereIn('classification_tkdn', [1, 2, 3, 4, 5, 6]);
                                 })->orWhereHas('equipment', function ($equipmentQuery) {
-                                    $equipmentQuery->whereIn('classification_tkdn', ['Material (Bahan Baku)', 'Peralatan (Barang Jadi)', 'Overhead & Manajemen', 'Alat Kerja / Fasilitas', 'Konstruksi & Fabrikasi', 'Peralatan (Jasa Umum)']);
+                                    $equipmentQuery->whereIn('classification_tkdn', [1, 2, 3, 4, 5, 6]);
                                 });
                             });
                         });
                     }
                     $query->orderBy('id');
-                }, 'project'])
+                }, 'project', 'items.estimationItem'])
                 ->get();
 
             Log::info('HPP query result', [
@@ -129,13 +129,32 @@ class ServiceController extends Controller
                         'id' => $hpp->id,
                         'code' => $hpp->code ?? 'N/A',
                         'total_cost' => $hpp->grand_total ?? 0,
-                        'items_count' => $hpp->items ? $hpp->items->count() : 0,
+                        'items_count' => $hpp->items ? $hpp->items->filter(function ($item) use ($hpp) {
+                            $classificationInt = $item->estimationItem->classification_tkdn ?? null;
+                            if (! $classificationInt) {
+                                return false;
+                            }
+
+                            if ($hpp->project->project_type === 'tkdn_jasa') {
+                                $formNumbers = \App\Models\Material::getFormNumbersForClassification($classificationInt, 'tkdn_jasa');
+
+                                return ! empty($formNumbers);
+                            } elseif ($hpp->project->project_type === 'tkdn_barang_jasa') {
+                                $formNumbers = \App\Models\Material::getFormNumbersForClassification($classificationInt, 'tkdn_barang_jasa');
+
+                                return ! empty($formNumbers);
+                            }
+
+                            return true;
+                        })->count() : 0,
                         'project_name' => $hpp->project ? $hpp->project->name : 'N/A',
                         'project_code' => $hpp->project ? $hpp->project->code : 'N/A',
                         'project_type' => $hpp->project ? $hpp->project->project_type : 'tkdn_jasa',
                         'tkdn_breakdown' => $hpp->items ? $hpp->items->groupBy(function ($item) {
-                            // Get classification from master data through estimation item
-                            return $item->estimationItem->classification_tkdn ?? 'Unknown';
+                            // Get classification from master data through estimation item and convert to string
+                            $classificationInt = $item->estimationItem->classification_tkdn ?? null;
+
+                            return $classificationInt ? \App\Helpers\StringHelper::intToClassificationTkdn($classificationInt) : 'Unknown';
                         })->map(function ($items, $classification) {
                             return [
                                 'classification' => $classification,
@@ -143,13 +162,24 @@ class ServiceController extends Controller
                                 'total_cost' => $items->sum('total_price'),
                             ];
                         })->filter(function ($data, $classification) use ($hpp) {
+                            // Skip 'Unknown' classifications
+                            if ($classification === 'Unknown') {
+                                return false;
+                            }
+
+                            // Convert string classification back to integer for getFormNumbersForClassification
+                            $classificationInt = \App\Helpers\StringHelper::classificationTkdnToInt($classification);
+                            if (! $classificationInt) {
+                                return false;
+                            }
+
                             // Filter berdasarkan project_type menggunakan mapping yang baru
                             if ($hpp->project->project_type === 'tkdn_jasa') {
-                                $formNumbers = \App\Models\Material::getFormNumbersForClassification($classification, 'tkdn_jasa');
+                                $formNumbers = \App\Models\Material::getFormNumbersForClassification($classificationInt, 'tkdn_jasa');
 
                                 return ! empty($formNumbers);
                             } elseif ($hpp->project->project_type === 'tkdn_barang_jasa') {
-                                $formNumbers = \App\Models\Material::getFormNumbersForClassification($classification, 'tkdn_barang_jasa');
+                                $formNumbers = \App\Models\Material::getFormNumbersForClassification($classificationInt, 'tkdn_barang_jasa');
 
                                 return ! empty($formNumbers);
                             }
@@ -1074,7 +1104,7 @@ class ServiceController extends Controller
         if (! $project) {
             Log::warning('Project not found for HPP items query', ['project_id' => $projectId]);
 
-            return collect();
+            return HppItem::whereRaw('1 = 0')->get(); // Return empty Eloquent Collection
         }
 
         // Dapatkan klasifikasi yang sesuai dengan form number dan project type
@@ -1083,21 +1113,27 @@ class ServiceController extends Controller
         if (empty($classifications)) {
             Log::warning('No classifications found for form number', ['form_number' => $formNumber, 'project_type' => $project->project_type]);
 
-            return collect();
+            return HppItem::whereRaw('1 = 0')->get(); // Return empty Eloquent Collection
         }
+
+        // Konversi string classifications ke integer untuk query
+        $classificationInts = array_map(function ($classification) {
+            return \App\Helpers\StringHelper::classificationTkdnToInt($classification);
+        }, $classifications);
+        $classificationInts = array_filter($classificationInts); // Remove null values
 
         // Ambil HPP items berdasarkan project_id dan filter dari master data
         $hppItems = HppItem::whereHas('hpp', function ($query) use ($projectId) {
             $query->where('project_id', $projectId);
         })
-            ->whereHas('estimationItem', function ($query) use ($classifications) {
-                $query->where(function ($q) use ($classifications) {
-                    $q->whereHas('worker', function ($workerQuery) use ($classifications) {
-                        $workerQuery->whereIn('classification_tkdn', $classifications);
-                    })->orWhereHas('material', function ($materialQuery) use ($classifications) {
-                        $materialQuery->whereIn('classification_tkdn', $classifications);
-                    })->orWhereHas('equipment', function ($equipmentQuery) use ($classifications) {
-                        $equipmentQuery->whereIn('classification_tkdn', $classifications);
+            ->whereHas('estimationItem', function ($query) use ($classificationInts) {
+                $query->where(function ($q) use ($classificationInts) {
+                    $q->whereHas('worker', function ($workerQuery) use ($classificationInts) {
+                        $workerQuery->whereIn('classification_tkdn', $classificationInts);
+                    })->orWhereHas('material', function ($materialQuery) use ($classificationInts) {
+                        $materialQuery->whereIn('classification_tkdn', $classificationInts);
+                    })->orWhereHas('equipment', function ($equipmentQuery) use ($classificationInts) {
+                        $equipmentQuery->whereIn('classification_tkdn', $classificationInts);
                     });
                 });
             })
@@ -1134,19 +1170,13 @@ class ServiceController extends Controller
         $classifications = [];
 
         // Check all master data models for classifications that generate this form number
-        $allClassifications = [
-            'Overhead & Manajemen',
-            'Alat Kerja / Fasilitas',
-            'Konstruksi & Fabrikasi',
-            'Peralatan (Jasa Umum)',
-            'Material (Bahan Baku)',
-            'Peralatan (Barang Jadi)',
-        ];
+        // Menggunakan integer classification sesuai dengan StringHelper mapping
+        $allClassifications = [1, 2, 3, 4, 5, 6]; // Semua classification integer
 
-        foreach ($allClassifications as $classification) {
-            $formNumbers = \App\Models\Material::getFormNumbersForClassification($classification, $projectType);
+        foreach ($allClassifications as $classificationInt) {
+            $formNumbers = \App\Models\Material::getFormNumbersForClassification($classificationInt, $projectType);
             if (in_array($formNumber, $formNumbers)) {
-                $classifications[] = $classification;
+                $classifications[] = \App\Helpers\StringHelper::intToClassificationTkdn($classificationInt);
             }
         }
 

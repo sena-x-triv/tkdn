@@ -70,9 +70,10 @@ class EstimationItem extends Model
      */
     public function scopeForProjectType($query, string $projectType)
     {
+        // Menggunakan integer classification sesuai dengan StringHelper mapping
         $classifications = $projectType === 'tkdn_jasa'
-            ? ['Overhead & Manajemen', 'Alat Kerja / Fasilitas', 'Konstruksi & Fabrikasi', 'Peralatan (Jasa Umum)']
-            : ['Material (Bahan Baku)', 'Peralatan (Barang Jadi)', 'Overhead & Manajemen', 'Alat Kerja / Fasilitas', 'Konstruksi & Fabrikasi', 'Peralatan (Jasa Umum)'];
+            ? [1, 2, 3, 4] // Overhead & Manajemen, Alat Kerja / Fasilitas, Konstruksi & Fabrikasi, Peralatan (Jasa Umum)
+            : [1, 2, 3, 4, 5, 6]; // Semua classification termasuk Material (Bahan Baku) dan Peralatan (Barang Jadi)
 
         return $query->where(function ($q) use ($classifications) {
             $q->whereHas('worker', function ($workerQuery) use ($classifications) {

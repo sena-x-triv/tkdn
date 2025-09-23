@@ -33,13 +33,13 @@ class HppProjectTypeFilteringTest extends TestCase
         $project = Project::factory()->create(['project_type' => 'tkdn_jasa']);
         $hpp = Hpp::factory()->create(['project_id' => $project->id]);
 
-        // Create workers with TKDN Jasa classifications
-        $worker31 = Worker::factory()->create(['classification_tkdn' => 'Overhead & Manajemen']);
-        $worker32 = Worker::factory()->create(['classification_tkdn' => 'Alat Kerja / Fasilitas']);
+        // Create workers with TKDN Jasa classifications (using integer values)
+        $worker31 = Worker::factory()->create(['classification_tkdn' => 1]); // Overhead & Manajemen
+        $worker32 = Worker::factory()->create(['classification_tkdn' => 2]); // Alat Kerja / Fasilitas
 
         // Create workers with TKDN Barang Jasa classifications (should be filtered out)
-        $worker41 = Worker::factory()->create(['classification_tkdn' => 'Material (Bahan Baku)']);
-        $worker42 = Worker::factory()->create(['classification_tkdn' => 'Peralatan (Barang Jadi)']);
+        $worker41 = Worker::factory()->create(['classification_tkdn' => 5]); // Material (Bahan Baku)
+        $worker42 = Worker::factory()->create(['classification_tkdn' => 6]); // Peralatan (Barang Jadi)
 
         // Create estimation items
         $estimationItem31 = EstimationItem::factory()->create([
@@ -125,15 +125,15 @@ class HppProjectTypeFilteringTest extends TestCase
         $project = Project::factory()->create(['project_type' => 'tkdn_barang_jasa']);
         $hpp = Hpp::factory()->create(['project_id' => $project->id]);
 
-        // Create materials with TKDN Barang Jasa classifications
-        $material41 = Material::factory()->create(['classification_tkdn' => 'Material (Bahan Baku)']);
-        $equipment42 = Equipment::factory()->create(['classification_tkdn' => 'Peralatan (Barang Jadi)']);
+        // Create materials with TKDN Barang Jasa classifications (using integer values)
+        $material41 = Material::factory()->create(['classification_tkdn' => 5]); // Material (Bahan Baku)
+        $equipment42 = Equipment::factory()->create(['classification_tkdn' => 6]); // Peralatan (Barang Jadi)
 
         // Create workers with TKDN Jasa classifications (should be filtered out for tkdn_barang_jasa)
         // Note: These classifications are valid for both project types, so we need to use different approach
         // Let's create workers that are only valid for tkdn_jasa by using classifications that don't exist in tkdn_barang_jasa
-        $worker31 = Worker::factory()->create(['classification_tkdn' => 'Overhead & Manajemen']);
-        $worker32 = Worker::factory()->create(['classification_tkdn' => 'Alat Kerja / Fasilitas']);
+        $worker31 = Worker::factory()->create(['classification_tkdn' => 1]); // Overhead & Manajemen
+        $worker32 = Worker::factory()->create(['classification_tkdn' => 2]); // Alat Kerja / Fasilitas
 
         // Create estimation items
         $estimationItem41 = EstimationItem::factory()->create([
@@ -224,11 +224,11 @@ class HppProjectTypeFilteringTest extends TestCase
         $hpp = Hpp::factory()->create(['project_id' => $project->id]);
 
         // Create workers with TKDN Jasa classifications (should be included)
-        $worker31 = Worker::factory()->create(['classification_tkdn' => 'Overhead & Manajemen']);
-        $worker32 = Worker::factory()->create(['classification_tkdn' => 'Alat Kerja / Fasilitas']);
+        $worker31 = Worker::factory()->create(['classification_tkdn' => 1]); // Overhead & Manajemen
+        $worker32 = Worker::factory()->create(['classification_tkdn' => 2]); // Alat Kerja / Fasilitas
 
         // Create material with TKDN Barang Jasa classification (should be filtered out)
-        $material41 = Material::factory()->create(['classification_tkdn' => 'Material (Bahan Baku)']);
+        $material41 = Material::factory()->create(['classification_tkdn' => 5]); // Material (Bahan Baku)
 
         // Create estimation items
         $estimationItem31 = EstimationItem::factory()->create([
@@ -298,7 +298,7 @@ class HppProjectTypeFilteringTest extends TestCase
         $hpp = Hpp::factory()->create(['project_id' => $project->id]);
 
         // Create material with TKDN Barang Jasa classification (should be filtered out)
-        $material41 = Material::factory()->create(['classification_tkdn' => 'Material (Bahan Baku)']);
+        $material41 = Material::factory()->create(['classification_tkdn' => 5]); // Material (Bahan Baku)
 
         $estimationItem41 = EstimationItem::factory()->create([
             'category' => 'material',
@@ -336,11 +336,11 @@ class HppProjectTypeFilteringTest extends TestCase
         $hpp = Hpp::factory()->create(['project_id' => $project->id]);
 
         // Create workers with TKDN Jasa classifications
-        $worker31 = Worker::factory()->create(['classification_tkdn' => 'Overhead & Manajemen']);
-        $worker32 = Worker::factory()->create(['classification_tkdn' => 'Alat Kerja / Fasilitas']);
+        $worker31 = Worker::factory()->create(['classification_tkdn' => 1]); // Overhead & Manajemen
+        $worker32 = Worker::factory()->create(['classification_tkdn' => 2]); // Alat Kerja / Fasilitas
 
         // Create material with TKDN Barang Jasa classification (should be filtered out)
-        $material41 = Material::factory()->create(['classification_tkdn' => 'Material (Bahan Baku)']);
+        $material41 = Material::factory()->create(['classification_tkdn' => 5]); // Material (Bahan Baku)
 
         // Create estimation items
         $estimationItem31 = EstimationItem::factory()->create([

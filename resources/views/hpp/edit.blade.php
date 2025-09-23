@@ -563,15 +563,28 @@ function loadAhsData() {
     ahsList.innerHTML = '<div class="text-center py-4"><div class="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div><p class="mt-2 text-gray-500">Memuat data AHS...</p></div>';
     
     // Load AHS data based on project type
-    fetch(`/hpp/get-ahs-data-only/${currentProjectType}`)
-        .then(response => response.json())
+    fetch(`/hpp/get-ahs-data-only/${currentProjectType}`, {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        credentials: 'same-origin'
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
             ahsData = data;
             displayAhsData();
         })
         .catch(error => {
             console.error('Error:', error);
-            ahsList.innerHTML = '<div class="text-center py-4 text-red-500">Gagal memuat data AHS</div>';
+            ahsList.innerHTML = '<div class="text-center py-4 text-red-500">Gagal memuat data AHS: ' + error.message + '</div>';
         });
 }
 

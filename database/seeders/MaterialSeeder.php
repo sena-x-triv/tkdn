@@ -18,7 +18,13 @@ class MaterialSeeder extends Seeder
         $categoryId = $materialCategory ? $materialCategory->id : null;
 
         $materials = [
-            // Material (Bahan Baku) - All materials are classified as raw materials (classification_tkdn = 5)
+            // Materials for TKDN Jasa (classification_tkdn = 1-4)
+            ['code' => 'MT033', 'name' => 'Kabel Listrik', 'specification' => 'NYA 2x1.5 mm²', 'category_id' => $categoryId, 'classification_tkdn' => 1, 'unit' => 'm', 'price' => 15000, 'tkdn' => 45.00],
+            ['code' => 'MT034', 'name' => 'Pipa PVC', 'specification' => 'Diameter 4 inch', 'category_id' => $categoryId, 'classification_tkdn' => 2, 'unit' => 'm', 'price' => 25000, 'tkdn' => 60.00],
+            ['code' => 'MT035', 'name' => 'Besi Beton', 'specification' => 'Diameter 12 mm', 'category_id' => $categoryId, 'classification_tkdn' => 3, 'unit' => 'kg', 'price' => 12000, 'tkdn' => 85.00],
+            ['code' => 'MT036', 'name' => 'Keramik Lantai', 'specification' => 'Ukuran 40x40 cm', 'category_id' => $categoryId, 'classification_tkdn' => 4, 'unit' => 'm²', 'price' => 80000, 'tkdn' => 70.00],
+
+            // Material (Bahan Baku) - Raw materials (classification_tkdn = 5)
             ['code' => 'MT001', 'name' => 'Semen Mortar', 'specification' => 'Kemasan 30 Kg', 'category_id' => $categoryId, 'classification_tkdn' => 5, 'unit' => 'sak', 'price' => 25000, 'tkdn' => 49.03],
             ['code' => 'MT002', 'name' => 'Semen Mortar', 'specification' => 'Kemasan 40 Kg', 'category_id' => $categoryId, 'classification_tkdn' => 5, 'unit' => 'sak', 'price' => 30000, 'tkdn' => 87.03],
             ['code' => 'MT003', 'name' => 'Semen Portland Komposit', 'specification' => 'Portland Composite Cement (PCC), Kemasan 50 Kg', 'category_id' => $categoryId, 'classification_tkdn' => 5, 'unit' => 'sak', 'price' => 35000, 'tkdn' => 77.32],
