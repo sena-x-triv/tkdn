@@ -19,7 +19,6 @@ class CategoryFactory extends Factory
         return [
             'name' => $this->faker->unique()->words(2, true),
             'code' => strtoupper($this->faker->unique()->lexify('???')),
-            'tkdn_type' => $this->faker->randomElement(['tkdn_jasa', 'tkdn_barang_jasa']),
         ];
     }
 }
