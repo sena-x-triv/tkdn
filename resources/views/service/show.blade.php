@@ -1735,103 +1735,120 @@
                     </svg>
                     Detail Item Service
                 </h3>
-            </div>
-            
-            <!-- TKDN Classification Filter -->
-            <div class="px-6 py-4 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                    <div class="flex items-center space-x-3">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center">
-                            <svg class="w-4 h-4 mr-2 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.207A1 1 0 013 6.5V4z"></path>
-                            </svg>
-                            Filter TKDN Classification:
-                        </label>
-                        <select id="tkdnFilter" class="form-select w-32 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500" onchange="filterTkdnItems()">
-                            <option value="">Semua</option>
-                            <option value="3.1">3.1</option>
-                            <option value="3.2">3.2</option>
-                            <option value="3.3">3.3</option>
-                            <option value="3.4">3.4</option>
-                            <option value="3.5">3.5</option>
-                        </select>
-                    </div>
-                    <div class="text-sm text-gray-600 dark:text-gray-400">
-                        Total Items: <span class="font-semibold text-green-600 dark:text-green-400">{{ $service->items->count() }}</span>
-                    </div>
+                <div class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                    Total Items: <span class="font-semibold text-green-600 dark:text-green-400">{{ $service->items->count() }}</span>
                 </div>
             </div>
 
-            <div class="overflow-x-auto">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th class="text-center">No.</th>
-                            <th>Uraian</th>
-                            <th>Kualifikasi</th>
-                            <th>WN</th>
-                            <th class="text-center">TKDN (%)</th>
-                            <th class="text-center">Jumlah</th>
-                            <th class="text-center">Durasi</th>
-                            <th class="text-center">Upah (Rupiah)</th>
-                            <th class="text-center" colspan="3">BIAYA (Rupiah)</th>
-                        </tr>
-                        <tr>
-                            <th colspan="8"></th>
-                            <th class="text-center">KDN</th>
-                            <th class="text-center">KLN</th>
-                            <th class="text-center">TOTAL</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tkdnItemsTable">
-                        @php
-                            // Ambil semua service items untuk service ini
-                            $serviceItems = $service->itemsOrdered()
-                                ->with(['estimationItem'])
-                                ->get();
-                        @endphp
+            @php
+                // Ambil semua service items untuk service ini dan kelompokkan berdasarkan TKDN classification
+                $serviceItems = $service->itemsOrdered()
+                    ->with(['estimationItem'])
+                    ->get();
+                
+                // Kelompokkan berdasarkan TKDN classification
+                $groupedItems = $serviceItems->groupBy('tkdn_classification');
+            @endphp
 
-                        @if($serviceItems->count() > 0)
-                            @foreach($serviceItems as $index => $serviceItem)
-                                <tr class="tkdn-item-row hover:bg-gray-50 dark:hover:bg-gray-700" data-tkdn-classification="{{ $serviceItem->tkdn_classification }}">
-                                    <td class="text-center">{{ $serviceItem->item_number }}</td>
-                                    <td>{{ $serviceItem->description }}</td>
-                                    <td>{{ \Illuminate\Support\Str::limit($serviceItem->qualification ?? '-', 30) }}</td>
-                                    <td>{{ $serviceItem->nationality }}</td>
-                                    <td class="text-center">{{ number_format($serviceItem->tkdn_percentage, 1) }}%</td>
-                                    <td class="text-center">{{ $serviceItem->quantity }}</td>
-                                    <td class="text-center">{{ $serviceItem->duration }} {{ $serviceItem->duration_unit }}</td>
-                                    <td class="text-right">{{ number_format($serviceItem->wage, 0, ',', '.') }}</td>
-                                    <td class="text-right">{{ number_format($serviceItem->domestic_cost, 0, ',', '.') }}</td>
-                                    <td class="text-right">{{ number_format($serviceItem->foreign_cost, 0, ',', '.') }}</td>
-                                    <td class="text-right">{{ number_format($serviceItem->total_cost, 0, ',', '.') }}</td>
+            @if($serviceItems->count() > 0)
+                @foreach($groupedItems as $classification => $items)
+                    <div class="border-b border-gray-200 dark:border-gray-700">
+                        <!-- Header untuk setiap kelompok TKDN Classification -->
+                        <div class="px-6 py-3 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border-b border-gray-200 dark:border-gray-600">
+                            <h4 class="text-lg font-semibold text-blue-900 dark:text-blue-100 flex items-center">
+                                <svg class="w-5 h-5 mr-2 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                TKDN Classification {{ $classification }}
+                                <span class="ml-2 text-sm font-normal text-blue-700 dark:text-blue-300">
+                                    ({{ $items->count() }} item{{ $items->count() > 1 ? 's' : '' }})
+                                </span>
+                            </h4>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">No.</th>
+                                        <th>Uraian</th>
+                                        <th>Kualifikasi</th>
+                                        <th>WN</th>
+                                        <th class="text-center">TKDN (%)</th>
+                                        <th class="text-center">Jumlah</th>
+                                        <th class="text-center">Durasi</th>
+                                        <th class="text-center">Upah (Rupiah)</th>
+                                        <th class="text-center" colspan="3">BIAYA (Rupiah)</th>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="8"></th>
+                                        <th class="text-center">KDN</th>
+                                        <th class="text-center">KLN</th>
+                                        <th class="text-center">TOTAL</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($items as $index => $serviceItem)
+                                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                                            <td class="text-center">{{ $serviceItem->item_number }}</td>
+                                            <td>{{ $serviceItem->description }}</td>
+                                            <td>{{ \Illuminate\Support\Str::limit($serviceItem->qualification ?? '-', 30) }}</td>
+                                            <td>{{ $serviceItem->nationality }}</td>
+                                            <td class="text-center">{{ number_format($serviceItem->tkdn_percentage, 1) }}%</td>
+                                            <td class="text-center">{{ $serviceItem->quantity }}</td>
+                                            <td class="text-center">{{ $serviceItem->duration }} {{ $serviceItem->duration_unit }}</td>
+                                            <td class="text-right">{{ number_format($serviceItem->wage, 0, ',', '.') }}</td>
+                                            <td class="text-right">{{ number_format($serviceItem->domestic_cost, 0, ',', '.') }}</td>
+                                            <td class="text-right">{{ number_format($serviceItem->foreign_cost, 0, ',', '.') }}</td>
+                                            <td class="text-right">{{ number_format($serviceItem->total_cost, 0, ',', '.') }}</td>
+                                        </tr>
+                                    @endforeach
+                                    
+                                    <!-- Sub Total untuk setiap kelompok -->
+                                    <tr class="bg-blue-50 dark:bg-blue-900/20 font-semibold border-t border-blue-200 dark:border-blue-700">
+                                        <td colspan="7" class="text-center text-blue-800 dark:text-blue-200">
+                                            SUB TOTAL {{ $classification }}
+                                        </td>
+                                        <td class="text-right text-blue-800 dark:text-blue-200">{{ number_format($items->sum('wage'), 0, ',', '.') }}</td>
+                                        <td class="text-right text-blue-800 dark:text-blue-200">{{ number_format($items->sum('domestic_cost'), 0, ',', '.') }}</td>
+                                        <td class="text-right text-blue-800 dark:text-blue-200">{{ number_format($items->sum('foreign_cost'), 0, ',', '.') }}</td>
+                                        <td class="text-right text-blue-800 dark:text-blue-200">{{ number_format($items->sum('total_cost'), 0, ',', '.') }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                @endforeach
+
+                <!-- Grand Total -->
+                <div class="px-6 py-4 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-t border-gray-200 dark:border-gray-700">
+                    <div class="overflow-x-auto">
+                        <table class="table">
+                            <tbody>
+                                <tr class="bg-green-100 dark:bg-green-900/30 font-bold text-lg">
+                                    <td colspan="7" class="text-center text-green-800 dark:text-green-200">
+                                        GRAND TOTAL SEMUA TKDN CLASSIFICATION
+                                    </td>
+                                    <td class="text-right text-green-800 dark:text-green-200">{{ number_format($serviceItems->sum('wage'), 0, ',', '.') }}</td>
+                                    <td class="text-right text-green-800 dark:text-green-200">{{ number_format($serviceItems->sum('domestic_cost'), 0, ',', '.') }}</td>
+                                    <td class="text-right text-green-800 dark:text-green-200">{{ number_format($serviceItems->sum('foreign_cost'), 0, ',', '.') }}</td>
+                                    <td class="text-right text-green-800 dark:text-green-200">{{ number_format($serviceItems->sum('total_cost'), 0, ',', '.') }}</td>
                                 </tr>
-                            @endforeach
-                            
-                            <!-- Sub Total -->
-                            <tr class="bg-gray-50 dark:bg-gray-700 font-semibold">
-                                <td colspan="7" class="text-center">SUB TOTAL</td>
-                                <td class="text-right">{{ number_format($serviceItems->sum('wage'), 0, ',', '.') }}</td>
-                                <td class="text-right">{{ number_format($serviceItems->sum('domestic_cost'), 0, ',', '.') }}</td>
-                                <td class="text-right">{{ number_format($serviceItems->sum('foreign_cost'), 0, ',', '.') }}</td>
-                                <td class="text-right">{{ number_format($serviceItems->sum('total_cost'), 0, ',', '.') }}</td>
-                            </tr>
-                        @else
-                            <tr>
-                                <td colspan="11" class="text-center py-8">
-                                    <div class="text-gray-500 dark:text-gray-400">
-                                        <svg class="w-16 h-16 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                        </svg>
-                                        <p class="text-lg font-medium">Tidak ada data service items ditemukan</p>
-                                        <p class="text-sm">Data akan muncul setelah generate form TKDN</p>
-                                    </div>
-                                </td>
-                            </tr>
-                        @endif
-                    </tbody>
-                </table>
-            </div>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            @else
+                <div class="px-6 py-8 text-center">
+                    <div class="text-gray-500 dark:text-gray-400">
+                        <svg class="w-16 h-16 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        <p class="text-lg font-medium">Tidak ada data service items ditemukan</p>
+                        <p class="text-sm">Data akan muncul setelah generate form TKDN</p>
+                    </div>
+                </div>
+            @endif
         </div>
     </div>
 
@@ -3075,67 +3092,6 @@ function showForm(formId) {
         
         // Add active state classes
         activeTab.classList.add('bg-blue-600', 'hover:bg-blue-700', 'text-white', 'shadow-lg', 'hover:shadow-xl', 'transform', 'hover:-translate-y-0.5');
-    }
-}
-
-// Filter TKDN items
-function filterTkdnItems() {
-    const filter = document.getElementById('tkdnFilter').value;
-    const tkdnItemsTable = document.getElementById('tkdnItemsTable');
-    const rows = tkdnItemsTable.querySelectorAll('.tkdn-item-row');
-    let visibleRows = [];
-    let totalUpah = 0;
-    let totalKdn = 0;
-    let totalKln = 0;
-    let totalTotal = 0;
-
-    rows.forEach(row => {
-        const tkdnClassification = row.dataset.tkdnClassification;
-        if (filter === '' || tkdnClassification === filter) {
-            row.classList.remove('hidden');
-            visibleRows.push(row);
-            
-            // Hitung total dari row yang visible
-            const upahCell = row.cells[7]; // Upah (Rupiah) column
-            const kdnCell = row.cells[8]; // KDN column
-            const klnCell = row.cells[9]; // KLN column
-            const totalCell = row.cells[10]; // TOTAL column
-            
-            if (upahCell && kdnCell && klnCell && totalCell) {
-                const upah = parseFloat(upahCell.textContent.replace(/[^\d]/g, '')) || 0;
-                const kdn = parseFloat(kdnCell.textContent.replace(/[^\d]/g, '')) || 0;
-                const kln = parseFloat(klnCell.textContent.replace(/[^\d]/g, '')) || 0;
-                const total = parseFloat(totalCell.textContent.replace(/[^\d]/g, '')) || 0;
-                
-                totalUpah += upah;
-                totalKdn += kdn;
-                totalKln += kln;
-                totalTotal += total;
-            }
-        } else {
-            row.classList.add('hidden');
-        }
-    });
-
-    // Update subtotal row
-    updateSubtotal(totalUpah, totalKdn, totalKln, totalTotal);
-}
-
-// Update subtotal row
-function updateSubtotal(totalUpah, totalKdn, totalKln, totalTotal) {
-    const subtotalRow = document.querySelector('#tkdnItemsTable tr:last-child');
-    if (subtotalRow && subtotalRow.classList.contains('bg-gray-50')) {
-        const upahCell = subtotalRow.cells[7];
-        const kdnCell = subtotalRow.cells[8];
-        const klnCell = subtotalRow.cells[9];
-        const totalCell = subtotalRow.cells[10];
-        
-        if (upahCell && kdnCell && klnCell && totalCell) {
-            upahCell.textContent = formatCurrency(totalUpah);
-            kdnCell.textContent = formatCurrency(totalKdn);
-            klnCell.textContent = totalKln > 0 ? formatCurrency(totalKln) : '-';
-            totalCell.textContent = formatCurrency(totalTotal);
-        }
     }
 }
 

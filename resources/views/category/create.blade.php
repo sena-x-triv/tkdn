@@ -75,27 +75,6 @@
                                 <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                             @enderror
                         </div>
-                        <div class="md:col-span-2">
-                            <label for="tkdn_type" class="form-label">Jenis TKDN <span class="text-red-500">*</span></label>
-                            <div class="relative">
-                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                    </svg>
-                                </div>
-                                <select name="tkdn_type" id="tkdn_type" class="form-input pl-10 @error('tkdn_type') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror" required>
-                                    <option value="">Pilih Jenis TKDN</option>
-                                    @foreach($tkdnTypes as $key => $label)
-                                        <option value="{{ $key }}" {{ old('tkdn_type') == $key ? 'selected' : '' }}>
-                                            {{ $label }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            @error('tkdn_type')
-                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                            @enderror
-                        </div>
                     </div>
                     <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200 dark:border-gray-700">
                         <a href="{{ route('master.category.index') }}" class="btn btn-outline flex items-center">

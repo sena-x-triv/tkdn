@@ -50,7 +50,6 @@
                             <th>No</th>
                             <th>Nama</th>
                             <th>Kode</th>
-                            <th>Jenis TKDN</th>
                             <th class="text-center">Aksi</th>
                         </tr>
                     </thead>
@@ -60,11 +59,6 @@
                             <td>{{ $loop->iteration + ($categories->firstItem() - 1) }}</td>
                             <td>{{ $category->name }}</td>
                             <td>{{ $category->code }}</td>
-                            <td>
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $category->tkdn_type === 'tkdn_jasa' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-200' : 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200' }}">
-                                    {{ $category->tkdn_type_label }}
-                                </span>
-                            </td>
                             <td class="text-center">
                                 <a href="{{ route('master.category.edit', $category) }}" class="btn btn-outline p-2 text-yellow-600 hover:text-yellow-700 dark:text-yellow-400 dark:hover:text-yellow-300" title="Edit">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

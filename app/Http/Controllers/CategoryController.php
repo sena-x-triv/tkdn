@@ -16,9 +16,7 @@ class CategoryController extends Controller
 
     public function create()
     {
-        $tkdnTypes = Category::getTkdnTypes();
-
-        return view('category.create', compact('tkdnTypes'));
+        return view('category.create');
     }
 
     public function store(Request $request)
@@ -26,7 +24,6 @@ class CategoryController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'code' => 'required|string|max:50|unique:categories,code',
-            'tkdn_type' => 'required|in:tkdn_jasa,tkdn_barang_jasa',
         ]);
         Category::create($validated);
 
@@ -40,9 +37,7 @@ class CategoryController extends Controller
 
     public function edit(Category $category)
     {
-        $tkdnTypes = Category::getTkdnTypes();
-
-        return view('category.edit', compact('category', 'tkdnTypes'));
+        return view('category.edit', compact('category'));
     }
 
     public function update(Request $request, Category $category)
@@ -50,7 +45,6 @@ class CategoryController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'code' => 'required|string|max:50|unique:categories,code,'.$category->id.',id',
-            'tkdn_type' => 'required|in:tkdn_jasa,tkdn_barang_jasa',
         ]);
         $category->update($validated);
 
