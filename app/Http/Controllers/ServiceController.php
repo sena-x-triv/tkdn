@@ -755,9 +755,10 @@ class ServiceController extends Controller
         // Ambil HPP items yang sesuai dengan project_type melalui master data
         $hppItems = collect();
         if ($service->project_id) {
+            // Gunakan integer classification sesuai dengan master data
             $classifications = $projectType === 'tkdn_jasa'
-                ? ['3.1', '3.2', '3.3', '3.4', '3.5']
-                : ['4.1', '4.2', '4.3', '4.4', '4.5', '4.6', '4.7'];
+                ? [1, 2, 3, 4]  // Integer format untuk tkdn_jasa
+                : [1, 2, 3, 4, 5, 6]; // Integer format untuk tkdn_barang_jasa
 
             $hppItems = \App\Models\HppItem::whereHas('hpp', function ($query) use ($service) {
                 $query->where('project_id', $service->project_id);
@@ -773,19 +774,27 @@ class ServiceController extends Controller
                         });
                     });
                 })
-                ->with(['hpp', 'estimation'])
+                ->with(['hpp', 'estimation', 'estimationItem.worker', 'estimationItem.material', 'estimationItem.equipment'])
                 ->get();
 
-            // Group by classification from master data
-            $hppItems = $hppItems->groupBy(function ($item) {
-                // Get classification from master data
+            // Group by classification dari master data dengan format string yang benar
+            $hppItems = $hppItems->groupBy(function ($item) use ($projectType) {
+                // Get classification dari master data
                 if ($item->estimationItem) {
+                    $classification = null;
                     if ($item->estimationItem->worker) {
-                        return $item->estimationItem->worker->classification_tkdn;
+                        $classification = $item->estimationItem->worker->classification_tkdn;
                     } elseif ($item->estimationItem->material) {
-                        return $item->estimationItem->material->classification_tkdn;
+                        $classification = $item->estimationItem->material->classification_tkdn;
                     } elseif ($item->estimationItem->equipment) {
-                        return $item->estimationItem->equipment->classification_tkdn;
+                        $classification = $item->estimationItem->equipment->classification_tkdn;
+                    }
+
+                    // Convert integer ke string format yang diharapkan view
+                    if ($classification) {
+                        return $projectType === 'tkdn_jasa'
+                            ? "3.{$classification}"
+                            : "4.{$classification}";
                     }
                 }
 
