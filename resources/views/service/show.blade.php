@@ -267,7 +267,7 @@
                                 </div>
                                 <div class="flex items-center justify-between text-sm">
                                     <span class="text-gray-600 dark:text-gray-400">HPP Items:</span>
-                                    <span class="font-medium text-gray-900 dark:text-white">{{ $serviceItems->flatten()->count() }} item</span>
+                                    <span class="font-medium text-gray-900 dark:text-white">{{ isset($hppItems) ? $hppItems->flatten()->count() : 0 }} item</span>
                                 </div>
                                 <div class="flex items-center justify-between text-sm">
                                     <span class="text-gray-600 dark:text-gray-400">Form yang Digenerate:</span>
@@ -772,9 +772,9 @@
                             </div>
 
                             <!-- HPP Data Table -->
-                            @if($projectType === 'tkdn_jasa' && isset($serviceItems['3.1']) && $serviceItems['3.1']->isNotEmpty())
+                            @if($projectType === 'tkdn_jasa' && isset($hppItems['3.1']) && $hppItems['3.1']->isNotEmpty())
                                 @php
-                                    $serviceItems31 = $serviceItems['3.1'];
+                                    $hppItems31 = $hppItems['3.1'];
                                 @endphp
                                 <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
                                     <div class="px-6 py-4 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 border-b border-gray-200 dark:border-gray-600">
@@ -807,7 +807,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                                                @foreach($serviceItems31 as $index => $serviceItem)
+                                                @foreach($hppItems31 as $index => $serviceItem)
                                                     <tr class="hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors duration-200">
                                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white text-center">{{ $index + 1 }}</td>
                                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ $serviceItem->description }}</td>
@@ -830,10 +830,10 @@
                                                 <!-- Sub Total -->
                                                 <tr class="bg-blue-50 dark:bg-blue-900/20 font-semibold">
                                                     <td colspan="7" class="px-6 py-4 text-center text-sm font-bold text-blue-900 dark:text-blue-100">SUB TOTAL</td>
-                                                    <td class="px-6 py-4 text-right text-sm font-bold text-blue-900 dark:text-blue-100">{{ number_format($serviceItems31->sum('total_price'), 0, ',', '.') }}</td>
-                                                    <td class="px-6 py-4 text-right text-sm font-bold text-blue-900 dark:text-blue-100">{{ number_format($serviceItems31->sum('total_price'), 0, ',', '.') }}</td>
+                                                    <td class="px-6 py-4 text-right text-sm font-bold text-blue-900 dark:text-blue-100">{{ number_format($hppItems31->sum('total_price'), 0, ',', '.') }}</td>
+                                                    <td class="px-6 py-4 text-right text-sm font-bold text-blue-900 dark:text-blue-100">{{ number_format($hppItems31->sum('total_price'), 0, ',', '.') }}</td>
                                                     <td class="px-6 py-4 text-center text-sm font-bold text-blue-900 dark:text-blue-100">-</td>
-                                                    <td class="px-6 py-4 text-right text-sm font-bold text-blue-900 dark:text-blue-100">{{ number_format($serviceItems31->sum('total_price'), 0, ',', '.') }}</td>
+                                                    <td class="px-6 py-4 text-right text-sm font-bold text-blue-900 dark:text-blue-100">{{ number_format($hppItems31->sum('total_price'), 0, ',', '.') }}</td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -941,9 +941,9 @@
                             </div>
 
                             <!-- HPP Data Table -->
-                            @if($projectType === 'tkdn_jasa' && isset($serviceItems['3.2']) && $serviceItems['3.2']->isNotEmpty())
+                            @if($projectType === 'tkdn_jasa' && isset($hppItems['3.2']) && $hppItems['3.2']->isNotEmpty())
                                 @php
-                                    $serviceItems32 = $serviceItems['3.2'];
+                                    $hppItems32 = $hppItems['3.2'];
                                 @endphp
                                 <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
                                     <div class="px-6 py-4 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 border-b border-gray-200 dark:border-gray-600">
@@ -976,7 +976,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                                                @foreach($serviceItems32 as $index => $serviceItem)
+                                                @foreach($hppItems32 as $index => $serviceItem)
                                                     <tr class="hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors duration-200">
                                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white text-center">{{ $index + 1 }}</td>
                                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ $serviceItem->description }}</td>
@@ -999,10 +999,10 @@
                                                 <!-- Sub Total -->
                                                 <tr class="bg-green-50 dark:bg-green-900/20 font-semibold">
                                                     <td colspan="7" class="px-6 py-4 text-center text-sm font-bold text-green-900 dark:text-green-100">SUB TOTAL</td>
-                                                    <td class="px-6 py-4 text-right text-sm font-bold text-green-900 dark:text-green-100">{{ number_format($serviceItems32->sum('total_price'), 0, ',', '.') }}</td>
-                                                    <td class="px-6 py-4 text-right text-sm font-bold text-green-900 dark:text-green-100">{{ number_format($serviceItems32->sum('total_price'), 0, ',', '.') }}</td>
+                                                    <td class="px-6 py-4 text-right text-sm font-bold text-green-900 dark:text-green-100">{{ number_format($hppItems32->sum('total_price'), 0, ',', '.') }}</td>
+                                                    <td class="px-6 py-4 text-right text-sm font-bold text-green-900 dark:text-green-100">{{ number_format($hppItems32->sum('total_price'), 0, ',', '.') }}</td>
                                                     <td class="px-6 py-4 text-center text-sm font-bold text-green-900 dark:text-green-100">-</td>
-                                                    <td class="px-6 py-4 text-right text-sm font-bold text-green-900 dark:text-green-100">{{ number_format($serviceItems32->sum('total_price'), 0, ',', '.') }}</td>
+                                                    <td class="px-6 py-4 text-right text-sm font-bold text-green-900 dark:text-green-100">{{ number_format($hppItems32->sum('total_price'), 0, ',', '.') }}</td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -1110,9 +1110,9 @@
                             </div>
 
                             <!-- HPP Data Table -->
-                            @if($projectType === 'tkdn_jasa' && isset($serviceItems['3.3']) && $serviceItems['3.3']->isNotEmpty())
+                            @if($projectType === 'tkdn_jasa' && isset($hppItems['3.3']) && $hppItems['3.3']->isNotEmpty())
                                 @php
-                                    $serviceItems33 = $serviceItems['3.3'];
+                                    $hppItems33 = $hppItems['3.3'];
                                 @endphp
                                 <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
                                     <div class="px-6 py-4 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 border-b border-gray-200 dark:border-gray-600">
@@ -1145,7 +1145,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                                                @foreach($serviceItems33 as $index => $serviceItem)
+                                                @foreach($hppItems33 as $index => $serviceItem)
                                                     <tr class="hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors duration-200">
                                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white text-center">{{ $index + 1 }}</td>
                                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ $serviceItem->description }}</td>
@@ -1168,10 +1168,10 @@
                                                 <!-- Sub Total -->
                                                 <tr class="bg-purple-50 dark:bg-purple-900/20 font-semibold">
                                                     <td colspan="7" class="px-6 py-4 text-center text-sm font-bold text-purple-900 dark:text-purple-100">SUB TOTAL</td>
-                                                    <td class="px-6 py-4 text-right text-sm font-bold text-purple-900 dark:text-purple-100">{{ number_format($serviceItems33->sum('total_price'), 0, ',', '.') }}</td>
-                                                    <td class="px-6 py-4 text-right text-sm font-bold text-purple-900 dark:text-purple-100">{{ number_format($serviceItems33->sum('total_price'), 0, ',', '.') }}</td>
+                                                    <td class="px-6 py-4 text-right text-sm font-bold text-purple-900 dark:text-purple-100">{{ number_format($hppItems33->sum('total_price'), 0, ',', '.') }}</td>
+                                                    <td class="px-6 py-4 text-right text-sm font-bold text-purple-900 dark:text-purple-100">{{ number_format($hppItems33->sum('total_price'), 0, ',', '.') }}</td>
                                                     <td class="px-6 py-4 text-center text-sm font-bold text-purple-900 dark:text-purple-100">-</td>
-                                                    <td class="px-6 py-4 text-right text-sm font-bold text-purple-900 dark:text-purple-100">{{ number_format($serviceItems33->sum('total_price'), 0, ',', '.') }}</td>
+                                                    <td class="px-6 py-4 text-right text-sm font-bold text-purple-900 dark:text-purple-100">{{ number_format($hppItems33->sum('total_price'), 0, ',', '.') }}</td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -1279,10 +1279,10 @@
                             </div>
 
                             <!-- Data Table -->
-                            @if($projectType === 'tkdn_jasa' && (isset($serviceItems['3.4']) && $serviceItems['3.4']->isNotEmpty() || isset($groupedItems['3.4']) && $groupedItems['3.4']->isNotEmpty()))
+                            @if($projectType === 'tkdn_jasa' && (isset($hppItems['3.4']) && $hppItems['3.4']->isNotEmpty() || isset($groupedItems['3.4']) && $groupedItems['3.4']->isNotEmpty()))
                                 @php
-                                    $serviceItems34 = $serviceItems['3.4'] ?? collect();
-                                    $serviceItems4 = $groupedItems['3.4'] ?? collect();
+                                    $hppItems34 = $hppItems['3.4'] ?? collect();
+                                    $hppItems4 = $groupedItems['3.4'] ?? collect();
                                 @endphp
                                 <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
                                     <div class="px-6 py-4 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 border-b border-gray-200 dark:border-gray-600">
@@ -1290,7 +1290,7 @@
                                             <svg class="w-5 h-5 mr-2 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
                                             </svg>
-                                            @if($serviceItems34->count() > 0)
+                                            @if($hppItems34->count() > 0)
                                                 Data HPP - TKDN Classification 3.4
                                             @else
                                                 Data Service - TKDN Classification 3.4
@@ -1319,8 +1319,8 @@
                                                 </tr>
                                             </thead>
                                             <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                                                @if($serviceItems34->count() > 0)
-                                                    @foreach($serviceItems34 as $index => $serviceItem)
+                                                @if($hppItems34->count() > 0)
+                                                    @foreach($hppItems34 as $index => $serviceItem)
                                                         <tr class="hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors duration-200">
                                                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white text-center">{{ $index + 1 }}</td>
                                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ $serviceItem->description }}</td>
@@ -1340,7 +1340,7 @@
                                                         </tr>
                                                     @endforeach
                                                 @else
-                                                    @foreach($serviceItems4 as $index => $serviceItem)
+                                                    @foreach($hppItems4 as $index => $serviceItem)
                                                         <tr class="hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors duration-200">
                                                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white text-center">{{ $serviceItem->item_number }}</td>
                                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ $serviceItem->description }}</td>
@@ -1364,16 +1364,16 @@
                                                 <!-- Sub Total -->
                                                 <tr class="bg-orange-50 dark:bg-orange-900/20 font-semibold">
                                                     <td colspan="7" class="px-6 py-4 text-center text-sm font-bold text-orange-900 dark:text-orange-100">SUB TOTAL</td>
-                                                    @if($serviceItems34->count() > 0)
-                                                        <td class="px-6 py-4 text-right text-sm font-bold text-orange-900 dark:text-orange-100">{{ number_format($serviceItems34->sum('total_price'), 0, ',', '.') }}</td>
-                                                        <td class="px-6 py-4 text-right text-sm font-bold text-orange-900 dark:text-orange-100">{{ number_format($serviceItems34->sum('total_price'), 0, ',', '.') }}</td>
+                                                    @if($hppItems34->count() > 0)
+                                                        <td class="px-6 py-4 text-right text-sm font-bold text-orange-900 dark:text-orange-100">{{ number_format($hppItems34->sum('total_price'), 0, ',', '.') }}</td>
+                                                        <td class="px-6 py-4 text-right text-sm font-bold text-orange-900 dark:text-orange-100">{{ number_format($hppItems34->sum('total_price'), 0, ',', '.') }}</td>
                                                         <td class="px-6 py-4 text-center text-sm font-bold text-orange-900 dark:text-orange-100">-</td>
-                                                        <td class="px-6 py-4 text-right text-sm font-bold text-orange-900 dark:text-orange-100">{{ number_format($serviceItems34->sum('total_price'), 0, ',', '.') }}</td>
+                                                        <td class="px-6 py-4 text-right text-sm font-bold text-orange-900 dark:text-orange-100">{{ number_format($hppItems34->sum('total_price'), 0, ',', '.') }}</td>
                                                     @else
-                                                        <td class="px-6 py-4 text-right text-sm font-bold text-orange-900 dark:text-orange-100">{{ number_format($serviceItems4->sum('wage'), 0, ',', '.') }}</td>
-                                                        <td class="px-6 py-4 text-right text-sm font-bold text-orange-900 dark:text-orange-100">{{ number_format($serviceItems4->sum('domestic_cost'), 0, ',', '.') }}</td>
-                                                        <td class="px-6 py-4 text-right text-sm font-bold text-orange-900 dark:text-orange-100">{{ number_format($serviceItems4->sum('foreign_cost'), 0, ',', '.') }}</td>
-                                                        <td class="px-6 py-4 text-right text-sm font-bold text-orange-900 dark:text-orange-100">{{ number_format($serviceItems4->sum('total_cost'), 0, ',', '.') }}</td>
+                                                        <td class="px-6 py-4 text-right text-sm font-bold text-orange-900 dark:text-orange-100">{{ number_format($hppItems4->sum('wage'), 0, ',', '.') }}</td>
+                                                        <td class="px-6 py-4 text-right text-sm font-bold text-orange-900 dark:text-orange-100">{{ number_format($hppItems4->sum('domestic_cost'), 0, ',', '.') }}</td>
+                                                        <td class="px-6 py-4 text-right text-sm font-bold text-orange-900 dark:text-orange-100">{{ number_format($hppItems4->sum('foreign_cost'), 0, ',', '.') }}</td>
+                                                        <td class="px-6 py-4 text-right text-sm font-bold text-orange-900 dark:text-orange-100">{{ number_format($hppItems4->sum('total_cost'), 0, ',', '.') }}</td>
                                                     @endif
                                                 </tr>
                                             </tbody>
@@ -1550,7 +1550,7 @@
                             @if($projectType === 'tkdn_jasa' && isset($groupedItems['3.5']) && $groupedItems['3.5']->isNotEmpty())
                                 @php
                                     // Ambil data dari Service Items untuk Form 3.5 (rangkuman)
-                                    $summaryItems3535 = $groupedItems['3.5'];
+                                    $summaryItems35 = $groupedItems['3.5'];
                                     
                                     // Hitung total dari semua form
                                     $totalKdn = $summaryItems35->sum('domestic_cost');
@@ -1746,497 +1746,12 @@
                             </div>
                         </div>
 
-            <!-- Detail Item Service berdasarkan Kategori -->
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden mb-8">
-                <div class="px-6 py-4 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 border-b border-gray-200 dark:border-gray-600">
-                    <h5 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
-                        <svg class="w-5 h-5 mr-2 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                        </svg>
-                        Detail Item Service berdasarkan Kategori
-                    </h5>
-                </div>
-                <div class="p-6">
-                    <!-- Kategori 1: Overhead & Manajemen (3.1 dan 4.3) -->
-                    <div class="mb-8">
-                        <h6 class="text-md font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-                            <span class="w-3 h-3 bg-blue-500 rounded-full mr-3"></span>
-                            1. Overhead & Manajemen
-                            <span class="ml-2 text-sm text-gray-500 dark:text-gray-400">(Form 3.1 dan 4.3)</span>
-                        </h6>
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                            <!-- Form 3.1 -->
-                            <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 border border-blue-200 dark:border-blue-700">
-                                <h7 class="text-sm font-medium text-blue-900 dark:text-blue-100 mb-2">Form 3.1 - Overhead & Manajemen</h7>
-                                @php
-                                    $items31 = $service->items()->where('tkdn_classification', '3.1')->get();
-                                @endphp
-                                @if($items31->isNotEmpty())
-                                    <div class="space-y-2">
-                                        @foreach($items31 as $item)
-                                            <div class="bg-white dark:bg-gray-800 rounded p-3 border border-blue-200 dark:border-blue-600">
-                                                <div class="flex justify-between items-start">
-                                                    <div class="flex-1">
-                                                        <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $item->description }}</p>
-                                                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ $item->qualification }}</p>
-                                                    </div>
-                                                    <div class="text-right">
-                                                        <p class="text-sm font-medium text-blue-600 dark:text-blue-400">{{ $item->getFormattedTotalCost() }}</p>
-                                                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ $item->tkdn_percentage }}% TKDN</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                @else
-                                    <p class="text-sm text-gray-500 dark:text-gray-400 italic">Belum ada data untuk Form 3.1</p>
-                                @endif
-                            </div>
-                            
-                            <!-- Form 4.3 -->
-                            <div class="bg-green-50 dark:bg-green-900/20 rounded-lg p-4 border border-green-200 dark:border-green-700">
-                                <h7 class="text-sm font-medium text-green-900 dark:text-green-100 mb-2">Form 4.3 - Overhead & Manajemen</h7>
-                                @php
-                                    $items43 = $service->items()->where('tkdn_classification', '4.3')->get();
-                                @endphp
-                                @if($items43->isNotEmpty())
-                                    <div class="space-y-2">
-                                        @foreach($items43 as $item)
-                                            <div class="bg-white dark:bg-gray-800 rounded p-3 border border-green-200 dark:border-green-600">
-                                                <div class="flex justify-between items-start">
-                                                    <div class="flex-1">
-                                                        <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $item->description }}</p>
-                                                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ $item->qualification }}</p>
-                                                    </div>
-                                                    <div class="text-right">
-                                                        <p class="text-sm font-medium text-green-600 dark:text-green-400">{{ $item->getFormattedTotalCost() }}</p>
-                                                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ $item->tkdn_percentage }}% TKDN</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                @else
-                                    <p class="text-sm text-gray-500 dark:text-gray-400 italic">Belum ada data untuk Form 4.3</p>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Kategori 2: Alat Kerja / Fasilitas (3.2 dan 4.4) -->
-                    <div class="mb-8">
-                        <h6 class="text-md font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-                            <span class="w-3 h-3 bg-green-500 rounded-full mr-3"></span>
-                            2. Alat Kerja / Fasilitas
-                            <span class="ml-2 text-sm text-gray-500 dark:text-gray-400">(Form 3.2 dan 4.4)</span>
-                        </h6>
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                            <!-- Form 3.2 -->
-                            <div class="bg-green-50 dark:bg-green-900/20 rounded-lg p-4 border border-green-200 dark:border-green-700">
-                                <h7 class="text-sm font-medium text-green-900 dark:text-green-100 mb-2">Form 3.2 - Alat Kerja / Fasilitas</h7>
-                                @php
-                                    $items32 = $service->items()->where('tkdn_classification', '3.2')->get();
-                                @endphp
-                                @if($items32->isNotEmpty())
-                                    <div class="space-y-2">
-                                        @foreach($items32 as $item)
-                                            <div class="bg-white dark:bg-gray-800 rounded p-3 border border-green-200 dark:border-green-600">
-                                                <div class="flex justify-between items-start">
-                                                    <div class="flex-1">
-                                                        <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $item->description }}</p>
-                                                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ $item->qualification }}</p>
-                                                    </div>
-                                                    <div class="text-right">
-                                                        <p class="text-sm font-medium text-green-600 dark:text-green-400">{{ $item->getFormattedTotalCost() }}</p>
-                                                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ $item->tkdn_percentage }}% TKDN</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                @else
-                                    <p class="text-sm text-gray-500 dark:text-gray-400 italic">Belum ada data untuk Form 3.2</p>
-                                @endif
-                            </div>
-                            
-                            <!-- Form 4.4 -->
-                            <div class="bg-green-50 dark:bg-green-900/20 rounded-lg p-4 border border-green-200 dark:border-green-700">
-                                <h7 class="text-sm font-medium text-green-900 dark:text-green-100 mb-2">Form 4.4 - Alat Kerja / Fasilitas</h7>
-                                @php
-                                    $items44 = $service->items()->where('tkdn_classification', '4.4')->get();
-                                @endphp
-                                @if($items44->isNotEmpty())
-                                    <div class="space-y-2">
-                                        @foreach($items44 as $item)
-                                            <div class="bg-white dark:bg-gray-800 rounded p-3 border border-green-200 dark:border-green-600">
-                                                <div class="flex justify-between items-start">
-                                                    <div class="flex-1">
-                                                        <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $item->description }}</p>
-                                                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ $item->qualification }}</p>
-                                                    </div>
-                                                    <div class="text-right">
-                                                        <p class="text-sm font-medium text-green-600 dark:text-green-400">{{ $item->getFormattedTotalCost() }}</p>
-                                                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ $item->tkdn_percentage }}% TKDN</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                @else
-                                    <p class="text-sm text-gray-500 dark:text-gray-400 italic">Belum ada data untuk Form 4.4</p>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Kategori 3: Konstruksi & Fabrikasi (3.3 dan 4.5) -->
-                    <div class="mb-8">
-                        <h6 class="text-md font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-                            <span class="w-3 h-3 bg-purple-500 rounded-full mr-3"></span>
-                            3. Konstruksi & Fabrikasi
-                            <span class="ml-2 text-sm text-gray-500 dark:text-gray-400">(Form 3.3 dan 4.5)</span>
-                        </h6>
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                            <!-- Form 3.3 -->
-                            <div class="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-4 border border-purple-200 dark:border-purple-700">
-                                <h7 class="text-sm font-medium text-purple-900 dark:text-purple-100 mb-2">Form 3.3 - Konstruksi & Fabrikasi</h7>
-                                @php
-                                    $items33 = $service->items()->where('tkdn_classification', '3.3')->get();
-                                @endphp
-                                @if($items33->isNotEmpty())
-                                    <div class="space-y-2">
-                                        @foreach($items33 as $item)
-                                            <div class="bg-white dark:bg-gray-800 rounded p-3 border border-purple-200 dark:border-purple-600">
-                                                <div class="flex justify-between items-start">
-                                                    <div class="flex-1">
-                                                        <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $item->description }}</p>
-                                                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ $item->qualification }}</p>
-                                                    </div>
-                                                    <div class="text-right">
-                                                        <p class="text-sm font-medium text-purple-600 dark:text-purple-400">{{ $item->getFormattedTotalCost() }}</p>
-                                                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ $item->tkdn_percentage }}% TKDN</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                @else
-                                    <p class="text-sm text-gray-500 dark:text-gray-400 italic">Belum ada data untuk Form 3.3</p>
-                                @endif
-                            </div>
-                            
-                            <!-- Form 4.5 -->
-                            <div class="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-4 border border-purple-200 dark:border-purple-700">
-                                <h7 class="text-sm font-medium text-purple-900 dark:text-purple-100 mb-2">Form 4.5 - Konstruksi & Fabrikasi</h7>
-                                @php
-                                    $items45 = $service->items()->where('tkdn_classification', '4.5')->get();
-                                @endphp
-                                @if($items45->isNotEmpty())
-                                    <div class="space-y-2">
-                                        @foreach($items45 as $item)
-                                            <div class="bg-white dark:bg-gray-800 rounded p-3 border border-purple-200 dark:border-purple-600">
-                                                <div class="flex justify-between items-start">
-                                                    <div class="flex-1">
-                                                        <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $item->description }}</p>
-                                                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ $item->qualification }}</p>
-                                                    </div>
-                                                    <div class="text-right">
-                                                        <p class="text-sm font-medium text-purple-600 dark:text-purple-400">{{ $item->getFormattedTotalCost() }}</p>
-                                                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ $item->tkdn_percentage }}% TKDN</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                @else
-                                    <p class="text-sm text-gray-500 dark:text-gray-400 italic">Belum ada data untuk Form 4.5</p>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Kategori 4: Jasa Umum (3.4 dan 4.6) -->
-                    <div class="mb-8">
-                        <h6 class="text-md font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-                            <span class="w-3 h-3 bg-orange-500 rounded-full mr-3"></span>
-                            4. Jasa Umum
-                            <span class="ml-2 text-sm text-gray-500 dark:text-gray-400">(Form 3.4 dan 4.6)</span>
-                        </h6>
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                            <!-- Form 3.4 -->
-                            <div class="bg-orange-50 dark:bg-orange-900/20 rounded-lg p-4 border border-orange-200 dark:border-orange-700">
-                                <h7 class="text-sm font-medium text-orange-900 dark:text-orange-100 mb-2">Form 3.4 - Jasa Umum</h7>
-                                @php
-                                    $items34 = $service->items()->where('tkdn_classification', '3.4')->get();
-                                @endphp
-                                @if($items34->isNotEmpty())
-                                    <div class="space-y-2">
-                                        @foreach($items34 as $item)
-                                            <div class="bg-white dark:bg-gray-800 rounded p-3 border border-orange-200 dark:border-orange-600">
-                                                <div class="flex justify-between items-start">
-                                                    <div class="flex-1">
-                                                        <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $item->description }}</p>
-                                                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ $item->qualification }}</p>
-                                                    </div>
-                                                    <div class="text-right">
-                                                        <p class="text-sm font-medium text-orange-600 dark:text-orange-400">{{ $item->getFormattedTotalCost() }}</p>
-                                                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ $item->tkdn_percentage }}% TKDN</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                @else
-                                    <p class="text-sm text-gray-500 dark:text-gray-400 italic">Belum ada data untuk Form 3.4</p>
-                                @endif
-                            </div>
-                            
-                            <!-- Form 4.6 -->
-                            <div class="bg-orange-50 dark:bg-orange-900/20 rounded-lg p-4 border border-orange-200 dark:border-orange-700">
-                                <h7 class="text-sm font-medium text-orange-900 dark:text-orange-100 mb-2">Form 4.6 - Jasa Umum</h7>
-                                @php
-                                    $items46 = $service->items()->where('tkdn_classification', '4.6')->get();
-                                @endphp
-                                @if($items46->isNotEmpty())
-                                    <div class="space-y-2">
-                                        @foreach($items46 as $item)
-                                            <div class="bg-white dark:bg-gray-800 rounded p-3 border border-orange-200 dark:border-orange-600">
-                                                <div class="flex justify-between items-start">
-                                                    <div class="flex-1">
-                                                        <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $item->description }}</p>
-                                                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ $item->qualification }}</p>
-                                                    </div>
-                                                    <div class="text-right">
-                                                        <p class="text-sm font-medium text-orange-600 dark:text-orange-400">{{ $item->getFormattedTotalCost() }}</p>
-                                                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ $item->tkdn_percentage }}% TKDN</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                @else
-                                    <p class="text-sm text-gray-500 dark:text-gray-400 italic">Belum ada data untuk Form 4.6</p>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Kategori 5: Material (Bahan Baku) (4.1) -->
-                    <div class="mb-8">
-                        <h6 class="text-md font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-                            <span class="w-3 h-3 bg-indigo-500 rounded-full mr-3"></span>
-                            5. Material (Bahan Baku)
-                            <span class="ml-2 text-sm text-gray-500 dark:text-gray-400">(Form 4.1)</span>
-                        </h6>
-                        <div class="bg-indigo-50 dark:bg-indigo-900/20 rounded-lg p-4 border border-indigo-200 dark:border-indigo-700">
-                            <h7 class="text-sm font-medium text-indigo-900 dark:text-indigo-100 mb-2">Form 4.1 - Material (Bahan Baku)</h7>
-                            @php
-                                $items41 = $service->items()->where('tkdn_classification', '4.1')->get();
-                            @endphp
-                            @if($items41->isNotEmpty())
-                                <div class="space-y-2">
-                                    @foreach($items41 as $item)
-                                        <div class="bg-white dark:bg-gray-800 rounded p-3 border border-indigo-200 dark:border-indigo-600">
-                                            <div class="flex justify-between items-start">
-                                                <div class="flex-1">
-                                                    <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $item->description }}</p>
-                                                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ $item->qualification }}</p>
-                                                </div>
-                                                <div class="text-right">
-                                                    <p class="text-sm font-medium text-indigo-600 dark:text-indigo-400">{{ $item->getFormattedTotalCost() }}</p>
-                                                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ $item->tkdn_percentage }}% TKDN</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            @else
-                                <p class="text-sm text-gray-500 dark:text-gray-400 italic">Belum ada data untuk Form 4.1</p>
-                            @endif
-                        </div>
-                    </div>
-
-                    <!-- Kategori 6: Peralatan (Barang Jadi) (4.2) -->
-                    <div class="mb-8">
-                        <h6 class="text-md font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-                            <span class="w-3 h-3 bg-teal-500 rounded-full mr-3"></span>
-                            6. Peralatan (Barang Jadi)
-                            <span class="ml-2 text-sm text-gray-500 dark:text-gray-400">(Form 4.2)</span>
-                        </h6>
-                        <div class="bg-teal-50 dark:bg-teal-900/20 rounded-lg p-4 border border-teal-200 dark:border-teal-700">
-                            <h7 class="text-sm font-medium text-teal-900 dark:text-teal-100 mb-2">Form 4.2 - Peralatan (Barang Jadi)</h7>
-                            @php
-                                $items42 = $service->items()->where('tkdn_classification', '4.2')->get();
-                            @endphp
-                            @if($items42->isNotEmpty())
-                                <div class="space-y-2">
-                                    @foreach($items42 as $item)
-                                        <div class="bg-white dark:bg-gray-800 rounded p-3 border border-teal-200 dark:border-teal-600">
-                                            <div class="flex justify-between items-start">
-                                                <div class="flex-1">
-                                                    <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $item->description }}</p>
-                                                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ $item->qualification }}</p>
-                                                </div>
-                                                <div class="text-right">
-                                                    <p class="text-sm font-medium text-teal-600 dark:text-teal-400">{{ $item->getFormattedTotalCost() }}</p>
-                                                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ $item->tkdn_percentage }}% TKDN</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            @else
-                                <p class="text-sm text-gray-500 dark:text-gray-400 italic">Belum ada data untuk Form 4.2</p>
-                            @endif
-                        </div>
-                    </div>
-
-                    <!-- Summary Total per Kategori -->
-                    <div class="mt-8 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 rounded-xl p-6 border border-gray-200 dark:border-gray-600">
-                        <h6 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-                            <svg class="w-5 h-5 mr-2 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-                            </svg>
-                            Ringkasan Total Biaya per Kategori
-                        </h6>
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            <!-- Kategori 1: Overhead & Manajemen -->
-                            <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <h7 class="text-sm font-medium text-gray-900 dark:text-white">Overhead & Manajemen</h7>
-                                        <p class="text-xs text-gray-500 dark:text-gray-400">Form 3.1 & 4.3</p>
-                                    </div>
-                                    <div class="text-right">
-                                        @php
-                                            $total31 = $service->items()->where('tkdn_classification', '3.1')->sum('total_cost');
-                                            $total43 = $service->items()->where('tkdn_classification', '4.3')->sum('total_cost');
-                                            $totalOverhead = $total31 + $total43;
-                                        @endphp
-                                        <p class="text-sm font-semibold text-blue-600 dark:text-blue-400">{{ number_format($totalOverhead, 0, ',', '.') }}</p>
-                                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ $totalOverhead > 0 ? 'Rp' : 'Belum ada data' }}</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Kategori 2: Alat Kerja / Fasilitas -->
-                            <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <h7 class="text-sm font-medium text-gray-900 dark:text-white">Alat Kerja / Fasilitas</h7>
-                                        <p class="text-xs text-gray-500 dark:text-gray-400">Form 3.2 & 4.4</p>
-                                    </div>
-                                    <div class="text-right">
-                                        @php
-                                            $total32 = $service->items()->where('tkdn_classification', '3.2')->sum('total_cost');
-                                            $total44 = $service->items()->where('tkdn_classification', '4.4')->sum('total_cost');
-                                            $totalAlat = $total32 + $total44;
-                                        @endphp
-                                        <p class="text-sm font-semibold text-green-600 dark:text-green-400">{{ number_format($totalAlat, 0, ',', '.') }}</p>
-                                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ $totalAlat > 0 ? 'Rp' : 'Belum ada data' }}</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Kategori 3: Konstruksi & Fabrikasi -->
-                            <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <h7 class="text-sm font-medium text-gray-900 dark:text-white">Konstruksi & Fabrikasi</h7>
-                                        <p class="text-xs text-gray-500 dark:text-gray-400">Form 3.3 & 4.5</p>
-                                    </div>
-                                    <div class="text-right">
-                                        @php
-                                            $total33 = $service->items()->where('tkdn_classification', '3.3')->sum('total_cost');
-                                            $total45 = $service->items()->where('tkdn_classification', '4.5')->sum('total_cost');
-                                            $totalKonstruksi = $total33 + $total45;
-                                        @endphp
-                                        <p class="text-sm font-semibold text-purple-600 dark:text-purple-400">{{ number_format($totalKonstruksi, 0, ',', '.') }}</p>
-                                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ $totalKonstruksi > 0 ? 'Rp' : 'Belum ada data' }}</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Kategori 4: Jasa Umum -->
-                            <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <h7 class="text-sm font-medium text-gray-900 dark:text-white">Jasa Umum</h7>
-                                        <p class="text-xs text-gray-500 dark:text-gray-400">Form 3.4 & 4.6</p>
-                                    </div>
-                                    <div class="text-right">
-                                        @php
-                                            $total34 = $service->items()->where('tkdn_classification', '3.4')->sum('total_cost');
-                                            $total46 = $service->items()->where('tkdn_classification', '4.6')->sum('total_cost');
-                                            $totalJasa = $total34 + $total46;
-                                        @endphp
-                                        <p class="text-sm font-semibold text-orange-600 dark:text-orange-400">{{ number_format($totalJasa, 0, ',', '.') }}</p>
-                                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ $totalJasa > 0 ? 'Rp' : 'Belum ada data' }}</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Kategori 5: Material (Bahan Baku) -->
-                            <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <h7 class="text-sm font-medium text-gray-900 dark:text-white">Material (Bahan Baku)</h7>
-                                        <p class="text-xs text-gray-500 dark:text-gray-400">Form 4.1</p>
-                                    </div>
-                                    <div class="text-right">
-                                        @php
-                                            $totalMaterial = $service->items()->where('tkdn_classification', '4.1')->sum('total_cost');
-                                        @endphp
-                                        <p class="text-sm font-semibold text-indigo-600 dark:text-indigo-400">{{ number_format($totalMaterial, 0, ',', '.') }}</p>
-                                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ $totalMaterial > 0 ? 'Rp' : 'Belum ada data' }}</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Kategori 6: Peralatan (Barang Jadi) -->
-                            <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <h7 class="text-sm font-medium text-gray-900 dark:text-white">Peralatan (Barang Jadi)</h7>
-                                        <p class="text-xs text-gray-500 dark:text-gray-400">Form 4.2</p>
-                                    </div>
-                                    <div class="text-right">
-                                        @php
-                                            $totalPeralatan = $service->items()->where('tkdn_classification', '4.2')->sum('total_cost');
-                                        @endphp
-                                        <p class="text-sm font-semibold text-teal-600 dark:text-teal-400">{{ number_format($totalPeralatan, 0, ',', '.') }}</p>
-                                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ $totalPeralatan > 0 ? 'Rp' : 'Belum ada data' }}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Grand Total -->
-                        <div class="mt-6 pt-4 border-t border-gray-200 dark:border-gray-600">
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <h7 class="text-lg font-bold text-gray-900 dark:text-white">Grand Total Semua Kategori</h7>
-                                    <p class="text-sm text-gray-500 dark:text-gray-400">Total biaya dari semua kategori service</p>
-                                </div>
-                                <div class="text-right">
-                                    @php
-                                        $grandTotal = $totalOverhead + $totalAlat + $totalKonstruksi + $totalJasa + $totalMaterial + $totalPeralatan;
-                                    @endphp
-                                    <p class="text-xl font-bold text-gray-900 dark:text-white">{{ number_format($grandTotal, 0, ',', '.') }}</p>
-                                    <p class="text-sm text-gray-500 dark:text-gray-400">Rupiah</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <!-- Service Items Table -->
             @php
-                $serviceItems41 = $service->items()->where('tkdn_classification', '4.1')->get();
+                $hppItems41 = $service->items()->where('tkdn_classification', '4.1')->get();
             @endphp
 
-            @if($serviceItems41->isNotEmpty())
+            @if($hppItems41->isNotEmpty())
                             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
                                 <div class="px-6 py-4 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 border-b border-gray-200 dark:border-gray-600">
                                     <h5 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
@@ -2268,7 +1783,7 @@
                                             </tr>
                                         </thead>
                                         <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                                            @foreach($serviceItems41 as $index => $serviceItem)
+                                            @foreach($hppItems41 as $index => $serviceItem)
                                                 <tr class="hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors duration-200">
                                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white text-center">{{ $index + 1 }}</td>
                                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ $serviceItem->description }}</td>
@@ -2291,10 +1806,10 @@
                                             <!-- Sub Total -->
                                             <tr class="bg-green-50 dark:bg-green-900/20 font-semibold">
                                                 <td colspan="7" class="px-6 py-4 text-center text-sm font-bold text-green-900 dark:text-green-100">SUB TOTAL</td>
-                                                <td class="px-6 py-4 text-right text-sm font-bold text-green-900 dark:text-green-100">{{ number_format($serviceItems->sum('total_price'), 0, ',', '.') }}</td>
-                                                <td class="px-6 py-4 text-right text-sm font-bold text-green-900 dark:text-green-100">{{ number_format($serviceItems->sum('total_price'), 0, ',', '.') }}</td>
+                                                <td class="px-6 py-4 text-right text-sm font-bold text-green-900 dark:text-green-100">{{ number_format($hppItems41->sum('total_price'), 0, ',', '.') }}</td>
+                                                <td class="px-6 py-4 text-right text-sm font-bold text-green-900 dark:text-green-100">{{ number_format($hppItems41->sum('total_price'), 0, ',', '.') }}</td>
                                                 <td class="px-6 py-4 text-center text-sm font-bold text-green-900 dark:text-green-100">-</td>
-                                                <td class="px-6 py-4 text-right text-sm font-bold text-green-900 dark:text-green-100">{{ number_format($serviceItems->sum('total_price'), 0, ',', '.') }}</td>
+                                                <td class="px-6 py-4 text-right text-sm font-bold text-green-900 dark:text-green-100">{{ number_format($hppItems41->sum('total_price'), 0, ',', '.') }}</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -2404,10 +1919,10 @@
 
                         <!-- Service Items Table -->
                         @php
-                            $serviceItems42 = $service->items()->where('tkdn_classification', '4.2')->get();
+                            $hppItems42 = $service->items()->where('tkdn_classification', '4.2')->get();
                         @endphp
 
-                        @if($serviceItems42->isNotEmpty())
+                        @if($hppItems42->isNotEmpty())
                             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
                                 <div class="px-6 py-4 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 border-b border-gray-200 dark:border-gray-600">
                                     <h5 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
@@ -2439,7 +1954,7 @@
                                             </tr>
                                         </thead>
                                         <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                                            @foreach($serviceItems42 as $index => $serviceItem)
+                                            @foreach($hppItems42 as $index => $serviceItem)
                                                 <tr class="hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors duration-200">
                                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white text-center">{{ $index + 1 }}</td>
                                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ $serviceItem->description }}</td>
@@ -2462,10 +1977,10 @@
                                             <!-- Sub Total -->
                                             <tr class="bg-green-50 dark:bg-green-900/20 font-semibold">
                                                 <td colspan="7" class="px-6 py-4 text-center text-sm font-bold text-green-900 dark:text-green-100">SUB TOTAL</td>
-                                                <td class="px-6 py-4 text-right text-sm font-bold text-green-900 dark:text-green-100">{{ number_format($serviceItems->sum('total_price'), 0, ',', '.') }}</td>
-                                                <td class="px-6 py-4 text-right text-sm font-bold text-green-900 dark:text-green-100">{{ number_format($serviceItems->sum('total_price'), 0, ',', '.') }}</td>
+                                                <td class="px-6 py-4 text-right text-sm font-bold text-green-900 dark:text-green-100">{{ number_format($hppItems41->sum('total_price'), 0, ',', '.') }}</td>
+                                                <td class="px-6 py-4 text-right text-sm font-bold text-green-900 dark:text-green-100">{{ number_format($hppItems41->sum('total_price'), 0, ',', '.') }}</td>
                                                 <td class="px-6 py-4 text-center text-sm font-bold text-green-900 dark:text-green-100">-</td>
-                                                <td class="px-6 py-4 text-right text-sm font-bold text-green-900 dark:text-green-100">{{ number_format($serviceItems->sum('total_price'), 0, ',', '.') }}</td>
+                                                <td class="px-6 py-4 text-right text-sm font-bold text-green-900 dark:text-green-100">{{ number_format($hppItems41->sum('total_price'), 0, ',', '.') }}</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -2570,10 +2085,10 @@
 
                         <!-- Service Items Table -->
                         @php
-                            $serviceItems43 = $service->items()->where('tkdn_classification', '4.3')->get();
+                            $hppItems43 = $service->items()->where('tkdn_classification', '4.3')->get();
                         @endphp
 
-                        @if($serviceItems43->isNotEmpty())
+                        @if($hppItems43->isNotEmpty())
                             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
                                 <div class="px-6 py-4 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 border-b border-gray-200 dark:border-gray-600">
                                     <h5 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
@@ -2605,7 +2120,7 @@
                                             </tr>
                                         </thead>
                                         <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                                            @foreach($serviceItems43 as $index => $serviceItem)
+                                            @foreach($hppItems43 as $index => $serviceItem)
                                                 <tr class="hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors duration-200">
                                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white text-center">{{ $index + 1 }}</td>
                                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ $serviceItem->description }}</td>
@@ -2628,10 +2143,10 @@
                                             <!-- Sub Total -->
                                             <tr class="bg-green-50 dark:bg-green-900/20 font-semibold">
                                                 <td colspan="7" class="px-6 py-4 text-center text-sm font-bold text-green-900 dark:text-green-100">SUB TOTAL</td>
-                                                <td class="px-6 py-4 text-right text-sm font-bold text-green-900 dark:text-green-100">{{ number_format($serviceItems->sum('total_price'), 0, ',', '.') }}</td>
-                                                <td class="px-6 py-4 text-right text-sm font-bold text-green-900 dark:text-green-100">{{ number_format($serviceItems->sum('total_price'), 0, ',', '.') }}</td>
+                                                <td class="px-6 py-4 text-right text-sm font-bold text-green-900 dark:text-green-100">{{ number_format($hppItems41->sum('total_price'), 0, ',', '.') }}</td>
+                                                <td class="px-6 py-4 text-right text-sm font-bold text-green-900 dark:text-green-100">{{ number_format($hppItems41->sum('total_price'), 0, ',', '.') }}</td>
                                                 <td class="px-6 py-4 text-center text-sm font-bold text-green-900 dark:text-green-100">-</td>
-                                                <td class="px-6 py-4 text-right text-sm font-bold text-green-900 dark:text-green-100">{{ number_format($serviceItems->sum('total_price'), 0, ',', '.') }}</td>
+                                                <td class="px-6 py-4 text-right text-sm font-bold text-green-900 dark:text-green-100">{{ number_format($hppItems41->sum('total_price'), 0, ',', '.') }}</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -2736,10 +2251,10 @@
 
                         <!-- Service Items Table -->
                         @php
-                            $serviceItems44 = $service->items()->where('tkdn_classification', '4.4')->get();
+                            $hppItems44 = $service->items()->where('tkdn_classification', '4.4')->get();
                         @endphp
 
-                        @if($serviceItems44->isNotEmpty())
+                        @if($hppItems44->isNotEmpty())
                             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
                                 <div class="px-6 py-4 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 border-b border-gray-200 dark:border-gray-600">
                                     <h5 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
@@ -2767,7 +2282,7 @@
                                             </tr>
                                         </thead>
                                         <tbody class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
-                                            @foreach($serviceItems44 as $index => $item)
+                                            @foreach($hppItems44 as $index => $item)
                                                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
                                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white text-center">{{ $index + 1 }}</td>
                                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ $item->description }}</td>
@@ -2790,10 +2305,10 @@
                                             <!-- Sub Total -->
                                             <tr class="bg-green-50 dark:bg-green-900/20 font-semibold">
                                                 <td colspan="7" class="px-6 py-4 text-center text-sm font-bold text-green-900 dark:text-green-100">SUB TOTAL</td>
-                                                <td class="px-6 py-4 text-right text-sm font-bold text-green-900 dark:text-green-100">{{ number_format($serviceItems44->sum('wage'), 0, ',', '.') }}</td>
-                                                <td class="px-6 py-4 text-right text-sm font-bold text-green-900 dark:text-green-100">{{ number_format($serviceItems44->sum('domestic_cost'), 0, ',', '.') }}</td>
+                                                <td class="px-6 py-4 text-right text-sm font-bold text-green-900 dark:text-green-100">{{ number_format($hppItems44->sum('wage'), 0, ',', '.') }}</td>
+                                                <td class="px-6 py-4 text-right text-sm font-bold text-green-900 dark:text-green-100">{{ number_format($hppItems44->sum('domestic_cost'), 0, ',', '.') }}</td>
                                                 <td class="px-6 py-4 text-center text-sm font-bold text-green-900 dark:text-green-100">-</td>
-                                                <td class="px-6 py-4 text-right text-sm font-bold text-green-900 dark:text-green-100">{{ number_format($serviceItems44->sum('total_cost'), 0, ',', '.') }}</td>
+                                                <td class="px-6 py-4 text-right text-sm font-bold text-green-900 dark:text-green-100">{{ number_format($hppItems44->sum('total_cost'), 0, ',', '.') }}</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -2898,10 +2413,10 @@
 
                         <!-- Service Items Table -->
                         @php
-                            $serviceItems45 = $service->items()->where('tkdn_classification', '4.5')->get();
+                            $hppItems45 = $service->items()->where('tkdn_classification', '4.5')->get();
                         @endphp
 
-                        @if($serviceItems45->isNotEmpty())
+                        @if($hppItems45->isNotEmpty())
                             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
                                 <div class="px-6 py-4 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 border-b border-gray-200 dark:border-gray-600">
                                     <h5 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
@@ -2929,7 +2444,7 @@
                                             </tr>
                                         </thead>
                                         <tbody class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
-                                            @foreach($serviceItems45 as $index => $item)
+                                            @foreach($hppItems45 as $index => $item)
                                                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
                                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white text-center">{{ $index + 1 }}</td>
                                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ $item->description }}</td>
@@ -2952,10 +2467,10 @@
                                             <!-- Sub Total -->
                                             <tr class="bg-green-50 dark:bg-green-900/20 font-semibold">
                                                 <td colspan="7" class="px-6 py-4 text-center text-sm font-bold text-green-900 dark:text-green-100">SUB TOTAL</td>
-                                                <td class="px-6 py-4 text-right text-sm font-bold text-green-900 dark:text-green-100">{{ number_format($serviceItems45->sum('wage'), 0, ',', '.') }}</td>
-                                                <td class="px-6 py-4 text-right text-sm font-bold text-green-900 dark:text-green-100">{{ number_format($serviceItems45->sum('domestic_cost'), 0, ',', '.') }}</td>
-                                                <td class="px-6 py-4 text-right text-sm font-bold text-green-900 dark:text-green-100">{{ number_format($serviceItems45->sum('foreign_cost'), 0, ',', '.') }}</td>
-                                                <td class="px-6 py-4 text-right text-sm font-bold text-green-900 dark:text-green-100">{{ number_format($serviceItems45->sum('total_cost'), 0, ',', '.') }}</td>
+                                                <td class="px-6 py-4 text-right text-sm font-bold text-green-900 dark:text-green-100">{{ number_format($hppItems45->sum('wage'), 0, ',', '.') }}</td>
+                                                <td class="px-6 py-4 text-right text-sm font-bold text-green-900 dark:text-green-100">{{ number_format($hppItems45->sum('domestic_cost'), 0, ',', '.') }}</td>
+                                                <td class="px-6 py-4 text-right text-sm font-bold text-green-900 dark:text-green-100">{{ number_format($hppItems45->sum('foreign_cost'), 0, ',', '.') }}</td>
+                                                <td class="px-6 py-4 text-right text-sm font-bold text-green-900 dark:text-green-100">{{ number_format($hppItems45->sum('total_cost'), 0, ',', '.') }}</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -3060,10 +2575,10 @@
 
                         <!-- Service Items Table -->
                         @php
-                            $serviceItems46 = $service->items()->where('tkdn_classification', '4.6')->get();
+                            $hppItems46 = $service->items()->where('tkdn_classification', '4.6')->get();
                         @endphp
 
-                        @if($serviceItems46->isNotEmpty())
+                        @if($hppItems46->isNotEmpty())
                             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
                                 <div class="px-6 py-4 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 border-b border-gray-200 dark:border-gray-600">
                                     <h5 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
@@ -3091,7 +2606,7 @@
                                             </tr>
                                         </thead>
                                         <tbody class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
-                                            @foreach($serviceItems46 as $index => $item)
+                                            @foreach($hppItems46 as $index => $item)
                                                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
                                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white text-center">{{ $index + 1 }}</td>
                                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ $item->description }}</td>
@@ -3114,10 +2629,10 @@
                                             <!-- Sub Total -->
                                             <tr class="bg-green-50 dark:bg-green-900/20 font-semibold">
                                                 <td colspan="7" class="px-6 py-4 text-center text-sm font-bold text-green-900 dark:text-green-100">SUB TOTAL</td>
-                                                <td class="px-6 py-4 text-right text-sm font-bold text-green-900 dark:text-green-100">{{ number_format($serviceItems46->sum('wage'), 0, ',', '.') }}</td>
-                                                <td class="px-6 py-4 text-right text-sm font-bold text-green-900 dark:text-green-100">{{ number_format($serviceItems46->sum('domestic_cost'), 0, ',', '.') }}</td>
+                                                <td class="px-6 py-4 text-right text-sm font-bold text-green-900 dark:text-green-100">{{ number_format($hppItems46->sum('wage'), 0, ',', '.') }}</td>
+                                                <td class="px-6 py-4 text-right text-sm font-bold text-green-900 dark:text-green-100">{{ number_format($hppItems46->sum('domestic_cost'), 0, ',', '.') }}</td>
                                                 <td class="px-6 py-4 text-center text-sm font-bold text-green-900 dark:text-green-100">-</td>
-                                                <td class="px-6 py-4 text-right text-sm font-bold text-green-900 dark:text-green-100">{{ number_format($serviceItems46->sum('total_cost'), 0, ',', '.') }}</td>
+                                                <td class="px-6 py-4 text-right text-sm font-bold text-green-900 dark:text-green-100">{{ number_format($hppItems46->sum('total_cost'), 0, ',', '.') }}</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -3355,6 +2870,490 @@
             </div>
     `       @endif
        
+        <!-- Detail Item Service berdasarkan Kategori -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden mb-8">
+            <div class="px-6 py-4 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 border-b border-gray-200 dark:border-gray-600">
+                <h5 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+                    <svg class="w-5 h-5 mr-2 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    Detail Item Service berdasarkan Kategori
+                </h5>
+            </div>
+            <div class="p-6">
+                <!-- Kategori 1: Overhead & Manajemen (3.1 dan 4.3) -->
+                <div class="mb-8">
+                    <h6 class="text-md font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+                        <span class="w-3 h-3 bg-blue-500 rounded-full mr-3"></span>
+                        1. Overhead & Manajemen
+                        <span class="ml-2 text-sm text-gray-500 dark:text-gray-400">(Form 3.1 dan 4.3)</span>
+                    </h6>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Form 3.1 -->
+                        <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 border border-blue-200 dark:border-blue-700">
+                            <h7 class="text-sm font-medium text-blue-900 dark:text-blue-100 mb-2">Form 3.1 - Overhead & Manajemen</h7>
+                            @php
+                                $items31 = $service->items()->where('tkdn_classification', '3.1')->get();
+                            @endphp
+                            @if($items31->isNotEmpty())
+                                <div class="space-y-2">
+                                    @foreach($items31 as $item)
+                                        <div class="bg-white dark:bg-gray-800 rounded p-3 border border-blue-200 dark:border-blue-600">
+                                            <div class="flex justify-between items-start">
+                                                <div class="flex-1">
+                                                    <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $item->description }}</p>
+                                                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ $item->qualification }}</p>
+                                                </div>
+                                                <div class="text-right">
+                                                    <p class="text-sm font-medium text-blue-600 dark:text-blue-400">{{ $item->getFormattedTotalCost() }}</p>
+                                                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ $item->tkdn_percentage }}% TKDN</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @else
+                                <p class="text-sm text-gray-500 dark:text-gray-400 italic">Belum ada data untuk Form 3.1</p>
+                            @endif
+                        </div>
+                        
+                        <!-- Form 4.3 -->
+                        <div class="bg-green-50 dark:bg-green-900/20 rounded-lg p-4 border border-green-200 dark:border-green-700">
+                            <h7 class="text-sm font-medium text-green-900 dark:text-green-100 mb-2">Form 4.3 - Overhead & Manajemen</h7>
+                            @php
+                                $items43 = $service->items()->where('tkdn_classification', '4.3')->get();
+                            @endphp
+                            @if($items43->isNotEmpty())
+                                <div class="space-y-2">
+                                    @foreach($items43 as $item)
+                                        <div class="bg-white dark:bg-gray-800 rounded p-3 border border-green-200 dark:border-green-600">
+                                            <div class="flex justify-between items-start">
+                                                <div class="flex-1">
+                                                    <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $item->description }}</p>
+                                                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ $item->qualification }}</p>
+                                                </div>
+                                                <div class="text-right">
+                                                    <p class="text-sm font-medium text-green-600 dark:text-green-400">{{ $item->getFormattedTotalCost() }}</p>
+                                                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ $item->tkdn_percentage }}% TKDN</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @else
+                                <p class="text-sm text-gray-500 dark:text-gray-400 italic">Belum ada data untuk Form 4.3</p>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kategori 2: Alat Kerja / Fasilitas (3.2 dan 4.4) -->
+                <div class="mb-8">
+                    <h6 class="text-md font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+                        <span class="w-3 h-3 bg-green-500 rounded-full mr-3"></span>
+                        2. Alat Kerja / Fasilitas
+                        <span class="ml-2 text-sm text-gray-500 dark:text-gray-400">(Form 3.2 dan 4.4)</span>
+                    </h6>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Form 3.2 -->
+                        <div class="bg-green-50 dark:bg-green-900/20 rounded-lg p-4 border border-green-200 dark:border-green-700">
+                            <h7 class="text-sm font-medium text-green-900 dark:text-green-100 mb-2">Form 3.2 - Alat Kerja / Fasilitas</h7>
+                            @php
+                                $items32 = $service->items()->where('tkdn_classification', '3.2')->get();
+                            @endphp
+                            @if($items32->isNotEmpty())
+                                <div class="space-y-2">
+                                    @foreach($items32 as $item)
+                                        <div class="bg-white dark:bg-gray-800 rounded p-3 border border-green-200 dark:border-green-600">
+                                            <div class="flex justify-between items-start">
+                                                <div class="flex-1">
+                                                    <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $item->description }}</p>
+                                                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ $item->qualification }}</p>
+                                                </div>
+                                                <div class="text-right">
+                                                    <p class="text-sm font-medium text-green-600 dark:text-green-400">{{ $item->getFormattedTotalCost() }}</p>
+                                                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ $item->tkdn_percentage }}% TKDN</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @else
+                                <p class="text-sm text-gray-500 dark:text-gray-400 italic">Belum ada data untuk Form 3.2</p>
+                            @endif
+                        </div>
+                        
+                        <!-- Form 4.4 -->
+                        <div class="bg-green-50 dark:bg-green-900/20 rounded-lg p-4 border border-green-200 dark:border-green-700">
+                            <h7 class="text-sm font-medium text-green-900 dark:text-green-100 mb-2">Form 4.4 - Alat Kerja / Fasilitas</h7>
+                            @php
+                                $items44 = $service->items()->where('tkdn_classification', '4.4')->get();
+                            @endphp
+                            @if($items44->isNotEmpty())
+                                <div class="space-y-2">
+                                    @foreach($items44 as $item)
+                                        <div class="bg-white dark:bg-gray-800 rounded p-3 border border-green-200 dark:border-green-600">
+                                            <div class="flex justify-between items-start">
+                                                <div class="flex-1">
+                                                    <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $item->description }}</p>
+                                                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ $item->qualification }}</p>
+                                                </div>
+                                                <div class="text-right">
+                                                    <p class="text-sm font-medium text-green-600 dark:text-green-400">{{ $item->getFormattedTotalCost() }}</p>
+                                                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ $item->tkdn_percentage }}% TKDN</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @else
+                                <p class="text-sm text-gray-500 dark:text-gray-400 italic">Belum ada data untuk Form 4.4</p>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kategori 3: Konstruksi & Fabrikasi (3.3 dan 4.5) -->
+                <div class="mb-8">
+                    <h6 class="text-md font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+                        <span class="w-3 h-3 bg-purple-500 rounded-full mr-3"></span>
+                        3. Konstruksi & Fabrikasi
+                        <span class="ml-2 text-sm text-gray-500 dark:text-gray-400">(Form 3.3 dan 4.5)</span>
+                    </h6>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Form 3.3 -->
+                        <div class="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-4 border border-purple-200 dark:border-purple-700">
+                            <h7 class="text-sm font-medium text-purple-900 dark:text-purple-100 mb-2">Form 3.3 - Konstruksi & Fabrikasi</h7>
+                            @php
+                                $items33 = $service->items()->where('tkdn_classification', '3.3')->get();
+                            @endphp
+                            @if($items33->isNotEmpty())
+                                <div class="space-y-2">
+                                    @foreach($items33 as $item)
+                                        <div class="bg-white dark:bg-gray-800 rounded p-3 border border-purple-200 dark:border-purple-600">
+                                            <div class="flex justify-between items-start">
+                                                <div class="flex-1">
+                                                    <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $item->description }}</p>
+                                                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ $item->qualification }}</p>
+                                                </div>
+                                                <div class="text-right">
+                                                    <p class="text-sm font-medium text-purple-600 dark:text-purple-400">{{ $item->getFormattedTotalCost() }}</p>
+                                                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ $item->tkdn_percentage }}% TKDN</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @else
+                                <p class="text-sm text-gray-500 dark:text-gray-400 italic">Belum ada data untuk Form 3.3</p>
+                            @endif
+                        </div>
+                        
+                        <!-- Form 4.5 -->
+                        <div class="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-4 border border-purple-200 dark:border-purple-700">
+                            <h7 class="text-sm font-medium text-purple-900 dark:text-purple-100 mb-2">Form 4.5 - Konstruksi & Fabrikasi</h7>
+                            @php
+                                $items45 = $service->items()->where('tkdn_classification', '4.5')->get();
+                            @endphp
+                            @if($items45->isNotEmpty())
+                                <div class="space-y-2">
+                                    @foreach($items45 as $item)
+                                        <div class="bg-white dark:bg-gray-800 rounded p-3 border border-purple-200 dark:border-purple-600">
+                                            <div class="flex justify-between items-start">
+                                                <div class="flex-1">
+                                                    <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $item->description }}</p>
+                                                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ $item->qualification }}</p>
+                                                </div>
+                                                <div class="text-right">
+                                                    <p class="text-sm font-medium text-purple-600 dark:text-purple-400">{{ $item->getFormattedTotalCost() }}</p>
+                                                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ $item->tkdn_percentage }}% TKDN</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @else
+                                <p class="text-sm text-gray-500 dark:text-gray-400 italic">Belum ada data untuk Form 4.5</p>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kategori 4: Jasa Umum (3.4 dan 4.6) -->
+                <div class="mb-8">
+                    <h6 class="text-md font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+                        <span class="w-3 h-3 bg-orange-500 rounded-full mr-3"></span>
+                        4. Jasa Umum
+                        <span class="ml-2 text-sm text-gray-500 dark:text-gray-400">(Form 3.4 dan 4.6)</span>
+                    </h6>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Form 3.4 -->
+                        <div class="bg-orange-50 dark:bg-orange-900/20 rounded-lg p-4 border border-orange-200 dark:border-orange-700">
+                            <h7 class="text-sm font-medium text-orange-900 dark:text-orange-100 mb-2">Form 3.4 - Jasa Umum</h7>
+                            @php
+                                $items34 = $service->items()->where('tkdn_classification', '3.4')->get();
+                            @endphp
+                            @if($items34->isNotEmpty())
+                                <div class="space-y-2">
+                                    @foreach($items34 as $item)
+                                        <div class="bg-white dark:bg-gray-800 rounded p-3 border border-orange-200 dark:border-orange-600">
+                                            <div class="flex justify-between items-start">
+                                                <div class="flex-1">
+                                                    <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $item->description }}</p>
+                                                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ $item->qualification }}</p>
+                                                </div>
+                                                <div class="text-right">
+                                                    <p class="text-sm font-medium text-orange-600 dark:text-orange-400">{{ $item->getFormattedTotalCost() }}</p>
+                                                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ $item->tkdn_percentage }}% TKDN</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @else
+                                <p class="text-sm text-gray-500 dark:text-gray-400 italic">Belum ada data untuk Form 3.4</p>
+                            @endif
+                        </div>
+                        
+                        <!-- Form 4.6 -->
+                        <div class="bg-orange-50 dark:bg-orange-900/20 rounded-lg p-4 border border-orange-200 dark:border-orange-700">
+                            <h7 class="text-sm font-medium text-orange-900 dark:text-orange-100 mb-2">Form 4.6 - Jasa Umum</h7>
+                            @php
+                                $items46 = $service->items()->where('tkdn_classification', '4.6')->get();
+                            @endphp
+                            @if($items46->isNotEmpty())
+                                <div class="space-y-2">
+                                    @foreach($items46 as $item)
+                                        <div class="bg-white dark:bg-gray-800 rounded p-3 border border-orange-200 dark:border-orange-600">
+                                            <div class="flex justify-between items-start">
+                                                <div class="flex-1">
+                                                    <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $item->description }}</p>
+                                                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ $item->qualification }}</p>
+                                                </div>
+                                                <div class="text-right">
+                                                    <p class="text-sm font-medium text-orange-600 dark:text-orange-400">{{ $item->getFormattedTotalCost() }}</p>
+                                                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ $item->tkdn_percentage }}% TKDN</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @else
+                                <p class="text-sm text-gray-500 dark:text-gray-400 italic">Belum ada data untuk Form 4.6</p>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kategori 5: Material (Bahan Baku) (4.1) -->
+                <div class="mb-8">
+                    <h6 class="text-md font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+                        <span class="w-3 h-3 bg-indigo-500 rounded-full mr-3"></span>
+                        5. Material (Bahan Baku)
+                        <span class="ml-2 text-sm text-gray-500 dark:text-gray-400">(Form 4.1)</span>
+                    </h6>
+                    <div class="bg-indigo-50 dark:bg-indigo-900/20 rounded-lg p-4 border border-indigo-200 dark:border-indigo-700">
+                        <h7 class="text-sm font-medium text-indigo-900 dark:text-indigo-100 mb-2">Form 4.1 - Material (Bahan Baku)</h7>
+                        @php
+                            $items41 = $service->items()->where('tkdn_classification', '4.1')->get();
+                        @endphp
+                        @if($items41->isNotEmpty())
+                            <div class="space-y-2">
+                                @foreach($items41 as $item)
+                                    <div class="bg-white dark:bg-gray-800 rounded p-3 border border-indigo-200 dark:border-indigo-600">
+                                        <div class="flex justify-between items-start">
+                                            <div class="flex-1">
+                                                <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $item->description }}</p>
+                                                <p class="text-xs text-gray-500 dark:text-gray-400">{{ $item->qualification }}</p>
+                                            </div>
+                                            <div class="text-right">
+                                                <p class="text-sm font-medium text-indigo-600 dark:text-indigo-400">{{ $item->getFormattedTotalCost() }}</p>
+                                                <p class="text-xs text-gray-500 dark:text-gray-400">{{ $item->tkdn_percentage }}% TKDN</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @else
+                            <p class="text-sm text-gray-500 dark:text-gray-400 italic">Belum ada data untuk Form 4.1</p>
+                        @endif
+                    </div>
+                </div>
+
+                <!-- Kategori 6: Peralatan (Barang Jadi) (4.2) -->
+                <div class="mb-8">
+                    <h6 class="text-md font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+                        <span class="w-3 h-3 bg-teal-500 rounded-full mr-3"></span>
+                        6. Peralatan (Barang Jadi)
+                        <span class="ml-2 text-sm text-gray-500 dark:text-gray-400">(Form 4.2)</span>
+                    </h6>
+                    <div class="bg-teal-50 dark:bg-teal-900/20 rounded-lg p-4 border border-teal-200 dark:border-teal-700">
+                        <h7 class="text-sm font-medium text-teal-900 dark:text-teal-100 mb-2">Form 4.2 - Peralatan (Barang Jadi)</h7>
+                        @php
+                            $items42 = $service->items()->where('tkdn_classification', '4.2')->get();
+                        @endphp
+                        @if($items42->isNotEmpty())
+                            <div class="space-y-2">
+                                @foreach($items42 as $item)
+                                    <div class="bg-white dark:bg-gray-800 rounded p-3 border border-teal-200 dark:border-teal-600">
+                                        <div class="flex justify-between items-start">
+                                            <div class="flex-1">
+                                                <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $item->description }}</p>
+                                                <p class="text-xs text-gray-500 dark:text-gray-400">{{ $item->qualification }}</p>
+                                            </div>
+                                            <div class="text-right">
+                                                <p class="text-sm font-medium text-teal-600 dark:text-teal-400">{{ $item->getFormattedTotalCost() }}</p>
+                                                <p class="text-xs text-gray-500 dark:text-gray-400">{{ $item->tkdn_percentage }}% TKDN</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @else
+                            <p class="text-sm text-gray-500 dark:text-gray-400 italic">Belum ada data untuk Form 4.2</p>
+                        @endif
+                    </div>
+                </div>
+
+                <!-- Summary Total per Kategori -->
+                <div class="mt-8 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 rounded-xl p-6 border border-gray-200 dark:border-gray-600">
+                    <h6 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+                        <svg class="w-5 h-5 mr-2 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                        </svg>
+                        Ringkasan Total Biaya per Kategori
+                    </h6>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <!-- Kategori 1: Overhead & Manajemen -->
+                        <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h7 class="text-sm font-medium text-gray-900 dark:text-white">Overhead & Manajemen</h7>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">Form 3.1 & 4.3</p>
+                                </div>
+                                <div class="text-right">
+                                    @php
+                                        $total31 = $service->items()->where('tkdn_classification', '3.1')->sum('total_cost');
+                                        $total43 = $service->items()->where('tkdn_classification', '4.3')->sum('total_cost');
+                                        $totalOverhead = $total31 + $total43;
+                                    @endphp
+                                    <p class="text-sm font-semibold text-blue-600 dark:text-blue-400">{{ number_format($totalOverhead, 0, ',', '.') }}</p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ $totalOverhead > 0 ? 'Rp' : 'Belum ada data' }}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Kategori 2: Alat Kerja / Fasilitas -->
+                        <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h7 class="text-sm font-medium text-gray-900 dark:text-white">Alat Kerja / Fasilitas</h7>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">Form 3.2 & 4.4</p>
+                                </div>
+                                <div class="text-right">
+                                    @php
+                                        $total32 = $service->items()->where('tkdn_classification', '3.2')->sum('total_cost');
+                                        $total44 = $service->items()->where('tkdn_classification', '4.4')->sum('total_cost');
+                                        $totalAlat = $total32 + $total44;
+                                    @endphp
+                                    <p class="text-sm font-semibold text-green-600 dark:text-green-400">{{ number_format($totalAlat, 0, ',', '.') }}</p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ $totalAlat > 0 ? 'Rp' : 'Belum ada data' }}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Kategori 3: Konstruksi & Fabrikasi -->
+                        <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h7 class="text-sm font-medium text-gray-900 dark:text-white">Konstruksi & Fabrikasi</h7>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">Form 3.3 & 4.5</p>
+                                </div>
+                                <div class="text-right">
+                                    @php
+                                        $total33 = $service->items()->where('tkdn_classification', '3.3')->sum('total_cost');
+                                        $total45 = $service->items()->where('tkdn_classification', '4.5')->sum('total_cost');
+                                        $totalKonstruksi = $total33 + $total45;
+                                    @endphp
+                                    <p class="text-sm font-semibold text-purple-600 dark:text-purple-400">{{ number_format($totalKonstruksi, 0, ',', '.') }}</p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ $totalKonstruksi > 0 ? 'Rp' : 'Belum ada data' }}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Kategori 4: Jasa Umum -->
+                        <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h7 class="text-sm font-medium text-gray-900 dark:text-white">Jasa Umum</h7>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">Form 3.4 & 4.6</p>
+                                </div>
+                                <div class="text-right">
+                                    @php
+                                        $total34 = $service->items()->where('tkdn_classification', '3.4')->sum('total_cost');
+                                        $total46 = $service->items()->where('tkdn_classification', '4.6')->sum('total_cost');
+                                        $totalJasa = $total34 + $total46;
+                                    @endphp
+                                    <p class="text-sm font-semibold text-orange-600 dark:text-orange-400">{{ number_format($totalJasa, 0, ',', '.') }}</p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ $totalJasa > 0 ? 'Rp' : 'Belum ada data' }}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Kategori 5: Material (Bahan Baku) -->
+                        <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h7 class="text-sm font-medium text-gray-900 dark:text-white">Material (Bahan Baku)</h7>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">Form 4.1</p>
+                                </div>
+                                <div class="text-right">
+                                    @php
+                                        $totalMaterial = $service->items()->where('tkdn_classification', '4.1')->sum('total_cost');
+                                    @endphp
+                                    <p class="text-sm font-semibold text-indigo-600 dark:text-indigo-400">{{ number_format($totalMaterial, 0, ',', '.') }}</p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ $totalMaterial > 0 ? 'Rp' : 'Belum ada data' }}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Kategori 6: Peralatan (Barang Jadi) -->
+                        <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h7 class="text-sm font-medium text-gray-900 dark:text-white">Peralatan (Barang Jadi)</h7>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">Form 4.2</p>
+                                </div>
+                                <div class="text-right">
+                                    @php
+                                        $totalPeralatan = $service->items()->where('tkdn_classification', '4.2')->sum('total_cost');
+                                    @endphp
+                                    <p class="text-sm font-semibold text-teal-600 dark:text-teal-400">{{ number_format($totalPeralatan, 0, ',', '.') }}</p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ $totalPeralatan > 0 ? 'Rp' : 'Belum ada data' }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Grand Total -->
+                    <div class="mt-6 pt-4 border-t border-gray-200 dark:border-gray-600">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h7 class="text-lg font-bold text-gray-900 dark:text-white">Grand Total Semua Kategori</h7>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Total biaya dari semua kategori service</p>
+                            </div>
+                            <div class="text-right">
+                                @php
+                                    $grandTotal = $totalOverhead + $totalAlat + $totalKonstruksi + $totalJasa + $totalMaterial + $totalPeralatan;
+                                @endphp
+                                <p class="text-xl font-bold text-gray-900 dark:text-white">{{ number_format($grandTotal, 0, ',', '.') }}</p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Rupiah</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Ringkasan TKDN -->
         <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden mt-8">
