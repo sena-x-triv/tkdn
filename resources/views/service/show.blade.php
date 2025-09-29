@@ -2879,10 +2879,13 @@
                     </svg>
                     Detail Item Service berdasarkan Kategori
                 </h5>
+                <p class="text-sm text-gray-600 dark:text-gray-400 mt-1" id="category-info">
+                    Menampilkan semua kategori service
+                </p>
             </div>
             <div class="p-6">
                 <!-- Kategori 1: Overhead & Manajemen (3.1 dan 4.3) -->
-                <div class="mb-8">
+                <div class="mb-8 category-section" data-forms="3.1,4.3" data-category="overhead">
                     <h6 class="text-md font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
                         <span class="w-3 h-3 bg-blue-500 rounded-full mr-3"></span>
                         1. Overhead & Manajemen
@@ -2948,7 +2951,7 @@
                 </div>
 
                 <!-- Kategori 2: Alat Kerja / Fasilitas (3.2 dan 4.4) -->
-                <div class="mb-8">
+                <div class="mb-8 category-section" data-forms="3.2,4.4" data-category="alat">
                     <h6 class="text-md font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
                         <span class="w-3 h-3 bg-green-500 rounded-full mr-3"></span>
                         2. Alat Kerja / Fasilitas
@@ -3014,7 +3017,7 @@
                 </div>
 
                 <!-- Kategori 3: Konstruksi & Fabrikasi (3.3 dan 4.5) -->
-                <div class="mb-8">
+                <div class="mb-8 category-section" data-forms="3.3,4.5" data-category="konstruksi">
                     <h6 class="text-md font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
                         <span class="w-3 h-3 bg-purple-500 rounded-full mr-3"></span>
                         3. Konstruksi & Fabrikasi
@@ -3080,7 +3083,7 @@
                 </div>
 
                 <!-- Kategori 4: Jasa Umum (3.4 dan 4.6) -->
-                <div class="mb-8">
+                <div class="mb-8 category-section" data-forms="3.4,4.6" data-category="jasa">
                     <h6 class="text-md font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
                         <span class="w-3 h-3 bg-orange-500 rounded-full mr-3"></span>
                         4. Jasa Umum
@@ -3146,7 +3149,7 @@
                 </div>
 
                 <!-- Kategori 5: Material (Bahan Baku) (4.1) -->
-                <div class="mb-8">
+                <div class="mb-8 category-section" data-forms="4.1" data-category="material">
                     <h6 class="text-md font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
                         <span class="w-3 h-3 bg-indigo-500 rounded-full mr-3"></span>
                         5. Material (Bahan Baku)
@@ -3181,7 +3184,7 @@
                 </div>
 
                 <!-- Kategori 6: Peralatan (Barang Jadi) (4.2) -->
-                <div class="mb-8">
+                <div class="mb-8 category-section" data-forms="4.2" data-category="peralatan">
                     <h6 class="text-md font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
                         <span class="w-3 h-3 bg-teal-500 rounded-full mr-3"></span>
                         6. Peralatan (Barang Jadi)
@@ -3524,6 +3527,9 @@ function showForm(formId) {
     const selectedForm = document.getElementById(formId);
     if (selectedForm) {
         selectedForm.classList.remove('hidden');
+        
+        // Update category display based on active form
+        updateCategoryDisplay(formId);
     }
     
     // Update active tab with proper styling based on form type
@@ -3541,6 +3547,53 @@ function showForm(formId) {
             // TKDN Jasa - use blue theme
             activeTab.classList.add('bg-blue-600', 'hover:bg-blue-700', 'text-white', 'shadow-lg', 'hover:shadow-xl', 'transform', 'hover:-translate-y-0.5');
         }
+    }
+}
+
+// Update category display based on active form
+function updateCategoryDisplay(formId) {
+    const categoryInfo = document.getElementById('category-info');
+    const allCategories = document.querySelectorAll('.category-section');
+    
+    // Extract form number from formId (e.g., "form-3-1" -> "3.1")
+    const formNumber = formId.replace('form-', '').replace('-', '.');
+    
+    // Define form to category mapping
+    const formCategoryMap = {
+        '3.1': { name: 'Overhead & Manajemen', category: 'overhead' },
+        '3.2': { name: 'Alat Kerja / Fasilitas', category: 'alat' },
+        '3.3': { name: 'Konstruksi & Fabrikasi', category: 'konstruksi' },
+        '3.4': { name: 'Jasa Umum', category: 'jasa' },
+        '4.1': { name: 'Material (Bahan Baku)', category: 'material' },
+        '4.2': { name: 'Peralatan (Barang Jadi)', category: 'peralatan' },
+        '4.3': { name: 'Overhead & Manajemen', category: 'overhead' },
+        '4.4': { name: 'Alat Kerja / Fasilitas', category: 'alat' },
+        '4.5': { name: 'Konstruksi & Fabrikasi', category: 'konstruksi' },
+        '4.6': { name: 'Jasa Umum', category: 'jasa' }
+    };
+    
+    const formInfo = formCategoryMap[formNumber];
+    
+    if (formInfo) {
+        // Update category info text
+        categoryInfo.textContent = `Menampilkan kategori: ${formInfo.name} (Form ${formNumber})`;
+        
+        // Hide all categories first
+        allCategories.forEach(category => {
+            category.style.display = 'none';
+        });
+        
+        // Show only the relevant category
+        const targetCategory = document.querySelector(`[data-category="${formInfo.category}"]`);
+        if (targetCategory) {
+            targetCategory.style.display = 'block';
+        }
+    } else {
+        // Show all categories for summary forms or unknown forms
+        categoryInfo.textContent = 'Menampilkan semua kategori service';
+        allCategories.forEach(category => {
+            category.style.display = 'block';
+        });
     }
 }
 
